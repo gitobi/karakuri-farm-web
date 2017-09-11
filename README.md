@@ -2,9 +2,23 @@
 
 # Getting Started
 
-1. docker-compose build
-1. docker-compose up web
-1. visit http://localhost:3000/
+## Setup
+
+1. `git clone https://github.com/gitobi/karakuri-farm-web`
+1. `cd karakuri-farm-web`
+1. `docker-compose build`
+1. `docker-compose up web`
+1. Visit http://localhost:3000/
+
+# Development
+
+## Prepare Environment
+
+`docker-compose up web`
+
+## Run test
+
+`docker-compose run --rm test`
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
