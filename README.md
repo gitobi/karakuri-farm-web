@@ -7,6 +7,7 @@
 1. `git clone https://github.com/gitobi/karakuri-farm-web`
 1. `cd karakuri-farm-web`
 1. `docker-compose build`
+1. `docker-compose run --rm web npm install`
 1. `docker-compose up web`
 1. Visit http://localhost:3000/
 
