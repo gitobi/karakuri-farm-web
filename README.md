@@ -1,3 +1,12 @@
+# Karakuri Farm Web
+
+# Getting Started
+
+1. docker-compose build
+1. docker-compose up web
+1. visit http://localhost:3000/
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
