@@ -10,3 +10,10 @@ services:
       - ENV NPM_CONFIG_LOGLEVEL=warn
     volumes:
       - .:/app:cached
+  test:
+    image: karakurifarmweb_web
+    command: npm test
+    environment:
+      - ENV NPM_CONFIG_LOGLEVEL=warn
+    volumes:
+      - .:/app:cached
