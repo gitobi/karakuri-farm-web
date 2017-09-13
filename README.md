@@ -1,5 +1,7 @@
 # Karakuri Farm Web
 
+[![CircleCI](https://circleci.com/gh/gitobi/karakuri-farm-web/tree/master.svg?style=svg)](https://circleci.com/gh/gitobi/karakuri-farm-web/tree/master)
+
 # Getting Started
 
 ## Setup
