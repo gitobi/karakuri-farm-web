@@ -5,15 +5,11 @@ services:
     build: .
     ports:
       - "3000:3000"
-    command: npm start
-    environment:
-      - ENV NPM_CONFIG_LOGLEVEL=warn
+    command: yarn start
     volumes:
       - .:/app:cached
   test:
     image: karakurifarmweb_web
-    command: npm test
-    environment:
-      - ENV NPM_CONFIG_LOGLEVEL=warn
+    command: yarn test
     volumes:
       - .:/app:cached
