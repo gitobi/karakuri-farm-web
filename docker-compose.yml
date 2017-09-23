@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    build: .
+    build: ./docker_files/web/
     ports:
       - "3000:3000"
     command: yarn start
@@ -11,5 +11,11 @@ services:
   test:
     image: karakurifarmweb_web
     command: yarn test
+    volumes:
+      - .:/app:cached
+  deployment:
+    build: ./docker_files/deployment/
+    env_file: ./aws_secrets.env
+    command: yarn deploy
     volumes:
       - .:/app:cached

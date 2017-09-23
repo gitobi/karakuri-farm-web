@@ -23,6 +23,18 @@
 
 `docker-compose run --rm test`
 
+# Operation
+
+## Deployments
+
+### Setup
+
+1. `cp aws_secrets.env.sample aws_secrets.env`
+1. Add your credentials to aws_secrets.env.
+
+### Deploy to Production
+
+`docker-compose run --rm deployment`
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
