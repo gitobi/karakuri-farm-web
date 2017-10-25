@@ -1,20 +1,49 @@
 import React, { Component } from 'react';
-import logo from '../images/logo.svg';
 import './Home.css';
-import { Container } from 'semantic-ui-react'
+import { Segment} from 'semantic-ui-react'
+
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+import Logger from './js/Logger'
+import Menubar from './MenuBar';
+import Blank from './Blank'
 
 class Home extends Component {
+
+  constructor(props) {
+    super(props);
+    this.logger = new Logger({prefix: 'Home'});
+    this.state = {
+      activeMenubarItem: {name: 'devices'},
+      visible: true
+    };
+    this.handleMenubarItemClick = this.handleMenubarItemClick.bind(this);
+  }
+
+  handleMenubarItemClick(e, item) {
+    this.logger.info(e, item);
+    this.setState({activeMenubarItem: item});
+  }
+
   render() {
     return (
-      <div className="Home">
-        <Container className="Home-header" style={{height: '240px' }}>
-          <img src={logo} className="Home-logo" alt="logo" />
-          <h2>Welcome to Karakuri Farm</h2>
-        </Container>
-        <p className="Home-intro">
-          Karakuri Farm is the best farm automation system.
-        </p>
-      </div>
+      <Router>
+        <div>
+          <Segment>
+            <Menubar
+              visible={this.state.visible}
+              handleMenubarItemClick={this.handleMenubarItemClick}
+              activeMenubarItem={this.state.activeMenubarItem}/>
+            <div className='mainContent'>
+              <Route path="/devices_waterings" component={Blank} />
+              <Route path="/devices_pyranometer" component={Blank} />
+              <Route path="/alert" component={Blank} />
+              <Route path="/devices" component={Blank} />
+              <Route path="/stats" component={Blank} />
+            </div>
+          </Segment>
+        </div>
+      </Router>
     );
   }
 }

@@ -2,11 +2,6 @@
   text-align: center;
 }
 
-.Home-logo {
-  animation: Home-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
 .Home-header {
   background-color: #222;
   height: 150px;
@@ -18,7 +13,14 @@
   font-size: large;
 }
 
-@keyframes Home-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.menubar {
+  // width: 250px;
+  padding-bottom: 1em;
+  overflow-y: scroll;
+}
+
+.mainContent {
+  margin-left: 210px;
+  min-width: 550px;
+  max-width: 1150px;
 }
