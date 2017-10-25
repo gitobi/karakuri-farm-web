@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Logger from './js/Logger';
 import Menubar from './MenuBar';
 import BlankComponent from '@gitobi/react-blank-component';
+import DeviceWaterings from './DeviceWaterings';
 
 class Home extends Component {
   constructor(props) {
@@ -35,7 +36,7 @@ class Home extends Component {
               activeMenubarItem={this.state.activeMenubarItem}
             />
             <div className="mainContent">
-              <Route path="/devices_waterings" component={BlankComponent} />
+              <Route path="/devices_waterings" component={DeviceWaterings} />
               <Route path="/devices_pyranometer" component={BlankComponent} />
               <Route path="/alert" component={BlankComponent} />
               <Route path="/devices" component={BlankComponent} />

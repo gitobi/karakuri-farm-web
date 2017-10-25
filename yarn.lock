@@ -5319,6 +5319,12 @@ react-scripts@1.0.13:
   optionalDependencies:
     fsevents "1.1.2"
 
+react-table@^6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.6.0.tgz#a57ffa670f8b06a18235a000315df0deaacc6cdf"
+  dependencies:
+    classnames "^2.2.5"
+
 "react@^15 || ^16", react@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
