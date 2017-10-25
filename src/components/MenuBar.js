@@ -6,31 +6,31 @@ import './Home.css';
 import { Image, Menu, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
-import Logger from './js/Logger'
+import Logger from './js/Logger';
 
 class Menubar extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'MenuBar'});
+    this.logger = new Logger({ prefix: 'MenuBar' });
     this.menuItem = this.menuItem.bind(this);
   }
 
   menuItem(name, linkTo, content, label) {
-    var labelContent = '';
-    if(label) {
-      labelContent = <Label color='teal'>{label}</Label>
+    let labelContent = '';
+    if (label) {
+      labelContent = <Label color="teal">{label}</Label>;
     }
 
-    return(
+    return (
       <Menu.Item
         as={Link}
         to={linkTo}
         name={name}
         active={this.props.activeMenubarItem.name === name}
         onClick={this.props.handleMenubarItemClick}
-        >
-          {labelContent}
-          {content}
+      >
+        {labelContent}
+        {content}
       </Menu.Item>
     );
   }
@@ -41,12 +41,12 @@ class Menubar extends Component {
         className="menubar"
         inverted
         vertical
-        fixed='left'
+        fixed="left"
       >
 
         {/* sidebar content */}
-        <Menu.Item as='a' header>
-          <Image src={icon} verticalAlign='middle' className='Home-logo'/>
+        <Menu.Item as="a" header>
+          <Image src={icon} verticalAlign="middle" className="Home-logo" />
           <span>Karakuri Farm</span>
         </Menu.Item>
 
@@ -66,10 +66,10 @@ class Menubar extends Component {
           <Menu.Header>お問合せ</Menu.Header>
           <Menu.Menu>
 
-          <Menu.Item as='a'>
-            <Image centered src={gitobi_logo} size='tiny' />
-            <p style={{textAlign: "center"}}>&copy; Gitobi LLC.</p>
-          </Menu.Item>
+            <Menu.Item as="a">
+              <Image centered src={gitobi_logo} size="tiny" />
+              <p style={{ textAlign: 'center' }}>&copy; Gitobi LLC.</p>
+            </Menu.Item>
           </Menu.Menu>
         </Menu.Item>
 

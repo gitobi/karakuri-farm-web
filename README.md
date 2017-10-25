@@ -23,6 +23,10 @@
 
 `docker-compose run --rm test`
 
+## Run linter
+
+`docker-compose run --rm web yarn lint`
+
 # Operation
 
 ## Deployments
@@ -35,6 +39,7 @@
 ### Deploy to Production
 
 `docker-compose run --rm deployment`
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
