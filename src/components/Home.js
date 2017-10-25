@@ -17,14 +17,7 @@ class Home extends Component {
       activeMenubarItem: {name: 'devices'},
       visible: true
     };
-    this.toggleVisibility = this.toggleVisibility.bind(this);
     this.handleMenubarItemClick = this.handleMenubarItemClick.bind(this);
-  }
-
-
-  toggleVisibility() {
-    console.log('toggle: ' + !this.state.visible);
-    this.setState({visible: !this.state.visible});
   }
 
   handleMenubarItemClick(e, item) {
@@ -41,27 +34,16 @@ class Home extends Component {
               visible={this.state.visible}
               handleMenubarItemClick={this.handleMenubarItemClick}
               activeMenubarItem={this.state.activeMenubarItem}/>
-              <div
-                className='mainContent'
-
-                >
-                <Route path="/devices_waterings" component={Blank} />
-                <Route path="/devices_pyranometer" component={Blank} />
-                <Route path="/alert" component={Blank} />
-                <Route path="/devices" component={Blank} />
-                <Route path="/stats" component={Blank} />
-              </div>
-{/*
-            </Sidebar.Pusher>
-          </Sidebar.Pushable>
-*/}
+            <div className='mainContent'>
+              <Route path="/devices_waterings" component={Blank} />
+              <Route path="/devices_pyranometer" component={Blank} />
+              <Route path="/alert" component={Blank} />
+              <Route path="/devices" component={Blank} />
+              <Route path="/stats" component={Blank} />
+            </div>
           </Segment>
-{/*
-          // <Footer />
-*/}
         </div>
       </Router>
-
     );
   }
 }
