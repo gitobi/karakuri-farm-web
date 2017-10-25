@@ -21,7 +21,8 @@ class Menubar extends Component {
       labelContent = <Label color='teal'>{label}</Label>
     }
 
-    return <Menu.Item
+    return(
+      <Menu.Item
         as={Link}
         to={linkTo}
         name={name}
@@ -31,6 +32,7 @@ class Menubar extends Component {
           {labelContent}
           {content}
       </Menu.Item>
+    );
   }
 
   render() {
