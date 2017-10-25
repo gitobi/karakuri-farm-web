@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@gitobi/react-blank-component": "^1.0.2",
     "eslint": "^4.9.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
