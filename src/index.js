@@ -1,9 +1,21 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import 'semantic-ui-css/semantic.min.css';
 import './index.css';
+import karakuriFarmApp from './reducers'
 import Home from './components/Home';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<Home />, document.getElementById('root'));
+let store = createStore(karakuriFarmApp);
+
+console.log(store.getState());
+
+render(
+  <Provider store={store}>
+    <Home />
+  </Provider>,
+  document.getElementById('root')
+);
 registerServiceWorker();
