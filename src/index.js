@@ -4,11 +4,16 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import 'semantic-ui-css/semantic.min.css';
 import './index.css';
-import karakuriFarmApp from './reducers'
+import karakuriFarmApp from './reducers';
+import { renameMe } from './actions/me';
 import Home from './components/Home';
 import registerServiceWorker from './registerServiceWorker';
 
 let store = createStore(karakuriFarmApp);
+
+console.log(store.getState());
+
+store.dispatch(renameMe('Samurai'));
 
 console.log(store.getState());
 
