@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@gitobi/react-blank-component": "^1.0.2",
+    "amazon-cognito-identity-js": "^1.21.0",
     "eslint": "^4.9.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -12,6 +13,7 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13",
     "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.74.2"
   },
