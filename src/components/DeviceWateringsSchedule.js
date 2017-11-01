@@ -101,11 +101,6 @@ class DeviceWateringsSchedule extends React.Component {
           formatter: new Formatter("time"),
           callback: this.update,
         })
-        // cell: {
-        //   type: EditableTable.INPUT,
-        //   formatter: new Formatter("time"),
-        //   callback: this.update,
-        // }
       }, {
         Header: 'Stop at',
         accessor: 'stop_at',
