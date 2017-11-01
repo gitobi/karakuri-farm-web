@@ -18,7 +18,6 @@ class DeviceWateringsSchedule extends React.Component {
     };
 
     this.update = this.update.bind(this);
-    this.debug = this.debug.bind(this);
     this.load = this.load.bind(this);
     this.save = this.save.bind(this);
     this.add = this.add.bind(this);
