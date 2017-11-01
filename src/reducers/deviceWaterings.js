@@ -52,6 +52,8 @@ const deviceWaterings = (state = initialDeviceWaterings, action) => {
 
     case types.SAVE_DEVICE_WATERING_SCHEDULES:
       // TODO schedulesをpost/putする
+      data = Object.assign({}, state);
+      _logger.info('save ... ', data);
       return data;
 
     case types.ADD_DEVICE_WATERING_SCHEDULE:
@@ -86,7 +88,9 @@ const deviceWaterings = (state = initialDeviceWaterings, action) => {
       data.deviceWateringsSchedules.some((row, index) => {
         if (row.id === action.id) {
           data.deviceWateringsSchedules.splice(index, 1);
+          return true;
         }
+        return false;
       });
 
       return data;
@@ -99,7 +103,6 @@ const deviceWaterings = (state = initialDeviceWaterings, action) => {
       );
 
       var index = GtbUtils.find(data.deviceWateringsSchedules, 'id', action.id);
-      _logger.info(data, action, index);
       data.deviceWateringsSchedules[index][action.column] = action.value;
 
       return data;

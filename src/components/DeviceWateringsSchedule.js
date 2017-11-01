@@ -11,12 +11,9 @@ import * as Actions from '../actions';
 class DeviceWateringsSchedule extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'Schedule'});
+    this.logger = new Logger({prefix: 'DeviceWateringsSchedule'});
     this.state = {
-      text: "none",
-      schedules: [],
       saveButtonDisabled: true,
-      changedSchedules: {},
       loading: false,
     };
 
@@ -29,18 +26,15 @@ class DeviceWateringsSchedule extends React.Component {
   }
 
   update(event, data, row, args) {
-    var propsa = this.props.deviceWateringsSchedules;
-    // this.props.onUpdateFromEditer(row.row.id, row.index, row.column.id, data.value);
     this.props.actions.updateDeviceWateringSchedule(row.row.id, row.column.id, data.value);
-    this.logger.info('updated',
-      'event', event,
-      'data', data,
-      'row', row,
-      'args', args,
-      'props', this.props,
-      'state', this.state);
-    // this.logger.info('props', this.props);
-    // this.logger.info('state', this.state);
+
+    // this.logger.info('updated',
+    //   'event', event,
+    //   'data', data,
+    //   'row', row,
+    //   'args', args,
+    //   'props', this.props,
+    //   'state', this.state);
 
 
     // this.props.deviceWateringsSchedules[0].amount = 'aaa';
@@ -58,14 +52,6 @@ class DeviceWateringsSchedule extends React.Component {
     // 初回ページ表示時のロード
     // this.logger.log('componentWillMount', this.props, this.state);
     this.load();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // props.deviceIdが更新された場合のロード
-    this.logger.log('componentWillReceiveProps', this.props, nextProps);
-    // if (this.props.deviceId !== nextProps.deviceId) {
-    //   this.load(nextProps.deviceId);
-    // }
   }
 
   load(deviceId) {
@@ -90,8 +76,8 @@ class DeviceWateringsSchedule extends React.Component {
     this.props.actions.addDeviceWateringSchedule();
   }
 
-  remove() {
-    this.props.actions.removeDeviceWateringSchedule();
+  remove(event, data, row, args) {
+    this.props.actions.removeDeviceWateringSchedule(row.row.id);
   }
 
   render() {
