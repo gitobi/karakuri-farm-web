@@ -6,7 +6,7 @@ import Formatter from '../js/Formatter'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions';
+import * as Actions from '../actions/deviceWatering';
 
 class DeviceWateringsSchedule extends React.Component {
   constructor(props) {
@@ -152,8 +152,8 @@ class DeviceWateringsSchedule extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    selectedDeviceWateringsId: state.deviceWaterings.selectedDeviceWateringsId,
-    deviceWateringsSchedules: state.deviceWaterings.deviceWateringsSchedules,
+    selectedDeviceWateringsId: state.deviceWatering.selectedId,
+    deviceWateringsSchedules: state.deviceWatering.schedules,
   };
 }
 

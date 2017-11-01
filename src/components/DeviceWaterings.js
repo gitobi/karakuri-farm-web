@@ -5,7 +5,7 @@ import DeviceWateringsTab from './DeviceWateringsTab'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions';
+import * as Actions from '../actions/deviceWatering';
 
 class DeviceWaterings extends Component {
   constructor(props) {
@@ -55,8 +55,8 @@ class DeviceWaterings extends Component {
 
 function mapStateToProps(state) {
   return  {
-    deviceWaterings: state.deviceWaterings.deviceWaterings,
-    selectedDeviceWateringsId: state.deviceWaterings.selectedDeviceWateringsId,
+    deviceWaterings: state.deviceWatering.list,
+    selectedDeviceWateringsId: state.deviceWatering.selectedId,
   };
 }
 

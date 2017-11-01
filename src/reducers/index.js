@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
 import me from './me'
-import deviceWaterings from './deviceWaterings'
+import deviceWatering from './deviceWatering'
 
 const karakuriFarmApp = combineReducers({
-  me, deviceWaterings,
+  me,
+  deviceWatering,
 });
 
 export default karakuriFarmApp;

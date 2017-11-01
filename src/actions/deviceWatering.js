@@ -1,38 +1,38 @@
-import * as types from '../constants/ActionTypes';
+import {DeviceWatering} from '../constants/deviceWatering';
 
 export function loadDeviceWaterings() {
-  return { type: types.LOAD_DEVICE_WATERINGS };
+  return { type: DeviceWatering.LOAD };
 };
 
 export function selectDeviceWaterings(id) {
   return {
-    type: types.SELECT_DEVICE_WATERINGS,
+    type: DeviceWatering.SELECT,
     id: id
   };
 };
 
 export function loadDeviceWateringSchedules() {
-  return { type: types.LOAD_DEVICE_WATERING_SCHEDULES };
+  return { type: DeviceWatering.LOAD_SCHEDULES };
 };
 
 export function saveDeviceWateringSchedules() {
-  return { type: types.SAVE_DEVICE_WATERING_SCHEDULES };
+  return { type: DeviceWatering.SAVE_SCHEDULES };
 };
 
 export function addDeviceWateringSchedule() {
-  return { type: types.ADD_DEVICE_WATERING_SCHEDULE };
+  return { type: DeviceWatering.ADD_SCHEDULE };
 };
 
 export function removeDeviceWateringSchedule(id) {
   return {
-    type: types.REMOVE_DEVICE_WATERING_SCHEDULE,
+    type: DeviceWatering.REMOVE_SCHEDULE,
     id: id,
   };
 };
 
 export function updateDeviceWateringSchedule(id, column, value) {
   return {
-    type: types.UPDATE_DEVICE_WATERING_SCHEDULE,
+    type: DeviceWatering.UPDATE_SCHEDULE,
     id: id,
     column: column,
     value: value,
