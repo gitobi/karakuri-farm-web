@@ -1,11 +1,14 @@
 import React from 'react'
 import { Button } from 'semantic-ui-react';
 import EditableTable from './common/EditableTable'
-import Logger from './js/Logger'
-import GtbUtils from './js/GtbUtils'
-import Formatter from './js/Formatter'
+import Logger from '../js/Logger'
+import Formatter from '../js/Formatter'
 
-export default class DeviceWateringsSchedule extends React.Component {
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
+
+class DeviceWateringsSchedule extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'Schedule'});
@@ -17,16 +20,30 @@ export default class DeviceWateringsSchedule extends React.Component {
       loading: false,
     };
 
-    this.tmpCallback = this.tmpCallback.bind(this);
+    this.update = this.update.bind(this);
     this.debug = this.debug.bind(this);
     this.load = this.load.bind(this);
     this.save = this.save.bind(this);
     this.add = this.add.bind(this);
+    this.remove = this.remove.bind(this);
   }
 
-  tmpCallback(event, data, row, args) {
+  update(event, data, row, args) {
+    var propsa = this.props.deviceWateringsSchedules;
     // this.props.onUpdateFromEditer(row.row.id, row.index, row.column.id, data.value);
-    this.logger.info(event, data, row, args);
+    this.props.actions.updateDeviceWateringSchedule(row.row.id, row.column.id, data.value);
+    this.logger.info('updated',
+      'event', event,
+      'data', data,
+      'row', row,
+      'args', args,
+      'props', this.props,
+      'state', this.state);
+    // this.logger.info('props', this.props);
+    // this.logger.info('state', this.state);
+
+
+    // this.props.deviceWateringsSchedules[0].amount = 'aaa';
 
     // TODO 変更された値を フォーマッティングしつつ this.state.schedules にツッコミ、
     // かつ、変更点をBastetに送れるように何とかする
@@ -45,64 +62,37 @@ export default class DeviceWateringsSchedule extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // props.deviceIdが更新された場合のロード
-    // this.logger.log('componentWillReceiveProps', this.props, nextProps);
-    if (this.props.deviceId !== nextProps.deviceId) {
-      this.load(nextProps.deviceId);
-    }
+    this.logger.log('componentWillReceiveProps', this.props, nextProps);
+    // if (this.props.deviceId !== nextProps.deviceId) {
+    //   this.load(nextProps.deviceId);
+    // }
   }
 
   load(deviceId) {
     // TODO データのload
-
-    if (!deviceId) {
-      deviceId = this.props.deviceId;
-    }
-
     this.setState({loading: true});
-    var list = this.state.schedules;
-    list.splice(0, list.length);
-    if (0 === list.length) {
-      list.push({
-        id: deviceId + "1",
-        name: deviceId + " schedule 1",
-        start_at: "07:00:00",
-        stop_at: "07:00:0" + deviceId,
-        amount: "100",
-      });
-      list.push({
-        id: deviceId + "2",
-        name: deviceId + " schedule 2",
-        start_at: "08:00:00",
-        stop_at: "08:00:0" + deviceId,
-        amount: "200",
-      });
-      this.setState({schedules: list});
-    }
+    this.props.actions.loadDeviceWateringSchedules();
     this.setState({loading: false});
   }
 
   save() {
     // TODO データのセーブ
     this.setState({loading: true});
+    this.props.actions.saveDeviceWateringSchedules();
     this.setState({saveButtonDisabled: true});
     this.setState({loading: false});
-    this.setState({changedSchedules: {}});
   }
 
   add() {
-    // 一時IDを発行する
-    var tmpId = GtbUtils.getTmpId(this.state.schedules.map((row) => {return row.id}));
-
-    // 行を作成して追加
-    var list = this.state.schedules;
-    var row = {
-      id: tmpId,
-      device_id: this.props.deviceId,
-    }
-    list.push(row);
+    this.logger.info('props', this.props);
+    this.logger.info('state', this.state);
     this.setState({saveButtonDisabled: false});
+    this.props.actions.addDeviceWateringSchedule();
   }
 
+  remove() {
+    this.props.actions.removeDeviceWateringSchedule();
+  }
 
   render() {
     // this.logger.log('render', this.props.deviceId);
@@ -116,35 +106,40 @@ export default class DeviceWateringsSchedule extends React.Component {
         accessor: 'name',
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("none"),
-          callback: this.tmpCallback,
+          callback: this.update,
         })
       }, {
         Header: 'Start at',
         accessor: 'start_at',
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("time"),
-          callback: this.tmpCallback,
-         })
+          callback: this.update,
+        })
+        // cell: {
+        //   type: EditableTable.INPUT,
+        //   formatter: new Formatter("time"),
+        //   callback: this.update,
+        // }
       }, {
         Header: 'Stop at',
         accessor: 'stop_at',
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("time"),
-          callback: this.tmpCallback,
+          callback: this.update,
         })
       }, {
         Header: 'Amount',
         accessor: 'amount',
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("decimal"),
-          callback: this.tmpCallback,
+          callback: this.update,
         })
       }, {
         Header: '-',
         accessor: 'remove',
         Cell: EditableTable.createButtonCell({
           icon: "remove",
-          callback: this.tmpCallback,
+          callback: this.remove,
         })
     }];
 
@@ -158,7 +153,7 @@ export default class DeviceWateringsSchedule extends React.Component {
               <Button as='a' onClick={this.add} loading={this.state.loading} disabled={this.state.loading}>Add</Button>
 
               <EditableTable
-                data={this.state.schedules}
+                data={this.props.deviceWateringsSchedules}
                 columns={columns}
               />
 
@@ -168,3 +163,19 @@ export default class DeviceWateringsSchedule extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return  {
+    selectedDeviceWateringsId: state.deviceWaterings.selectedDeviceWateringsId,
+    deviceWateringsSchedules: state.deviceWaterings.deviceWateringsSchedules,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(Actions, dispatch) };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DeviceWateringsSchedule);

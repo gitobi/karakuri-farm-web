@@ -1,58 +1,33 @@
 import React, { Component } from 'react';
 import { Grid, Menu } from 'semantic-ui-react';
-import Logger from './js/Logger'
+import Logger from '../js/Logger'
 import DeviceWateringsTab from './DeviceWateringsTab'
 
-export default class DeviceWaterings extends Component {
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
+
+class DeviceWaterings extends Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'DeviceWaterings'});
-    this.state = {
-      list: [],
-      activeDeviceId: '',
-    };
-
     this.onChangeDevice = this.onChangeDevice.bind(this);
     this.load = this.load.bind(this);
   }
 
   componentWillMount() {
-    this.logger.info('conponentWillMount');
+    this.logger.info('conponentWillMount', "props", this.props);
     this.load();
   }
 
-
   load() {
-    var list = this.state.list
-    if (0 === list.length) {
-      list.push({
-        key: "1",
-        id: 1,
-        name: "device 1",
-      });
-      list.push({
-        key: "2",
-        id: 2,
-        name: "device 2",
-      });
-      this.logger.info(list);
-      // this.setState({list: list});
-      this.onChangeDevice(list[0]["id"]);
-    }
+    this.props.actions.loadDeviceWaterings();
   }
 
   onChangeDevice(id) {
     // TODO 保存がされてない場合は変更時に警告する
-
-    // アクティブの変更
-    const list = this.state.list;
-    list.forEach((object) => {
-      object["active"] = object.id === id;
-    });
-    this.setState({activeDeviceId: id});
-    // this.setState({list: list});
+    this.props.actions.selectDeviceWaterings(id);
   }
-
 
   render() {
     return (
@@ -63,17 +38,33 @@ export default class DeviceWaterings extends Component {
             vertical
             secondary
             pointing
-            items={this.state.list}
+            items={this.props.deviceWaterings}
             onItemClick={(event, data) => {this.onChangeDevice(data.id);}}
             />
 
         </Grid.Column>
         <Grid.Column stretched width={13}>
           <DeviceWateringsTab
-            deviceId = {this.state.activeDeviceId}
+            deviceId = {this.props.selectedDeviceWateringsId}
             />
         </Grid.Column>
       </Grid>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return  {
+    deviceWaterings: state.deviceWaterings.deviceWaterings,
+    selectedDeviceWateringsId: state.deviceWaterings.selectedDeviceWateringsId,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(Actions, dispatch) };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DeviceWaterings);
