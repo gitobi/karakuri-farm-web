@@ -16,23 +16,24 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
   let data = {};
   switch (action.type) {
     case DeviceWatering.LOAD:
+      // デバイス情報の取得
       data = Object.assign({}, state);
 
       // wateringsをgetする
       _load(data);
 
-      // 存在する場合は先頭要素を選択状態とする
       if (0 === data.list.length) {
         data.selectedId = ''
       } else {
+        // データが存在する場合は先頭要素を選択状態とする
         data.selectedId = data.list[0].id;
       }
       _select(data);
 
-      // console.log(state, action, data);
       return data;
 
     case DeviceWatering.SELECT:
+      // デバイスの選択
       data = Object.assign({}, state);
 
       // 指定された要素を選択状態にする
@@ -44,6 +45,7 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
       return data;
 
     case DeviceWatering.LOAD_SCHEDULES:
+      // スケジュールのロード
       data = Object.assign({}, state);
 
       // schedulesをgetする
@@ -51,6 +53,7 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
       return data;
 
     case DeviceWatering.SAVE_SCHEDULES:
+      // スケジュールのセーブ
       // TODO schedulesをpost/putする
       data = Object.assign({}, state);
       _logger.info('save ... ', data);

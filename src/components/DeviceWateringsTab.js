@@ -18,10 +18,12 @@ export default class DeviceWateringsTab extends Component {
   }
 
   onTabClick(key) {
+    // タブ変更
     this.setState({activeTab: key});
   }
 
   createTabHeader(key, content) {
+    // タブヘッダの作成
     return(
       <a className={"item " + (this.state.activeTab === key ? "active" : "")}
         data-tab={key}
@@ -33,6 +35,7 @@ export default class DeviceWateringsTab extends Component {
   }
 
   createTabContent(key, content) {
+    // タブコンテンツの作成
     return (
       <div className={"ui bottom attached tab segment " + (this.state.activeTab === key ? "active" : "")}
         data-tab={key}

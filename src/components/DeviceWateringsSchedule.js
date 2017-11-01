@@ -25,7 +25,14 @@ class DeviceWateringsSchedule extends React.Component {
     this.remove = this.remove.bind(this);
   }
 
+  componentWillMount() {
+    // マウント時にスケジュール情報をロードする
+    // this.logger.log('componentWillMount', this.props, this.state);
+    this.load();
+  }
+
   update(event, data, row, args) {
+    // セル入力時の処理
     this.props.actions.updateDeviceWateringSchedule(row.row.id, row.column.id, data.value);
 
     // this.logger.info('updated',
@@ -44,25 +51,15 @@ class DeviceWateringsSchedule extends React.Component {
     // 後、削除ボタンを押されたときにいい感じに削除する
   }
 
-  debug() {
-    this.logger.info(this.state.columns);
-  }
-
-  componentWillMount() {
-    // 初回ページ表示時のロード
-    // this.logger.log('componentWillMount', this.props, this.state);
-    this.load();
-  }
-
   load(deviceId) {
-    // TODO データのload
+    // ロードボタンクリック時の処理
     this.setState({loading: true});
     this.props.actions.loadDeviceWateringSchedules();
     this.setState({loading: false});
   }
 
   save() {
-    // TODO データのセーブ
+    // セーブボタンクリック時の処理
     this.setState({loading: true});
     this.props.actions.saveDeviceWateringSchedules();
     this.setState({saveButtonDisabled: true});
@@ -70,6 +67,7 @@ class DeviceWateringsSchedule extends React.Component {
   }
 
   add() {
+    // スケジュール追加ボタンクリック時の処理
     this.logger.info('props', this.props);
     this.logger.info('state', this.state);
     this.setState({saveButtonDisabled: false});
@@ -77,12 +75,14 @@ class DeviceWateringsSchedule extends React.Component {
   }
 
   remove(event, data, row, args) {
+    // スケジュール削除ボタンクリック時の処理
     this.props.actions.removeDeviceWateringSchedule(row.row.id);
   }
 
   render() {
     // this.logger.log('render', this.props.deviceId);
 
+    // テーブルのカラムレイアウト
     const columns = [{
         Header: 'ID',
         accessor: 'id',

@@ -16,15 +16,18 @@ class DeviceWaterings extends Component {
   }
 
   componentWillMount() {
+    // マウント時にデバイス情報をロードする
     this.logger.info('conponentWillMount', "props", this.props);
     this.load();
   }
 
   load() {
+    // デバイス情報をロード
     this.props.actions.loadDeviceWaterings();
   }
 
   onChangeDevice(id) {
+    // デバイスを選択状態にする
     // TODO 保存がされてない場合は変更時に警告する
     this.props.actions.selectDeviceWaterings(id);
   }
