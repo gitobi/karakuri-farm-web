@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Logger from './js/Logger'
+import Logger from '../js/Logger'
 import DeviceWateringsSchedule from './DeviceWateringsSchedule'
 
 export default class DeviceWateringsTab extends Component {

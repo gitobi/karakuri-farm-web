@@ -6,7 +6,7 @@ import './Home.css';
 import { Image, Menu, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
-import Logger from './js/Logger';
+import Logger from '../js/Logger';
 
 class Menubar extends Component {
   constructor(props) {

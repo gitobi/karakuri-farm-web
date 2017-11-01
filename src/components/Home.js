@@ -4,7 +4,7 @@ import { Segment } from 'semantic-ui-react';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import Logger from './js/Logger';
+import Logger from '../js/Logger';
 import Menubar from './MenuBar';
 import BlankComponent from '@gitobi/react-blank-component';
 import DeviceWaterings from './DeviceWaterings';
