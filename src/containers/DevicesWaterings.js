@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Grid, Menu } from 'semantic-ui-react';
-import Logger from '../../js/Logger'
-import DevicesWateringTab from '../DevicesWateringTab'
+import Logger from '../js/Logger'
+import DevicesWateringTab from '../components/DevicesWateringTab'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../../actions/devicesWatering';
+import * as Actions from '../actions/devicesWatering';
 
 class DevicesWaterings extends Component {
   constructor(props) {

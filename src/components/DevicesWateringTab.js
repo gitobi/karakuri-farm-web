@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger'
-import DevicesWateringSchedules from './containers/DevicesWateringSchedules'
+import DevicesWateringSchedules from '../containers/DevicesWateringSchedules'
 
 export default class DevicesWateringTab extends Component {
   constructor(props) {

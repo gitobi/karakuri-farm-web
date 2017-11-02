@@ -1,12 +1,12 @@
 import React from 'react'
 import { Button } from 'semantic-ui-react';
-import EditableTable from '../common/EditableTable'
-import Logger from '../../js/Logger'
-import Formatter from '../../js/Formatter'
+import EditableTable from '../components/common/EditableTable'
+import Logger from '../js/Logger'
+import Formatter from '../js/Formatter'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../../actions/devicesWatering';
+import * as Actions from '../actions/devicesWatering';
 
 class DevicesWateringSchedules extends React.Component {
   constructor(props) {
