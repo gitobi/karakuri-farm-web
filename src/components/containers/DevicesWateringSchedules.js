@@ -1,17 +1,17 @@
 import React from 'react'
 import { Button } from 'semantic-ui-react';
-import EditableTable from './common/EditableTable'
-import Logger from '../js/Logger'
-import Formatter from '../js/Formatter'
+import EditableTable from '../common/EditableTable'
+import Logger from '../../js/Logger'
+import Formatter from '../../js/Formatter'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions/deviceWatering';
+import * as Actions from '../../actions/devicesWatering';
 
-class DeviceWateringsSchedule extends React.Component {
+class DevicesWateringSchedules extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DeviceWateringsSchedule'});
+    this.logger = new Logger({prefix: 'DevicesWateringsSchedules'});
     this.state = {
       saveButtonDisabled: true,
       loading: false,
@@ -32,7 +32,7 @@ class DeviceWateringsSchedule extends React.Component {
 
   update(event, data, row, args) {
     // セル入力時の処理
-    this.props.actions.updateDeviceWateringSchedule(row.row.id, row.column.id, data.value);
+    this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
 
     // this.logger.info('updated',
     //   'event', event,
@@ -53,14 +53,14 @@ class DeviceWateringsSchedule extends React.Component {
   load(deviceId) {
     // ロードボタンクリック時の処理
     this.setState({loading: true});
-    this.props.actions.loadDeviceWateringSchedules();
+    this.props.actions.loadDevicesWateringSchedules();
     this.setState({loading: false});
   }
 
   save() {
     // セーブボタンクリック時の処理
     this.setState({loading: true});
-    this.props.actions.saveDeviceWateringSchedules();
+    this.props.actions.saveDevicesWateringSchedules();
     this.setState({saveButtonDisabled: true});
     this.setState({loading: false});
   }
@@ -70,12 +70,12 @@ class DeviceWateringsSchedule extends React.Component {
     this.logger.info('props', this.props);
     this.logger.info('state', this.state);
     this.setState({saveButtonDisabled: false});
-    this.props.actions.addDeviceWateringSchedule();
+    this.props.actions.addDevicesWateringSchedule();
   }
 
   remove(event, data, row, args) {
     // スケジュール削除ボタンクリック時の処理
-    this.props.actions.removeDeviceWateringSchedule(row.row.id);
+    this.props.actions.removeDevicesWateringSchedule(row.row.id);
   }
 
   render() {
@@ -133,7 +133,7 @@ class DeviceWateringsSchedule extends React.Component {
               <Button as='a' onClick={this.add} loading={this.state.loading} disabled={this.state.loading}>Add</Button>
 
               <EditableTable
-                data={this.props.deviceWateringsSchedules}
+                data={this.props.devicesWateringSchedules}
                 columns={columns}
               />
 
@@ -146,8 +146,8 @@ class DeviceWateringsSchedule extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    selectedDeviceWateringsId: state.deviceWatering.selectedId,
-    deviceWateringsSchedules: state.deviceWatering.schedules,
+    selectedDevicesWateringId: state.devicesWatering.selectedId,
+    devicesWateringSchedules: state.devicesWatering.schedules,
   };
 }
 
@@ -158,4 +158,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DeviceWateringsSchedule);
+)(DevicesWateringSchedules);

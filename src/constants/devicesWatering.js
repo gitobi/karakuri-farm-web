@@ -1,4 +1,4 @@
-export const DeviceWatering = {
+export const DevicesWatering = {
   LOAD: '@KF/LOAD',
   SELECT: '@KF/SELECT',
   LOAD_SCHEDULES: '@KF/LOAD_SCHEDULES',

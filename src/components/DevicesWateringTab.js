@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger'
-import DeviceWateringsSchedule from './DeviceWateringsSchedule'
+import DevicesWateringSchedules from './containers/DevicesWateringSchedules'
 
-export default class DeviceWateringsTab extends Component {
+export default class DevicesWateringTab extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       deviceId: '',
-      activeTab: 'scheduleSettings',
+      activeTab: 'settingSchedules',
     };
 
-    this.logger = new Logger({prefix: 'DeviceWateringsTab'});
+    this.logger = new Logger({prefix: 'DevicesWateringTab'});
     this.createTabHeader = this.createTabHeader.bind(this);
     this.createTabContent = this.createTabContent.bind(this);
     this.onTabClick = this.onTabClick.bind(this);
@@ -49,14 +49,14 @@ export default class DeviceWateringsTab extends Component {
     return (
       <div>
         <div className="ui top attached tabular menu">
-          {this.createTabHeader("basicSettings", "基本設定")}
-          {this.createTabHeader("scheduleSettings", "スケジュール")}
+          {this.createTabHeader("settingBasic", "基本設定")}
+          {this.createTabHeader("settingSchedules", "スケジュール")}
         </div>
-        {this.createTabContent("basicSettings",
+        {this.createTabContent("settingBasic",
           "基本設定"
         )}
-        {this.createTabContent("scheduleSettings",
-          <DeviceWateringsSchedule
+        {this.createTabContent("settingSchedules",
+          <DevicesWateringSchedules
             deviceId={this.props.deviceId}
             ref='table'
            />

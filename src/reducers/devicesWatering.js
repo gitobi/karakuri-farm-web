@@ -1,10 +1,10 @@
-import { DeviceWatering } from '../constants/deviceWatering';
+import { DevicesWatering } from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
 import Logger from '../js/Logger'
 
-const _logger = new Logger({prefix: 'deviceWatering'});
+const _logger = new Logger({prefix: 'devicesWatering'});
 
-const initialDeviceWatering = {
+const initialDevicesWatering = {
   'list': [],
   'schedules': [],
   'selectedId': '',
@@ -12,10 +12,10 @@ const initialDeviceWatering = {
   'changed': {},
 };
 
-const deviceWatering = (state = initialDeviceWatering, action) => {
+const deviceWatering = (state = initialDevicesWatering, action) => {
   let data = {};
   switch (action.type) {
-    case DeviceWatering.LOAD:
+    case DevicesWatering.LOAD:
       // デバイス情報の取得
       data = Object.assign({}, state);
 
@@ -32,7 +32,7 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
 
       return data;
 
-    case DeviceWatering.SELECT:
+    case DevicesWatering.SELECT:
       // デバイスの選択
       data = Object.assign({}, state);
 
@@ -44,7 +44,7 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
       _loadSchedules(data);
       return data;
 
-    case DeviceWatering.LOAD_SCHEDULES:
+    case DevicesWatering.LOAD_SCHEDULES:
       // スケジュールのロード
       data = Object.assign({}, state);
 
@@ -52,14 +52,14 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
       _loadSchedules(data);
       return data;
 
-    case DeviceWatering.SAVE_SCHEDULES:
+    case DevicesWatering.SAVE_SCHEDULES:
       // スケジュールのセーブ
       // TODO schedulesをpost/putする
       data = Object.assign({}, state);
       _logger.info('save ... ', data);
       return data;
 
-    case DeviceWatering.ADD_SCHEDULE:
+    case DevicesWatering.ADD_SCHEDULE:
       // スケジュールを追加する
       data = Object.assign({},
         state,
@@ -81,7 +81,7 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
 
       return data;
 
-    case DeviceWatering.REMOVE_SCHEDULE:
+    case DevicesWatering.REMOVE_SCHEDULE:
       // スケジュールを削除する
       data = Object.assign({},
         state,
@@ -98,7 +98,7 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
 
       return data;
 
-    case DeviceWatering.UPDATE_SCHEDULE:
+    case DevicesWatering.UPDATE_SCHEDULE:
       // スケジュールを更新する
       data = Object.assign({},
         state,
@@ -116,7 +116,7 @@ const deviceWatering = (state = initialDeviceWatering, action) => {
 }
 
 /**
- * get DeviceWaterings
+ * get DevicesWaterings
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
@@ -148,7 +148,7 @@ const _select = (data) => {
 }
 
 /**
- * get DeviceWateringSchedules
+ * get DevicesWateringSchedules
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */

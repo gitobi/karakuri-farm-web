@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { Grid, Menu } from 'semantic-ui-react';
-import Logger from '../js/Logger'
-import DeviceWateringsTab from './DeviceWateringsTab'
+import Logger from '../../js/Logger'
+import DevicesWateringTab from '../DevicesWateringTab'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions/deviceWatering';
+import * as Actions from '../../actions/devicesWatering';
 
-class DeviceWaterings extends Component {
+class DevicesWaterings extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DeviceWaterings'});
+    this.logger = new Logger({prefix: 'DevicesWaterings'});
     this.onChangeDevice = this.onChangeDevice.bind(this);
     this.load = this.load.bind(this);
   }
@@ -23,13 +23,13 @@ class DeviceWaterings extends Component {
 
   load() {
     // デバイス情報をロード
-    this.props.actions.loadDeviceWaterings();
+    this.props.actions.loadDevicesWaterings();
   }
 
   onChangeDevice(id) {
     // デバイスを選択状態にする
     // TODO 保存がされてない場合は変更時に警告する
-    this.props.actions.selectDeviceWaterings(id);
+    this.props.actions.selectDevicesWatering(id);
   }
 
   render() {
@@ -41,14 +41,14 @@ class DeviceWaterings extends Component {
             vertical
             secondary
             pointing
-            items={this.props.deviceWaterings}
+            items={this.props.devicesWaterings}
             onItemClick={(event, data) => {this.onChangeDevice(data.id);}}
             />
 
         </Grid.Column>
         <Grid.Column stretched width={13}>
-          <DeviceWateringsTab
-            deviceId = {this.props.selectedDeviceWateringsId}
+          <DevicesWateringTab
+            deviceId = {this.props.selectedDevicesWateringId}
             />
         </Grid.Column>
       </Grid>
@@ -58,8 +58,8 @@ class DeviceWaterings extends Component {
 
 function mapStateToProps(state) {
   return  {
-    deviceWaterings: state.deviceWatering.list,
-    selectedDeviceWateringsId: state.deviceWatering.selectedId,
+    devicesWaterings: state.devicesWatering.list,
+    selectedDevicesWateringId: state.devicesWatering.selectedId,
   };
 }
 
@@ -70,4 +70,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DeviceWaterings);
+)(DevicesWaterings);
