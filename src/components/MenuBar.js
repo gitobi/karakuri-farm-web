@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import icon from '../images/logo.svg';
 import gitobi_logo from '../images/gitobi.png';
 import './Logo.css';
-import './Home.css';
+import './App.css';
 import { Image, Menu, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
@@ -46,7 +46,7 @@ class Menubar extends Component {
 
         {/* sidebar content */}
         <Menu.Item as="a" header>
-          <Image src={icon} verticalAlign="middle" className="Home-logo" />
+          <Image src={icon} verticalAlign="middle" className="App-logo" />
           <span>Karakuri Farm</span>
         </Menu.Item>
 

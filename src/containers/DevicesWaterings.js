@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import AppLayout from '../layouts/AppLayout';
 import { Grid, Menu } from 'semantic-ui-react';
-import Logger from '../js/Logger'
-import DevicesWateringTab from '../components/DevicesWateringTab'
+import Logger from '../js/Logger';
+import DevicesWateringTab from '../components/DevicesWateringTab';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -34,24 +35,26 @@ class DevicesWaterings extends Component {
 
   render() {
     return (
-      <Grid columns={2}>
-        <Grid.Column width={3}>
-          <Menu
-            fluid
-            vertical
-            secondary
-            pointing
-            items={this.props.devicesWaterings}
-            onItemClick={(event, data) => {this.onChangeDevice(data.id);}}
-            />
+      <AppLayout>
+        <Grid columns={2}>
+          <Grid.Column width={3}>
+            <Menu
+              fluid
+              vertical
+              secondary
+              pointing
+              items={this.props.devicesWaterings}
+              onItemClick={(event, data) => {this.onChangeDevice(data.id);}}
+              />
 
-        </Grid.Column>
-        <Grid.Column stretched width={13}>
-          <DevicesWateringTab
-            deviceId = {this.props.selectedDevicesWateringId}
-            />
-        </Grid.Column>
-      </Grid>
+          </Grid.Column>
+          <Grid.Column stretched width={13}>
+            <DevicesWateringTab
+              deviceId = {this.props.selectedDevicesWateringId}
+              />
+          </Grid.Column>
+        </Grid>
+      </AppLayout>
     );
   }
 }
