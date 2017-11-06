@@ -13,14 +13,27 @@ const initialDevicesWatering = {
 };
 
 const deviceWatering = (state = initialDevicesWatering, action) => {
+  _logger.info('state :', state);
+  _logger.info('action :', action);
   let data = {};
   switch (action.type) {
-    case DevicesWatering.LOAD:
-      // デバイス情報の取得
-      data = Object.assign({}, state);
+    case DevicesWatering.LOAD_REQUEST:
+      // デバイス情報の取得開始
+      return state;
 
-      // wateringsをgetする
-      _load(data);
+    case DevicesWatering.LOAD_SUCCESS:
+      // デバイス情報の取得完了
+      data = Object.assign({}, state);
+      data.list.splice(0, data.list.length);
+
+      let list = action.list.map((value) => {
+          return {
+            key: value["key"],
+            id: value["id"],
+            name: value["name"],
+          };
+        });
+      data.list.push(...list)
 
       if (0 === data.list.length) {
         data.selectedId = ''
@@ -31,6 +44,9 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       _select(data);
 
       return data;
+
+    case DevicesWatering.LOAD_FAILURE:
+      return state;
 
     case DevicesWatering.SELECT:
       // デバイスの選択
@@ -113,26 +129,6 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     default:
       return state;
   }
-}
-
-/**
- * get DevicesWaterings
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
- */
-const _load = (data) => {
-  var list = data.list;
-  list.splice(0, list.length);
-  list.push({
-    key: "1",
-    id: 1,
-    name: "device 1",
-  });
-  list.push({
-    key: "2",
-    id: 2,
-    name: "device 2",
-  });
 }
 
 /**
