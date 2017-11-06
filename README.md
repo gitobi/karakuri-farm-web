@@ -13,6 +13,15 @@
 1. `docker-compose up web`
 1. Visit http://localhost:3000/
 
+## Components
+
+- index.js
+    - Application entrypoint.
+- containers/AppRoute.js
+    - Application route component.
+- layouts
+    - Application layout component.
+
 # Development
 
 ## Prepare Environment

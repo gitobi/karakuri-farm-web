@@ -1,10 +1,9 @@
-
-.Home-logo {
-  animation: Home-logo-spin infinite 20s linear;
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
   height: 36px;
 }
 
-@keyframes Home-logo-spin {
+@keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
