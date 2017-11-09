@@ -23,7 +23,10 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.LOAD_SUCCESS:
       // デバイス情報の取得完了
-      data = Object.assign({}, state);
+      data = Object.assign({},
+        state,
+        {list: [...state.list]},
+      );
       data.list.splice(0, data.list.length);
 
       let list = action.list.map((value) => {
@@ -35,38 +38,44 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
         });
       data.list.push(...list)
 
-      if (0 === data.list.length) {
-        data.selectedId = ''
-      } else {
-        // データが存在する場合は先頭要素を選択状態とする
-        data.selectedId = data.list[0].id;
-      }
-      _select(data);
-
       return data;
 
     case DevicesWatering.LOAD_FAILURE:
+      // デバイス情報の取得失敗
       return state;
 
     case DevicesWatering.SELECT:
       // デバイスの選択
-      data = Object.assign({}, state);
+      data = Object.assign({},
+        state,
+        {list: [...state.list]},
+      );
 
       // 指定された要素を選択状態にする
       data.selectedId = action.id;
-      _select(data);
-
-      // scheduleをgetする
-      _loadSchedules(data);
+      data.list.forEach((object) => {
+        // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
+        object["active"] = object.id === data.selectedId;
+      });
       return data;
 
-    case DevicesWatering.LOAD_SCHEDULES:
-      // スケジュールのロード
-      data = Object.assign({}, state);
+    case DevicesWatering.LOAD_SCHEDULES_REQUEST:
+      // スケジュール情報の取得開始
+      return state;
 
-      // schedulesをgetする
-      _loadSchedules(data);
+    case DevicesWatering.LOAD_SCHEDULES_SUCCESS:
+      // スケジュール情報の取得完了
+      data = Object.assign({},
+        state,
+        {schedules: [...state.schedules]},
+      );
+      data.schedules.splice(0, data.schedules.length);
+      data.schedules.push(...action.schedules)
       return data;
+
+    case DevicesWatering.LOAD_SCHEDULES_FAILURE:
+      // スケジュール情報の取得失敗
+      return state;
 
     case DevicesWatering.SAVE_SCHEDULES:
       // スケジュールのセーブ
@@ -129,43 +138,6 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     default:
       return state;
   }
-}
-
-/**
- * listにactive項目を付与する
- * TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
- */
-const _select = (data) => {
-  data.list.forEach((object) => {
-    object["active"] = object.id === data.selectedId;
-  });
-}
-
-/**
- * get DevicesWateringSchedules
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
- */
-const _loadSchedules = (data) => {
-  var id = data.selectedId;
-  var schedules = data.schedules;
-  schedules.splice(0, schedules.length);
-  schedules.push({
-    id: id + "1",
-    name: id + " schedules 1",
-    start_at: "07:00:00",
-    stop_at: "07:00:0" + id,
-    amount: "100",
-  });
-  schedules.push({
-    id: id + "2",
-    name: id + " schedules 2",
-    start_at: "08:00:00",
-    stop_at: "08:00:0" + id,
-    amount: "200",
-  });
 }
 
 export default deviceWatering;

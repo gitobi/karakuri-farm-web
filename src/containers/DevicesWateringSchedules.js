@@ -24,12 +24,6 @@ class DevicesWateringSchedules extends React.Component {
     this.remove = this.remove.bind(this);
   }
 
-  componentWillMount() {
-    // マウント時にスケジュール情報をロードする
-    // this.logger.log('componentWillMount', this.props, this.state);
-    this.load();
-  }
-
   update(event, data, row, args) {
     // セル入力時の処理
     this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
@@ -42,7 +36,6 @@ class DevicesWateringSchedules extends React.Component {
     //   'props', this.props,
     //   'state', this.state);
 
-
     // this.props.deviceWateringsSchedules[0].amount = 'aaa';
 
     // TODO 変更された値を フォーマッティングしつつ this.state.schedules にツッコミ、
@@ -50,10 +43,10 @@ class DevicesWateringSchedules extends React.Component {
     // 後、削除ボタンを押されたときにいい感じに削除する
   }
 
-  load(deviceId) {
+  load() {
     // ロードボタンクリック時の処理
     this.setState({loading: true});
-    this.props.actions.loadDevicesWateringSchedules();
+    this.props.actions.loadDevicesWateringSchedules(this.props.selectedDevicesWateringId);
     this.setState({loading: false});
   }
 
@@ -128,7 +121,7 @@ class DevicesWateringSchedules extends React.Component {
           <div className="item ui header">
             {/* <Button as='a' onClick={this.debug} >Debug</Button> */}
             <Button as='a' onClick={this.save} loading={this.state.loading} disabled={this.state.loading || this.state.saveButtonDisabled}>Save</Button>
-            <Button as='a' onClick={(event, data) => {this.load()}} loading={this.state.loading} disabled={this.state.loading}>Reload</Button>
+            <Button as='a' onClick={this.load} loading={this.state.loading} disabled={this.state.loading}>Reload</Button>
             <div className='ui piled segment'>
               <Button as='a' onClick={this.add} loading={this.state.loading} disabled={this.state.loading}>Add</Button>
 
