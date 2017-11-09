@@ -77,12 +77,20 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       // スケジュール情報の取得失敗
       return state;
 
-    case DevicesWatering.SAVE_SCHEDULES:
-      // スケジュールのセーブ
+    case DevicesWatering.SAVE_SCHEDULES_REQUEST:
+      // スケジュール情報の保存開始
+      return state;
+
+    case DevicesWatering.SAVE_SCHEDULES_SUCCESS:
+      // スケジュール情報の保存完了
       // TODO schedulesをpost/putする
       data = Object.assign({}, state);
       _logger.info('save ... ', data);
       return data;
+
+    case DevicesWatering.SAVE_SCHEDULES_FAILURE:
+      // スケジュール情報の保存失敗
+      return state;
 
     case DevicesWatering.ADD_SCHEDULE:
       // スケジュールを追加する
