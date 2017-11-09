@@ -139,8 +139,8 @@ class DevicesWateringSchedules extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    selectedDevicesWateringId: state.devicesWatering.selectedId,
-    devicesWateringSchedules: state.devicesWatering.schedules,
+    selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
+    devicesWateringSchedules: state.devicesWatering.get('schedules').toJS(),
   };
 }
 

@@ -1,19 +1,20 @@
+import { List, Map, fromJS } from 'immutable';
 import { DevicesWatering } from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
 import Logger from '../js/Logger'
 
 const _logger = new Logger({prefix: 'devicesWatering'});
 
-const initialDevicesWatering = {
-  'list': [],
-  'schedules': [],
+const initialDevicesWatering = Map({
+  'list': List([]),
+  'schedules': List([]),
   'selectedId': '',
 
   'changed': {},
-};
+});
 
 const deviceWatering = (state = initialDevicesWatering, action) => {
-  _logger.info('state :', state);
+  _logger.info('state :', state.toJS());
   _logger.info('action :', action);
   let data = {};
   switch (action.type) {
@@ -23,22 +24,16 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.LOAD_SUCCESS:
       // デバイス情報の取得完了
-      data = Object.assign({},
-        state,
-        {list: [...state.list]},
-      );
-      data.list.splice(0, data.list.length);
-
       let list = action.list.map((value) => {
           return {
             key: value["key"],
             id: value["id"],
             name: value["name"],
+            active: false,
           };
         });
-      data.list.push(...list)
 
-      return data;
+      return state.set('list', fromJS(list));
 
     case DevicesWatering.LOAD_FAILURE:
       // デバイス情報の取得失敗
@@ -46,18 +41,17 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.SELECT:
       // デバイスの選択
-      data = Object.assign({},
-        state,
-        {list: [...state.list]},
-      );
 
       // 指定された要素を選択状態にする
-      data.selectedId = action.id;
-      data.list.forEach((object) => {
-        // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
-        object["active"] = object.id === data.selectedId;
+      // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
+
+      return state.withMutations(map => { map
+        .set('selectedId', action.id)
+        .update('list', list => list.map(
+          // 選択されたidであればtrue、それ以外はfalseに更新する
+          object => object.set('active', object.get('id') === action.id))
+        )
       });
-      return data;
 
     case DevicesWatering.LOAD_SCHEDULES_REQUEST:
       // スケジュール情報の取得開始
@@ -65,13 +59,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.LOAD_SCHEDULES_SUCCESS:
       // スケジュール情報の取得完了
-      data = Object.assign({},
-        state,
-        {schedules: [...state.schedules]},
-      );
-      data.schedules.splice(0, data.schedules.length);
-      data.schedules.push(...action.schedules)
-      return data;
+      return state.set('schedules', fromJS(action.schedules));
 
     case DevicesWatering.LOAD_SCHEDULES_FAILURE:
       // スケジュール情報の取得失敗
@@ -85,15 +73,11 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       return data;
 
     case DevicesWatering.ADD_SCHEDULE:
-      // スケジュールを追加する
-      data = Object.assign({},
-        state,
-        {schedules: [...state.schedules]},
-      );
+      // スケジュールを追加
 
       // 一時IDを発行する
       var tmpId = GtbUtils.getTmpId(
-        data.schedules.map((row) => {
+        state.get('schedules').toJS().map((row) => {
           return row.id
         }));
 
@@ -102,38 +86,20 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
         id: tmpId,
         device_id: data.selectedId,
       }
-      data.schedules.push(row);
 
-      return data;
-
-    case DevicesWatering.REMOVE_SCHEDULE:
-      // スケジュールを削除する
-      data = Object.assign({},
-        state,
-        {schedules: [...state.schedules]},
-      );
-
-      data.schedules.some((row, index) => {
-        if (row.id === action.id) {
-          data.schedules.splice(index, 1);
-          return true;
-        }
-        return false;
+      return state.update('schedules', schedules => {
+        return schedules.push(row)
       });
 
-      return data;
+    case DevicesWatering.REMOVE_SCHEDULE:
+      // スケジュールを削除
+      var removeIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
+      return state.deleteIn(['schedules', removeIndex]);
 
     case DevicesWatering.UPDATE_SCHEDULE:
-      // スケジュールを更新する
-      data = Object.assign({},
-        state,
-        {schedules: [...state.schedules]},
-      );
-
-      var index = GtbUtils.find(data.schedules, 'id', action.id);
-      data.schedules[index][action.column] = action.value;
-
-      return data;
+      // スケジュールを変更
+      var updateIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
+      return state.setIn(['schedules', updateIndex, action.column], action.value);
 
     default:
       return state;
