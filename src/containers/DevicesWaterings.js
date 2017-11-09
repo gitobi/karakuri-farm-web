@@ -30,7 +30,7 @@ class DevicesWaterings extends Component {
   onChangeDevice(id) {
     // デバイスを選択状態にする
     // TODO 保存がされてない場合は変更時に警告する
-    this.props.actions.selectDevicesWatering(id);
+    this.props.actions.selectDevicesWatering(id, this.props.selectedDevicesWateringId);
   }
 
   render() {
