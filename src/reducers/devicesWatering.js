@@ -10,7 +10,7 @@ const initialDevicesWatering = Map({
   'schedules': List([]),
   'selectedId': '',
 
-  'changed': {},
+  'changed': Map({}),
 });
 
 const deviceWatering = (state = initialDevicesWatering, action) => {
@@ -33,7 +33,11 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
           };
         });
 
-      return state.set('list', fromJS(list));
+      return state
+        .set('list', fromJS(list))
+        .set('schedules', List([]))
+        .set('changed', Map({}))
+        ;
 
     case DevicesWatering.LOAD_FAILURE:
       // デバイス情報の取得失敗
@@ -59,7 +63,10 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.LOAD_SCHEDULES_SUCCESS:
       // スケジュール情報の取得完了
-      return state.set('schedules', fromJS(action.schedules));
+      return state
+        .set('schedules', fromJS(action.schedules))
+        .set('changed', Map({}))
+        ;
 
     case DevicesWatering.LOAD_SCHEDULES_FAILURE:
       // スケジュール情報の取得失敗
@@ -90,24 +97,34 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
         }));
 
       // 行を作成して追加
-      var row = {
+      var row = Map({
         id: tmpId,
-        device_id: data.selectedId,
-      }
+        device_id: state.get('selectedId'),
+      })
 
-      return state.update('schedules', schedules => {
-        return schedules.push(row)
+      return state.withMutations(map => { map
+        .update('schedules', schedules => {
+          return schedules.push(row);
+        }).update('changed', changed => {
+          return changed.set(row.get('id'), row);
+        });
       });
 
     case DevicesWatering.REMOVE_SCHEDULE:
       // スケジュールを削除
       var removeIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
-      return state.deleteIn(['schedules', removeIndex]);
+      return state
+        .deleteIn(['schedules', removeIndex])
+        .deleteIn(['changed', action.id])
+        ;
 
     case DevicesWatering.UPDATE_SCHEDULE:
       // スケジュールを変更
       var updateIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
-      return state.setIn(['schedules', updateIndex, action.column], action.value);
+      return state
+        .setIn(['schedules', updateIndex, action.column], action.value)
+        .setIn(['changed', action.id, action.column], action.value)
+        ;
 
     default:
       return state;
