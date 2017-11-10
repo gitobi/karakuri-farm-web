@@ -18,11 +18,9 @@ export default class GtbUtils {
   }
 
   static find(array, column, value) {
-    var a = array.find((element, index, array) => {
+    return array.find((element, index, array) => {
       return element[column].toString() === value.toString();
     });
-    console.log('find', array, column, value, a);
-    return a;
   }
 
   static findIndex(array, column, value) {

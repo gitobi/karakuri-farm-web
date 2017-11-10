@@ -75,9 +75,9 @@ export function saveDevicesWateringSchedules(schedules, changed) {
 
       // console.log('changed', changed);
       // console.log('schedules', schedules);
-      console.log('change', change);
-      console.log('schedule', schedule);
-      console.log('params', params);
+      // console.log('change', change);
+      // console.log('schedule', schedule);
+      // console.log('params', params);
 
       var promise = null;
       if ('create' === params._state) {
@@ -162,12 +162,6 @@ export function updateDevicesWateringSchedule(id, column, value) {
     column: column,
     value: value,
   };
-};
-
-export function postDevicesWateringSchedule(schedule, changed) {
-};
-
-export function putDevicesWateringSchedule(schedule, changed) {
 };
 
 /**
