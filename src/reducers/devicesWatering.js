@@ -16,7 +16,7 @@ const initialDevicesWatering = Map({
 const deviceWatering = (state = initialDevicesWatering, action) => {
   _logger.info('state :', state.toJS());
   _logger.info('action :', action);
-  let data = {};
+
   switch (action.type) {
     case DevicesWatering.LOAD_REQUEST:
       // デバイス情報の取得開始
@@ -78,12 +78,52 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.SAVE_SCHEDULES_SUCCESS:
       // スケジュール情報の保存完了
-      // TODO schedulesをpost/putする
-      data = Object.assign({}, state);
-      _logger.info('save ... ', data);
-      return data;
+      return state.set('changed', Map({}));
 
     case DevicesWatering.SAVE_SCHEDULES_FAILURE:
+      // スケジュール情報の保存失敗
+      return state;
+
+    case DevicesWatering.POST_SCHEDULES_REQUEST:
+      // スケジュール情報の保存開始
+      return state;
+
+    case DevicesWatering.POST_SCHEDULES_SUCCESS:
+      // スケジュール情報の保存完了
+      // TODO postした結果払い出されたIDを設定する
+      // const list = this.state.schedules;
+      // const index = GtbUtils.findIndex(list, 'id', value.id);
+      // this.logger.info(data, value, index, list)
+      // list[index]['id'] = data.data.schedule.id;
+      // this.setState({schedules: list});
+      // return;
+      return state;
+
+    case DevicesWatering.POST_SCHEDULES_FAILURE:
+      // スケジュール情報の保存失敗
+      return state;
+
+    case DevicesWatering.PUT_SCHEDULES_REQUEST:
+      // スケジュール情報の保存開始
+      return state;
+
+    case DevicesWatering.PUT_SCHEDULES_SUCCESS:
+      // スケジュール情報の保存完了
+      return state;
+
+    case DevicesWatering.PUT_SCHEDULES_FAILURE:
+      // スケジュール情報の保存失敗
+      return state;
+
+    case DevicesWatering.DELETE_SCHEDULES_REQUEST:
+      // スケジュール情報の保存開始
+      return state;
+
+    case DevicesWatering.DELETE_SCHEDULES_SUCCESS:
+      // スケジュール情報の保存完了
+      return state;
+
+    case DevicesWatering.DELETE_SCHEDULES_FAILURE:
       // スケジュール情報の保存失敗
       return state;
 
@@ -100,6 +140,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       var row = Map({
         id: tmpId,
         device_id: state.get('selectedId'),
+        _state: 'create',
       })
 
       return state.withMutations(map => { map
@@ -112,25 +153,40 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.REMOVE_SCHEDULE:
       // スケジュールを削除
-      var removeIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
-      return state.withMutations(map => { map
-        .deleteIn(['schedules', removeIndex])
-        .deleteIn(['changed', action.id])
-        ;
+      var removeIndex = GtbUtils.findIndex(state.get('schedules').toJS(), 'id', action.id);
+      return state.withMutations(map => {
+        if (map.hasIn(['changed', action.id])) {
+          // 未保存のデータの場合は削除
+          map.deleteIn(['changed', action.id]);
+        } else {
+          // 保存済のデータの場合は追加
+          map.setIn(['changed', action.id], map.getIn(['schedules', removeIndex]))
+            .setIn(['changed', action.id, '_state'], 'delete')
+        }
+        map.deleteIn(['schedules', removeIndex]);
       });
 
     case DevicesWatering.UPDATE_SCHEDULE:
       // スケジュールを変更
-      var updateIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
+      var updateIndex = GtbUtils.findIndex(state.get('schedules').toJS(), 'id', action.id);
+
+      // 変更点のみ保持するタイプ
       return state.withMutations(map => { map
-        .setIn(['schedules', updateIndex, action.column], action.value);
-        if (!map.get('changed').has(action.id)) {
-          // 対象行初回変更時はマップごとコピーする
-          map.setIn(['changed', action.id], state.getIn(['schedules', updateIndex]));
-        }
-        map.setIn(['changed', action.id, action.column], action.value);
+        .setIn(['schedules', updateIndex, action.column], action.value)
+        .setIn(['changed', action.id, action.column], action.value)
         ;
       });
+
+      // // 変更対象スケジュールObjectをまるごと保持するタイプ
+      // return state.withMutations(map => { map
+      //   .setIn(['schedules', updateIndex, action.column], action.value);
+      //   if (!map.get('changed').has(action.id)) {
+      //     // 対象行初回変更時はマップごとコピーする
+      //     map.setIn(['changed', action.id], state.getIn(['schedules', updateIndex]));
+      //   }
+      //   map.setIn(['changed', action.id, action.column], action.value);
+      //   ;
+      // });
 
     default:
       return state;
