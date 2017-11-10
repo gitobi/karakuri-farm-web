@@ -113,18 +113,24 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     case DevicesWatering.REMOVE_SCHEDULE:
       // スケジュールを削除
       var removeIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
-      return state
+      return state.withMutations(map => { map
         .deleteIn(['schedules', removeIndex])
         .deleteIn(['changed', action.id])
         ;
+      });
 
     case DevicesWatering.UPDATE_SCHEDULE:
       // スケジュールを変更
       var updateIndex = GtbUtils.find(state.get('schedules').toJS(), 'id', action.id);
-      return state
-        .setIn(['schedules', updateIndex, action.column], action.value)
-        .setIn(['changed', action.id, action.column], action.value)
+      return state.withMutations(map => { map
+        .setIn(['schedules', updateIndex, action.column], action.value);
+        if (!map.get('changed').has(action.id)) {
+          // 対象行初回変更時はマップごとコピーする
+          map.setIn(['changed', action.id], state.getIn(['schedules', updateIndex]));
+        }
+        map.setIn(['changed', action.id, action.column], action.value);
         ;
+      });
 
     default:
       return state;
