@@ -61,8 +61,8 @@ class DevicesWaterings extends Component {
 
 function mapStateToProps(state) {
   return  {
-    devicesWaterings: state.devicesWatering.list,
-    selectedDevicesWateringId: state.devicesWatering.selectedId,
+    devicesWaterings: state.devicesWatering.get('list').toJS(),
+    selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
   };
 }
 
