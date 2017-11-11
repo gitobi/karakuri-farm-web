@@ -1,4 +1,6 @@
+import { Map } from 'immutable';
 import {DevicesWatering} from '../constants/devicesWatering';
+import GtbUtils from '../js/GtbUtils'
 import Bastet from '../js/Bastet'
 
 export function loadDevicesWaterings() {
@@ -58,8 +60,88 @@ export function loadDevicesWateringSchedules(deviceId) {
   }
 };
 
-export function saveDevicesWateringSchedules() {
-  return { type: DevicesWatering.SAVE_SCHEDULES };
+export function saveDevicesWateringSchedules(schedules, changed) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.SAVE_SCHEDULES_REQUEST });
+    let bastet = new Bastet();
+
+    var promises = [];
+    Object.keys(changed).forEach((key) => {
+      var change = changed[key];
+      var schedule = GtbUtils.find(schedules, 'id', key);
+      var params = Map(schedule)
+        .merge(Map(change))
+        .toJS();
+
+      // console.log('changed', changed);
+      // console.log('schedules', schedules);
+      // console.log('change', change);
+      // console.log('schedule', schedule);
+      // console.log('params', params);
+
+      var promise = null;
+      if ('create' === params._state) {
+        // 新規
+        dispatch({ type: DevicesWatering.POST_SCHEDULES_REQUEST });
+        promise = bastet.createWateringsSchedule(params.device_id, params).then(
+          result => {
+            dispatch({
+              type: DevicesWatering.POST_SCHEDULES_SUCCESS,
+              change: change,
+              schedule: schedule,
+              params: params,
+              result: result.data.schedules,
+            });
+          },
+          error => {
+            dispatch({ type: DevicesWatering.POST_SCHEDULES_FAILURE });
+          }
+        );
+
+      } else if ('delete' === params._state) {
+        // 削除
+        dispatch({ type: DevicesWatering.DELETE_SCHEDULES_REQUEST });
+        promise = bastet.deleteWateringsSchedule(params.device_id, params.id).then(
+          result => {
+            dispatch({
+              type: DevicesWatering.DELETE_SCHEDULES_SUCCESS,
+              change: change,
+              schedule: schedule,
+              params: params,
+              result: result.data.schedules,
+            });
+          },
+          error => {
+            dispatch({ type: DevicesWatering.DELETE_SCHEDULES_FAILURE });
+          }
+        );
+
+      } else {
+        // 更新
+        dispatch({ type: DevicesWatering.PUT_SCHEDULES_REQUEST });
+        promise = bastet.updateWateringsSchedule(params.device_id, params.id, params).then(
+          result => {
+            dispatch({
+              type: DevicesWatering.PUT_SCHEDULES_SUCCESS,
+              change: change,
+              schedule: schedule,
+              params: params,
+              result: result.data.schedules,
+            });
+          },
+          error => {
+            dispatch({ type: DevicesWatering.PUT_SCHEDULES_FAILURE });
+          }
+        );
+      }
+      promises.push(promise);
+    });
+
+    return Promise.all(promises).then(
+      result => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_SUCCESS }),
+      error => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_FAILURE })
+    );
+  }
 };
 
 export function addDevicesWateringSchedule() {

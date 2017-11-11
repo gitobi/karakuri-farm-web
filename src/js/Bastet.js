@@ -68,7 +68,7 @@ export default class Bastet {
     return this.callApi(this.put, url, {schedule: data});
   }
 
-  removeWateringsSchedule(device_id, schedule_id) {
+  deleteWateringsSchedule(device_id, schedule_id) {
     var url = this.host + '/devices/waterings/' + device_id + '/schedules/' + schedule_id;
     return this.callApi(this.delete, url);
   }

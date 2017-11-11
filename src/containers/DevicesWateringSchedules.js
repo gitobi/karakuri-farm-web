@@ -27,6 +27,7 @@ class DevicesWateringSchedules extends React.Component {
   update(event, data, row, args) {
     // セル入力時の処理
     this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
+    this.setState({saveButtonDisabled: false});
 
     // this.logger.info('updated',
     //   'event', event,
@@ -48,12 +49,15 @@ class DevicesWateringSchedules extends React.Component {
     this.setState({loading: true});
     this.props.actions.loadDevicesWateringSchedules(this.props.selectedDevicesWateringId);
     this.setState({loading: false});
+    this.setState({saveButtonDisabled: true});
   }
 
   save() {
     // セーブボタンクリック時の処理
     this.setState({loading: true});
-    this.props.actions.saveDevicesWateringSchedules();
+    this.props.actions.saveDevicesWateringSchedules(
+      this.props.devicesWateringSchedules,
+      this.props.devicesWateringSchedulesChanged);
     this.setState({saveButtonDisabled: true});
     this.setState({loading: false});
   }
@@ -69,6 +73,7 @@ class DevicesWateringSchedules extends React.Component {
   remove(event, data, row, args) {
     // スケジュール削除ボタンクリック時の処理
     this.props.actions.removeDevicesWateringSchedule(row.row.id);
+    this.setState({saveButtonDisabled: false});
   }
 
   render() {
@@ -141,6 +146,7 @@ function mapStateToProps(state) {
   return  {
     selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
     devicesWateringSchedules: state.devicesWatering.get('schedules').toJS(),
+    devicesWateringSchedulesChanged: state.devicesWatering.get('changed').toJS(),
   };
 }
 

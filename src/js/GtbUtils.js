@@ -18,8 +18,14 @@ export default class GtbUtils {
   }
 
   static find(array, column, value) {
+    return array.find((element, index, array) => {
+      return element[column].toString() === value.toString();
+    });
+  }
+
+  static findIndex(array, column, value) {
     return array.findIndex((element, index, array) => {
-      return element[column] === value;
+      return element[column].toString() === value.toString();
     });
   }
 
