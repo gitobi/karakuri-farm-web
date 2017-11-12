@@ -139,7 +139,7 @@ export function saveDevicesWateringSchedules(schedules, changed) {
 
     return Promise.all(promises).then(
       result => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_SUCCESS }),
-      error => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_FAILURE })
+      error => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_FAILURE, error: error })
     );
   }
 };

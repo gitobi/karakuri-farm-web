@@ -78,53 +78,57 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.SAVE_SCHEDULES_SUCCESS:
       // スケジュール情報の保存完了
-      return state.set('changed', Map({}));
+      return state;
 
     case DevicesWatering.SAVE_SCHEDULES_FAILURE:
       // スケジュール情報の保存失敗
+      console.log(action.error);
       return state;
 
     case DevicesWatering.POST_SCHEDULES_REQUEST:
-      // スケジュール情報の保存開始
+      // スケジュール情報のpost開始
       return state;
 
     case DevicesWatering.POST_SCHEDULES_SUCCESS:
-      // スケジュール情報の保存完了
-      // TODO postした結果払い出されたIDを設定する
-      // const list = this.state.schedules;
-      // const index = GtbUtils.findIndex(list, 'id', value.id);
-      // this.logger.info(data, value, index, list)
-      // list[index]['id'] = data.data.schedule.id;
-      // this.setState({schedules: list});
-      // return;
-      return state;
+      // スケジュール情報のpost完了
+
+      // postした結果払い出されたIDを設定する
+      // 変更が完了した情報を削除する
+      var postedIndex = GtbUtils.findIndex(state.get('schedules').toJS(), 'id', action.params.id);
+      return state.withMutations(map => { map
+        .setIn(['schedules', postedIndex, 'id'], action.result.id)
+        .deleteIn(['changed', action.params.id])
+        ;
+      });
 
     case DevicesWatering.POST_SCHEDULES_FAILURE:
-      // スケジュール情報の保存失敗
+      // スケジュール情報のpost失敗
       return state;
 
     case DevicesWatering.PUT_SCHEDULES_REQUEST:
-      // スケジュール情報の保存開始
+      // スケジュール情報のput開始
       return state;
 
     case DevicesWatering.PUT_SCHEDULES_SUCCESS:
-      // スケジュール情報の保存完了
-      return state;
+      // スケジュール情報のput完了
+      // 変更が完了した情報を削除する
+      return state.deleteIn(['changed', action.params.id]);
 
     case DevicesWatering.PUT_SCHEDULES_FAILURE:
-      // スケジュール情報の保存失敗
+      // スケジュール情報のput失敗
       return state;
 
     case DevicesWatering.DELETE_SCHEDULES_REQUEST:
-      // スケジュール情報の保存開始
+      // スケジュール情報のdelete開始
       return state;
 
     case DevicesWatering.DELETE_SCHEDULES_SUCCESS:
-      // スケジュール情報の保存完了
-      return state;
+      // スケジュール情報のdelete完了
+      // 変更が完了した情報を削除する
+      return state.deleteIn(['changed', action.params.id]);
 
     case DevicesWatering.DELETE_SCHEDULES_FAILURE:
-      // スケジュール情報の保存失敗
+      // スケジュール情報のdelete失敗
       return state;
 
     case DevicesWatering.ADD_SCHEDULE:
