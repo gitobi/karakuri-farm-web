@@ -1,12 +1,12 @@
 export default class GtbUtils {
-  static dateString() {
-    var d = new Date();
+  static dateString(date=null) {
+    var d = (null === date) ? new Date() : date;
     var year  = d.getFullYear();
-    var month = d.getMonth() + 1;
-    var day   = d.getDate();
-    var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-    var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-    var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
+    var month = ( d.getMonth() + 1 < 10 ) ? '0' + (d.getMonth() + 1) : d.getMonth() + 1;
+    var day   = ( d.getDate()      < 10 ) ? '0' + d.getDate()        : d.getDate();
+    var hour  = ( d.getHours()     < 10 ) ? '0' + d.getHours()       : d.getHours();
+    var min   = ( d.getMinutes()   < 10 ) ? '0' + d.getMinutes()     : d.getMinutes();
+    var sec   = ( d.getSeconds()   < 10 ) ? '0' + d.getSeconds()     : d.getSeconds();
     return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec
   }
 
@@ -30,20 +30,31 @@ export default class GtbUtils {
   }
 
   /// 一時ID系
-  static tmpIdPrefix = 'a';
+  static tmpIdDigits = '4';
+  static tmpIdSuffix = 'a';
+
+  static zeroPadding(num, length){
+      return ('0000000000' + num).slice(-length);
+  }
 
   static isTmpId(id) {
-    return id.toString().startsWith(this.tmpIdPrefix);
+    return id.toString().endsWith(this.tmpIdSuffix);
+  }
+
+  static createTmpId(number) {
+    return this.zeroPadding(number, this.tmpIdDigits) + this.tmpIdSuffix;
   }
 
   static getTmpId(array) {
     var index = 0;
+    var tmpId;
     while (true) {
-      if (!array.includes(this.tmpIdPrefix + index)) {
+      tmpId = this.createTmpId(index);
+      if (!array.includes(tmpId)) {
         break;
       }
       index++;
     }
-    return this.tmpIdPrefix + index;
+    return tmpId;
   }
 }

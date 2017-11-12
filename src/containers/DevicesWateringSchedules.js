@@ -72,6 +72,7 @@ class DevicesWateringSchedules extends React.Component {
     const columns = [{
         Header: 'ID',
         accessor: 'id',
+        width: 120,
         Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Name',
@@ -83,6 +84,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Start at',
         accessor: 'start_at',
+        width: 120,
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("time"),
           callback: this.update,
@@ -90,6 +92,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Stop at',
         accessor: 'stop_at',
+        width: 120,
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("time"),
           callback: this.update,
@@ -97,6 +100,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Amount',
         accessor: 'amount',
+        width: 120,
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("decimal"),
           callback: this.update,
@@ -104,6 +108,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: '-',
         accessor: 'remove',
+        width: 64,
         Cell: EditableTable.createButtonCell({
           icon: "remove",
           callback: this.remove,
@@ -115,17 +120,17 @@ class DevicesWateringSchedules extends React.Component {
         <div className="item ui header">
           <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
           <Button as='a' onClick={this.load} loading={this.props.progress} disabled={this.props.progress}>Reload</Button>
-          <div className='ui piled segment'>
-            <Button as='a' onClick={this.add} loading={this.props.progress} disabled={this.props.progress}>Add</Button>
-
-            <EditableTable
-              data={this.props.devicesWateringSchedules}
-              columns={columns}
-              loading={this.props.progress}
-            />
-
-          </div>
         </div>
+
+        <Button as='a' onClick={this.add} loading={this.props.progress} disabled={this.props.progress}>Add</Button>
+
+        <EditableTable
+          data={this.props.devicesWateringSchedules}
+          columns={columns}
+          loading={this.props.progress}
+          sortable={false}
+        />
+
       </div>
     );
   }
