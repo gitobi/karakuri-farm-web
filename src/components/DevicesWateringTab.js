@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger'
 import DevicesWateringSchedules from '../containers/DevicesWateringSchedules'
+import DevicesWateringOperationalRecords from '../containers/DevicesWateringOperationalRecords'
 
 export default class DevicesWateringTab extends Component {
   constructor(props) {
@@ -51,6 +52,7 @@ export default class DevicesWateringTab extends Component {
         <div className="ui top attached tabular menu">
           {this.createTabHeader("settingBasic", "基本設定")}
           {this.createTabHeader("settingSchedules", "スケジュール")}
+          {this.createTabHeader("operationalRecords", "灌水実績")}
         </div>
         {this.createTabContent("settingBasic",
           "基本設定"
@@ -59,6 +61,11 @@ export default class DevicesWateringTab extends Component {
           <DevicesWateringSchedules
             deviceId={this.props.deviceId}
             ref='table'
+           />
+        )}
+        {this.createTabContent("operationalRecords",
+          <DevicesWateringOperationalRecords
+            deviceId={this.props.deviceId}
            />
         )}
       </div>
