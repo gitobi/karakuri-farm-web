@@ -58,18 +58,18 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
-  createWateringsSchedule(device_id, data) {
-    var url = this.host + '/devices/waterings/' + device_id + '/schedules/';
+  createWateringsSchedule(deviceId, data) {
+    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/';
     return this.callApi(this.post, url, {schedule: data});
   }
 
-  updateWateringsSchedule(device_id, schedule_id, data) {
-    var url = this.host + '/devices/waterings/' + device_id + '/schedules/' + schedule_id;
+  updateWateringsSchedule(deviceId, data) {
+    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/' + data.id;
     return this.callApi(this.put, url, {schedule: data});
   }
 
-  deleteWateringsSchedule(device_id, schedule_id) {
-    var url = this.host + '/devices/waterings/' + device_id + '/schedules/' + schedule_id;
+  deleteWateringsSchedule(deviceId, data) {
+    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/' + data.id;
     return this.callApi(this.delete, url);
   }
 
