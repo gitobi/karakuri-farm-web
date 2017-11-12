@@ -5,8 +5,7 @@ export default class Bastet {
 
   constructor() {
     this.logger = new Logger({prefix: 'Bastet'});
-    this.host = 'http://localhost:4000';
-    // this.host = 'http://bastet-production.herokuapp.com';
+    this.host = process.env.REACT_APP_BASTET_HOST_URL;
   }
 
   getDevices(id=null) {
