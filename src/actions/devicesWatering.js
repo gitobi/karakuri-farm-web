@@ -90,7 +90,7 @@ export function saveDevicesWateringSchedules(schedules, changed) {
               change: change,
               schedule: schedule,
               params: params,
-              result: result.data.schedules,
+              result: result.data.schedule,
             });
           },
           error => {
@@ -108,7 +108,7 @@ export function saveDevicesWateringSchedules(schedules, changed) {
               change: change,
               schedule: schedule,
               params: params,
-              result: result.data.schedules,
+              result: result.data.schedule,
             });
           },
           error => {
@@ -126,7 +126,7 @@ export function saveDevicesWateringSchedules(schedules, changed) {
               change: change,
               schedule: schedule,
               params: params,
-              result: result.data.schedules,
+              result: result.data.schedule,
             });
           },
           error => {
