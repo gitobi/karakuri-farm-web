@@ -181,17 +181,6 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
         ;
       });
 
-      // // 変更対象スケジュールObjectをまるごと保持するタイプ
-      // return state.withMutations(map => { map
-      //   .setIn(['schedules', updateIndex, action.column], action.value);
-      //   if (!map.get('changed').has(action.id)) {
-      //     // 対象行初回変更時はマップごとコピーする
-      //     map.setIn(['changed', action.id], state.getIn(['schedules', updateIndex]));
-      //   }
-      //   map.setIn(['changed', action.id, action.column], action.value);
-      //   ;
-      // });
-
     default:
       return state;
   }
