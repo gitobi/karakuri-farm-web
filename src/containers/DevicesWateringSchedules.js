@@ -12,16 +12,13 @@ class DevicesWateringSchedules extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'DevicesWateringsSchedules'});
-    this.state = {
-      saveButtonDisabled: true,
-      loading: false,
-    };
 
     this.update = this.update.bind(this);
     this.load = this.load.bind(this);
     this.save = this.save.bind(this);
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
+    this.isDisableSaveButton = this.isDisableSaveButton.bind(this);
   }
 
   update(event, data, row, args) {
@@ -35,45 +32,37 @@ class DevicesWateringSchedules extends React.Component {
     //   'row', row,
     //   'args', args,
     //   'props', this.props,
-    //   'state', this.state);
 
     // this.props.deviceWateringsSchedules[0].amount = 'aaa';
 
-    // TODO 変更された値を フォーマッティングしつつ this.state.schedules にツッコミ、
-    // かつ、変更点をBastetに送れるように何とかする
-    // 後、削除ボタンを押されたときにいい感じに削除する
+    // TODO 変更された値を フォーマッティング
   }
 
   load() {
     // ロードボタンクリック時の処理
-    this.setState({loading: true});
     this.props.actions.loadDevicesWateringSchedules(this.props.selectedDevicesWateringId);
-    this.setState({loading: false});
-    this.setState({saveButtonDisabled: true});
   }
 
   save() {
     // セーブボタンクリック時の処理
-    this.setState({loading: true});
     this.props.actions.saveDevicesWateringSchedules(
       this.props.devicesWateringSchedules,
       this.props.devicesWateringSchedulesChanged);
-    this.setState({saveButtonDisabled: true});
-    this.setState({loading: false});
   }
 
   add() {
     // スケジュール追加ボタンクリック時の処理
-    this.logger.info('props', this.props);
-    this.logger.info('state', this.state);
-    this.setState({saveButtonDisabled: false});
     this.props.actions.addDevicesWateringSchedule();
   }
 
   remove(event, data, row, args) {
     // スケジュール削除ボタンクリック時の処理
     this.props.actions.removeDevicesWateringSchedule(row.row.id);
-    this.setState({saveButtonDisabled: false});
+  }
+
+  isDisableSaveButton() {
+    // 変更されたデータがあるか判定
+    return (0 === Object.keys(this.props.devicesWateringSchedulesChanged).length);
   }
 
   render() {
@@ -124,15 +113,15 @@ class DevicesWateringSchedules extends React.Component {
     return (
         <div className="ui container">
           <div className="item ui header">
-            {/* <Button as='a' onClick={this.debug} >Debug</Button> */}
-            <Button as='a' onClick={this.save} loading={this.state.loading} disabled={this.state.loading || this.state.saveButtonDisabled}>Save</Button>
-            <Button as='a' onClick={this.load} loading={this.state.loading} disabled={this.state.loading}>Reload</Button>
+            <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
+            <Button as='a' onClick={this.load} loading={this.props.progress} disabled={this.props.progress}>Reload</Button>
             <div className='ui piled segment'>
-              <Button as='a' onClick={this.add} loading={this.state.loading} disabled={this.state.loading}>Add</Button>
+              <Button as='a' onClick={this.add} loading={this.props.progress} disabled={this.props.progress}>Add</Button>
 
               <EditableTable
                 data={this.props.devicesWateringSchedules}
                 columns={columns}
+                loading={this.props.progress}
               />
 
             </div>
@@ -147,6 +136,7 @@ function mapStateToProps(state) {
     selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
     devicesWateringSchedules: state.devicesWatering.get('schedules').toJS(),
     devicesWateringSchedulesChanged: state.devicesWatering.get('changed').toJS(),
+    progress: state.devicesWatering.get('progress'),
   };
 }
 
