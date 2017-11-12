@@ -97,8 +97,9 @@ export default class EditableTable extends React.Component {
           columns={this.props.columns}
           defaultPageSize={10}
           minRows={2}
-          defaultSorting={[{
-            id: 'Name',
+          sortable={false}
+          defaultSorted={[{
+            id: 'id',
             desc: false
           }]}
       />
