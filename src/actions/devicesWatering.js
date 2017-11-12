@@ -79,67 +79,51 @@ export function saveDevicesWateringSchedules(schedules, changed) {
       // console.log('schedule', schedule);
       // console.log('params', params);
 
-      var promise = null;
-      if ('create' === params._state) {
+      switch (params._state) {
+       case 'create':
         // 新規
-        dispatch({ type: DevicesWatering.POST_SCHEDULES_REQUEST });
-        promise = bastet.createWateringsSchedule(params.device_id, params).then(
-          result => {
-            dispatch({
-              type: DevicesWatering.POST_SCHEDULES_SUCCESS,
-              change: change,
-              schedule: schedule,
-              params: params,
-              result: result.data.schedules,
-            });
-          },
-          error => {
-            dispatch({ type: DevicesWatering.POST_SCHEDULES_FAILURE });
-          }
-        );
+        promises.push(apiDevicesWateringSchedule(
+          dispatch,
+          DevicesWatering.POST_SCHEDULES_REQUEST,
+          DevicesWatering.POST_SCHEDULES_SUCCESS,
+          DevicesWatering.POST_SCHEDULES_FAILURE,
+          bastet,
+          bastet.createWateringsSchedule,
+          params,
+        ));
+        break;
 
-      } else if ('delete' === params._state) {
+      case 'delete':
         // 削除
-        dispatch({ type: DevicesWatering.DELETE_SCHEDULES_REQUEST });
-        promise = bastet.deleteWateringsSchedule(params.device_id, params.id).then(
-          result => {
-            dispatch({
-              type: DevicesWatering.DELETE_SCHEDULES_SUCCESS,
-              change: change,
-              schedule: schedule,
-              params: params,
-              result: result.data.schedules,
-            });
-          },
-          error => {
-            dispatch({ type: DevicesWatering.DELETE_SCHEDULES_FAILURE });
-          }
-        );
+        promises.push(apiDevicesWateringSchedule(
+          dispatch,
+          DevicesWatering.DELETE_SCHEDULES_REQUEST,
+          DevicesWatering.DELETE_SCHEDULES_SUCCESS,
+          DevicesWatering.DELETE_SCHEDULES_FAILURE,
+          bastet,
+          bastet.deleteWateringsSchedule,
+          params,
+        ));
+        break;
 
-      } else {
+      default:
         // 更新
-        dispatch({ type: DevicesWatering.PUT_SCHEDULES_REQUEST });
-        promise = bastet.updateWateringsSchedule(params.device_id, params.id, params).then(
-          result => {
-            dispatch({
-              type: DevicesWatering.PUT_SCHEDULES_SUCCESS,
-              change: change,
-              schedule: schedule,
-              params: params,
-              result: result.data.schedules,
-            });
-          },
-          error => {
-            dispatch({ type: DevicesWatering.PUT_SCHEDULES_FAILURE });
-          }
-        );
+        promises.push(apiDevicesWateringSchedule(
+          dispatch,
+          DevicesWatering.PUT_SCHEDULES_REQUEST,
+          DevicesWatering.PUT_SCHEDULES_SUCCESS,
+          DevicesWatering.PUT_SCHEDULES_FAILURE,
+          bastet,
+          bastet.updateWateringsSchedule,
+          params,
+        ));
+        break
       }
-      promises.push(promise);
     });
 
     return Promise.all(promises).then(
       result => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_SUCCESS }),
-      error => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_FAILURE })
+      error => dispatch({ type: DevicesWatering.SAVE_SCHEDULES_FAILURE, error: error })
     );
   }
 };
@@ -163,6 +147,44 @@ export function updateDevicesWateringSchedule(id, column, value) {
     value: value,
   };
 };
+
+/**
+ * Api For DevicesWateringSchedule Wrapper
+ * @param  {[type]} dispatch          [description]
+ * @param  {[type]} actionTypeRequest [description]
+ * @param  {[type]} actionTypeSuccess [description]
+ * @param  {[type]} actionTypeFailure [description]
+ * @param  {[type]} bastet            [description]
+ * @param  {[type]} bastetApi         [description]
+ * @param  {[type]} params            [description]
+ * @return {[type]}                   [description]
+ */
+const apiDevicesWateringSchedule = (
+  dispatch,
+  actionTypeRequest,
+  actionTypeSuccess,
+  actionTypeFailure,
+  bastet,
+  bastetApi,
+  params
+  ) => {
+  dispatch({ type: actionTypeRequest });
+  return bastetApi.call(bastet, params.device_id, params).then(
+    result => {
+      dispatch({
+        type: actionTypeSuccess,
+        params: params,
+        result: result.data.schedule,
+      });
+    },
+    error => {
+      dispatch({
+        type: actionTypeFailure,
+        error: error,
+      });
+    }
+  );
+}
 
 /**
  * FOR DEBUG
