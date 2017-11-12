@@ -1,4 +1,5 @@
 import React from 'react'
+import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
 
 import { bindActionCreators } from 'redux';
@@ -16,12 +17,39 @@ class DevicesWateringOperationalRecords extends React.Component {
   }
 
   render() {
+
+    // テーブルのカラムレイアウト
+    const columns = [{
+        Header: 'ID',
+        accessor: 'id',
+        Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'Started at',
+        accessor: 'started_at',
+        Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'Ended at',
+        accessor: 'ended_at',
+        Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'Amount',
+        accessor: 'amount',
+        Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'is Manual',
+        accessor: 'is_manual',
+        Cell: EditableTable.createNormalCell()
+    }];
+
     return (
-        <div className="ui container">
-          <div className="item ui header">
-            灌水実績
-          </div>
-        </div>
+      <div className="ui container">
+        <EditableTable
+          data={this.props.devicesWateringOperationalRecords}
+          columns={columns}
+          loading={this.props.progress}
+        />
+
+      </div>
     );
   }
 }

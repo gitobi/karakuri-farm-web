@@ -111,22 +111,22 @@ class DevicesWateringSchedules extends React.Component {
     }];
 
     return (
-        <div className="ui container">
-          <div className="item ui header">
-            <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
-            <Button as='a' onClick={this.load} loading={this.props.progress} disabled={this.props.progress}>Reload</Button>
-            <div className='ui piled segment'>
-              <Button as='a' onClick={this.add} loading={this.props.progress} disabled={this.props.progress}>Add</Button>
+      <div className="ui container">
+        <div className="item ui header">
+          <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
+          <Button as='a' onClick={this.load} loading={this.props.progress} disabled={this.props.progress}>Reload</Button>
+          <div className='ui piled segment'>
+            <Button as='a' onClick={this.add} loading={this.props.progress} disabled={this.props.progress}>Add</Button>
 
-              <EditableTable
-                data={this.props.devicesWateringSchedules}
-                columns={columns}
-                loading={this.props.progress}
-              />
+            <EditableTable
+              data={this.props.devicesWateringSchedules}
+              columns={columns}
+              loading={this.props.progress}
+            />
 
-            </div>
           </div>
         </div>
+      </div>
     );
   }
 }
