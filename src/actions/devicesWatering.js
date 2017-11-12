@@ -157,7 +157,6 @@ export function updateDevicesWateringSchedule(id, column, value) {
  * @param  {[type]} bastet            [description]
  * @param  {[type]} bastetApi         [description]
  * @param  {[type]} params            [description]
- * @param  {[type]}                   [description]
  * @return {[type]}                   [description]
  */
 const apiDevicesWateringSchedule = (
@@ -167,7 +166,7 @@ const apiDevicesWateringSchedule = (
   actionTypeFailure,
   bastet,
   bastetApi,
-  params,
+  params
   ) => {
   dispatch({ type: actionTypeRequest });
   return bastetApi.call(bastet, params.device_id, params).then(
