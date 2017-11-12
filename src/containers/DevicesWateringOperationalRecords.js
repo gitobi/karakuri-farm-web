@@ -1,29 +1,18 @@
 import React from 'react'
 import Logger from '../js/Logger'
-import Bastet from '../js/Bastet'
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as Actions from '../actions/devicesWatering';
 
 class DevicesWateringOperationalRecords extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'DevicesWateringOperationalRecords'});
-
-    this.testCallApi = this.testCallApi.bind(this);
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    if (this.props.deviceId !== nextProps.deviceId) {
-      // deviceId変更時
-      this.logger.info('componentWillReceiveProps', "nextProps", nextProps);
-      this.testCallApi(nextProps.deviceId);
-    }
-  }
-
-  testCallApi(deviceId) {
-    var bastet = new Bastet()
-    bastet.getWateringsOperationalRecords(deviceId).then(
-      result => this.logger.log('result', result)
-      ,error => this.logger.log('error', error)
-    );
+    this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
   }
 
   render() {
@@ -37,4 +26,19 @@ class DevicesWateringOperationalRecords extends React.Component {
   }
 }
 
-export default DevicesWateringOperationalRecords;
+function mapStateToProps(state) {
+  return  {
+    selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
+    devicesWateringOperationalRecords: state.devicesWatering.get('operationalRecords').toJS(),
+    progress: state.devicesWatering.get('progress'),
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(Actions, dispatch) };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DevicesWateringOperationalRecords);
