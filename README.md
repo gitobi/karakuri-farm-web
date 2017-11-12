@@ -10,6 +10,8 @@
 1. `cd karakuri-farm-web`
 1. `docker-compose build`
 1. `docker-compose run --rm web yarn install`
+1. `cp .env.development.sample .env.development`
+1. `cp .env.test.sample .env.test`
 1. `docker-compose up web`
 1. Visit http://localhost:3000/
 
@@ -43,7 +45,8 @@
 ### Setup
 
 1. `cp aws_secrets.env.sample aws_secrets.env`
-1. Add your credentials to aws_secrets.env.
+1. Add your credentials to the `aws_secrets.env` file.
+1. Make the `.env.production` file.
 
 ### Deploy to Production
 
