@@ -9,8 +9,8 @@ const initialDevicesWatering = Map({
   'list': List([]),
   'schedules': List([]),
   'selectedId': '',
-
   'changed': Map({}),
+  'progress': false,
 });
 
 const deviceWatering = (state = initialDevicesWatering, action) => {
@@ -20,7 +20,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
   switch (action.type) {
     case DevicesWatering.LOAD_REQUEST:
       // デバイス情報の取得開始
-      return state;
+      return state.set('progress', true);
 
     case DevicesWatering.LOAD_SUCCESS:
       // デバイス情報の取得完了
@@ -33,15 +33,17 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
           };
         });
 
-      return state
+      return state.withMutations(map => { map
         .set('list', fromJS(list))
         .set('schedules', List([]))
         .set('changed', Map({}))
+        .set('progress', false)
         ;
+      });
 
     case DevicesWatering.LOAD_FAILURE:
       // デバイス情報の取得失敗
-      return state;
+      return state.set('progress', false);
 
     case DevicesWatering.SELECT:
       // デバイスの選択
@@ -59,31 +61,33 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.LOAD_SCHEDULES_REQUEST:
       // スケジュール情報の取得開始
-      return state;
+      return state.set('progress', true);
 
     case DevicesWatering.LOAD_SCHEDULES_SUCCESS:
       // スケジュール情報の取得完了
-      return state
+      return state.withMutations(map => { map
         .set('schedules', fromJS(action.schedules))
         .set('changed', Map({}))
+        .set('progress', false)
         ;
+      });
 
     case DevicesWatering.LOAD_SCHEDULES_FAILURE:
       // スケジュール情報の取得失敗
-      return state;
+      return state.set('progress', false);
 
     case DevicesWatering.SAVE_SCHEDULES_REQUEST:
       // スケジュール情報の保存開始
-      return state;
+      return state.set('progress', true);
 
     case DevicesWatering.SAVE_SCHEDULES_SUCCESS:
       // スケジュール情報の保存完了
-      return state;
+      return state.set('progress', false);
 
     case DevicesWatering.SAVE_SCHEDULES_FAILURE:
       // スケジュール情報の保存失敗
       console.log(action.error);
-      return state;
+      return state.set('progress', false);
 
     case DevicesWatering.POST_SCHEDULES_REQUEST:
       // スケジュール情報のpost開始

@@ -95,6 +95,7 @@ export default class EditableTable extends React.Component {
           className="-striped -highlight"
           data={this.props.data}
           columns={this.props.columns}
+          loading={this.props.loading}
           defaultPageSize={10}
           minRows={2}
           sortable={false}
