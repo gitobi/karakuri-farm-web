@@ -9,7 +9,7 @@ export default class DevicesWateringTab extends Component {
 
     this.state = {
       deviceId: '',
-      activeTab: 'settingSchedules',
+      activeTab: 'operationalRecords',
     };
 
     this.logger = new Logger({prefix: 'DevicesWateringTab'});

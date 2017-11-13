@@ -56,15 +56,25 @@ export default class EditableTable extends React.Component {
     var icon = args.icon;
     var callback = args.callback;
     return ((row) => {
-      return <Button
-        icon={icon}
-        onClick={((event, data) => {
-          // this.props.onUpdateFromButton(row.row.id, row.index, row.column.id);
-          if (callback) {
-            callback(event, data, row, args);
-          }
-        })}
-      />
+      return (
+        <div style={{
+          display: 'table',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+          width: '100%',
+          height: '100%',
+        }}>
+          <Button
+          icon={icon}
+          onClick={((event, data) => {
+            // this.props.onUpdateFromButton(row.row.id, row.index, row.column.id);
+            if (callback) {
+              callback(event, data, row, args);
+            }
+          })}
+          />
+        </div>
+      )
     })
   }
 
@@ -74,14 +84,22 @@ export default class EditableTable extends React.Component {
    */
   static createNormalCell() {
     return ((row) => {
-      return <div style={{
-              width: '100%',
-              height: '100%',
-              backgroundColor: '#dadada',
-              borderRadius: '2px'
+      return (
+        <div style={{
+          display: 'table',
+          textAlign: 'center',
+          verticalAlign: 'middle',
+          width: '100%',
+          height: '100%',
+        }}>
+          <p style={{
+            verticalAlign: 'middle',
+            display: 'table-cell',
           }}>
-            <div>{row.value}</div>
-          </div>
+            {row.value}
+          </p>
+        </div>
+      );
     })
   }
 
@@ -89,20 +107,21 @@ export default class EditableTable extends React.Component {
    * TODO テーブル描画 必要に応じて外部から設定できるように修正していく
    */
   render() {
-    // this.logger.info('render', this.props, this.state);
+    // this.logger.log('render', this.props, this.state);
     return (
       <ReactTable
           className="-striped -highlight"
           data={this.props.data}
           columns={this.props.columns}
           loading={this.props.loading}
-          defaultPageSize={10}
-          minRows={2}
-          sortable={false}
-          defaultSorted={[{
-            id: 'id',
-            desc: false
-          }]}
+          defaultPageSize={12}
+          minRows={3}
+          sortable={this.props.sortable}
+          defaultSorted={
+            this.props.defaultSorted
+              ? this.props.defaultSorted
+              : [{id: 'id', desc: false}]
+          }
       />
     );
   }

@@ -192,8 +192,19 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS:
       // 実績の取得完了
+      let operationalRecords = action.operationalRecords.map((value) => {
+          return {
+            // key: value["key"],
+            id: value["id"],
+            started_at: GtbUtils.dateString(new Date(value["started_at"])),
+            ended_at:   GtbUtils.dateString(new Date(value["ended_at"])),
+            amount: value["amount"],
+            is_manual: value["is_manual"],
+          };
+        });
+
       return state.withMutations(map => { map
-        .set('operationalRecords', fromJS(action.operationalRecords))
+        .set('operationalRecords', fromJS(operationalRecords))
         .set('progress', false)
         ;
       });
