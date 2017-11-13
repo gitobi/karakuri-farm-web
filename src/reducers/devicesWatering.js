@@ -10,6 +10,7 @@ const initialDevicesWatering = Map({
   'schedules': List([]),
   'selectedId': '',
   'changed': Map({}),
+  'operationalRecords': List([]),
   'progress': false,
 });
 
@@ -184,6 +185,22 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
         .setIn(['changed', action.id, action.column], action.value)
         ;
       });
+
+    case DevicesWatering.LOAD_OPERATIONAL_RECORDS_REQUEST:
+      // 実績の取得開始
+      return state.set('progress', true);
+
+    case DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS:
+      // 実績の取得完了
+      return state.withMutations(map => { map
+        .set('operationalRecords', fromJS(action.operationalRecords))
+        .set('progress', false)
+        ;
+      });
+
+    case DevicesWatering.LOAD_OPERATIONAL_RECORDS_FAILURE:
+      // 実績の取得失敗
+      return state.set('progress', false);
 
     default:
       return state;
