@@ -72,6 +72,11 @@ export default class Bastet {
     return this.callApi(this.delete, url);
   }
 
+  getWateringsOperationalRecords(wateringsId) {
+    var url = this.host + '/devices/waterings/' + wateringsId + '/operational_records';
+    return this.callApi(this.get, url);
+  }
+
   ///// lowlevel functions
   callApi(api, url, query={}) {
     return api(url, query)
