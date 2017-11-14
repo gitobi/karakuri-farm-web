@@ -77,6 +77,11 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
+  getPyranometersSensingRecords(pyranometersId) {
+    var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
+    return this.callApi(this.get, url);
+  }
+
   ///// lowlevel functions
   callApi(api, url, query={}) {
     return api(url, query)
