@@ -7,6 +7,7 @@ import Signup from '../components/home/Signup';
 import Login from '../components/home/Login';
 import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
+import DevicesPyranometers from './DevicesPyranometers';
 
 const isLoggedIn = false;
 
@@ -24,7 +25,7 @@ class AppRoute extends Component {
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
           <Route path="/devices_waterings" component={DevicesWaterings} />
-          <Route path="/devices_pyranometer" component={BlankComponent} />
+          <Route path="/devices_pyranometer" component={DevicesPyranometers} />
           <Route path="/alert" component={BlankComponent} />
           <Route path="/devices" component={BlankComponent} />
           <Route path="/stats" component={BlankComponent} />
