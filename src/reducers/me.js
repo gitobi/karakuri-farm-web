@@ -1,17 +1,21 @@
+import { Map } from 'immutable';
 import { Me } from '../constants/me';
 
-const initialMe = { 'name': 'Ninja', 'username': 'ninja' };
+const initialState = Map({
+  'name': 'Ninja',
+  'username': 'ninja'
+});
 
-const me = (state = initialMe, action) => {
+const me = (state = initialState, action) => {
   switch (action.type) {
     case Me.SIGN_UP_REQUEST:
       return state;
     case Me.SIGN_UP_FAILURE:
-      return Object.assign(state, { error: action.error });
+      return state.set('error', action.error);
     case Me.SIGN_UP_SUCCESS:
-      return Object.assign(state, { username: action.username });
+      return state.set('username', action.username);
     case Me.RENAME:
-      return Object.assign(state, { name: action.name });
+      return state.set('name', action.name);
     default:
       return state;
   }
