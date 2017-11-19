@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { Map } from 'immutable'
-import { signUpMe } from '../../actions/me'
+import { Map } from 'immutable';
+import { signUpMe } from '../../actions/me';
 import {
   Form
 } from 'semantic-ui-react';
@@ -52,6 +53,13 @@ class SignupForm extends Component {
       this.state.data.get('username'),
       this.state.data.get('email'),
       password,
+    ).then(
+      () => {
+        this.props.history.push('/confirm');
+      },
+      () => {
+        console.log('fail');
+      }
     );
   }
 
@@ -75,7 +83,7 @@ const mapDispatchToProps = {
   signUpMe
 }
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignupForm);
+)(SignupForm));
