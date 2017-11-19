@@ -1,4 +1,4 @@
-import { CognitoUserPool, CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
+import { AuthenticationDetails, CognitoUserPool, CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
 import { Me } from '../constants/me';
 
 // Cognito用の定数
@@ -9,7 +9,7 @@ const poolData = {
 
 const userPool = new CognitoUserPool(poolData);
 
-// 非同期に会員登録
+// 会員登録
 export function signUpMe(username, email, password) {
   return ((dispatch) => {
     // 非同期通信前にリクエストActionをDispatch
@@ -72,6 +72,47 @@ export function confirmMe(pincode) {
       },
       (error) => {
         dispatch({ type: Me.CONFIRM_FAILURE, error });
+        return (Promise.reject());
+      }
+    );
+  });
+}
+
+// ログイン
+export function loginMe(username, password) {
+  return ((dispatch) => {
+    let authenticationData = {
+      Username: username,
+      Password: password,
+    }
+    let authenticationDetails = new AuthenticationDetails(authenticationData);
+
+    let userData = {
+      Username: username,
+      Pool: userPool,
+    }
+    let cognitoUser = new CognitoUser(userData);
+
+    dispatch({ type: Me.LOGIN_REQUEST });
+
+    return new Promise((resolve, reject) => {
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: (result) => {
+          resolve(result);
+        },
+        onFailure: (error) => {
+          reject(error);
+        }
+      });
+    }).then(
+      // 成功時はトークンをローカルストレージに保存して、成功ActionをDispatch
+      (result) => {
+        let id_token = result.getIdToken().getJwtToken();
+        localStorage.setItem('id_token', id_token);
+        dispatch({ type: Me.LOGIN_SUCCESS });
+      },
+      (error) => {
+        dispatch({ type: Me.LOGIN_FAILURE, error });
         return (Promise.reject());
       }
     );

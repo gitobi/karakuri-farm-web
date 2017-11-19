@@ -20,6 +20,14 @@ const me = (state = initialState, action) => {
       return state.set('error', action.error);
     case Me.CONFIRM_SUCCESS:
       return state;
+    case Me.LOGIN_REQUEST:
+      return state.set('isAuthenticated', false);
+    case Me.LOGIN_FAILURE:
+      return state
+        .set('isAuthenticated', false)
+        .set('error', action.error);
+    case Me.LOGIN_SUCCESS:
+      return state.set('isAuthenticated', true);
     case Me.RENAME:
       return state.set('name', action.name);
     default:
