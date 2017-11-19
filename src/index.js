@@ -16,10 +16,12 @@ const store = createStore(
   )
 );
 
+const rootElement = document.getElementById('root');
+
 render(
   <Provider store={store}>
     <AppRoute />
   </Provider>,
-  document.getElementById('root')
+  rootElement
 );
 registerServiceWorker();
