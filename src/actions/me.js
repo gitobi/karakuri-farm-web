@@ -1,4 +1,4 @@
-import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { CognitoUserPool, CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
 import { Me } from '../constants/me';
 
 // Cognito用の定数
@@ -11,7 +11,7 @@ const userPool = new CognitoUserPool(poolData);
 
 // 非同期に会員登録
 export function signUpMe(username, email, password) {
-  return function(dispatch) {
+  return ((dispatch) => {
     // 非同期通信前にリクエストActionをDispatch
     dispatch({ type: Me.SIGN_UP_REQUEST });
 
@@ -26,7 +26,7 @@ export function signUpMe(username, email, password) {
 
     // 使ってるCognitoのライブラリがPromise対応してないようなので、こちらでラップ
     return new Promise((resolve, reject) => {
-      userPool.signUp(username, password, attributeList, null, function(error, result) {
+      userPool.signUp(username, password, attributeList, null, (error, result) => {
         if (error) {
           reject(error);
         } else {
@@ -35,15 +35,51 @@ export function signUpMe(username, email, password) {
       });
     }).then(
       // 成功時は成功ActionをDispatch
-      result => dispatch({ type: Me.SIGN_UP_SUCCESS, username: result.user.username }),
+      (result) => {
+        dispatch({ type: Me.SIGN_UP_SUCCESS, username: result.user.username });
+      },
       // 失敗時は失敗ActionをDispatch
-      error => dispatch({ type: Me.SIGN_UP_FAILURE, error })
+      (error) => {
+        dispatch({ type: Me.SIGN_UP_FAILURE, error });
+        return (Promise.reject());
+      }
     );
-  }
+  });
+}
+
+// 登録の確認
+export function confirmMe(pincode) {
+  return ((dispatch, getState) => {
+    let username = getState().me.get('username');
+    let userData = {
+      Username: username,
+      Pool: userPool,
+    }
+    let cognitoUser = new CognitoUser(userData);
+    dispatch({ type: Me.CONFIRM_REQUEST });
+
+    return new Promise((resolve, reject) => {
+      cognitoUser.confirmRegistration(pincode, true, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    }).then(
+      (result) => {
+        dispatch({ type: Me.CONFIRM_SUCCESS });
+      },
+      (error) => {
+        dispatch({ type: Me.CONFIRM_FAILURE, error });
+        return (Promise.reject());
+      }
+    );
+  });
 }
 
 export function renameMe(name) {
-  return(
+  return (
     {
       type: Me.RENAME,
       name
