@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 import icon from '../images/logo.svg';
+import { logoutMe } from '../actions/me';
 import gitobi_logo from '../images/gitobi.png';
 import './Logo.css';
 import './App.css';
@@ -13,6 +16,7 @@ class Menubar extends Component {
     super(props);
     this.logger = new Logger({ prefix: 'MenuBar' });
     this.menuItem = this.menuItem.bind(this);
+    this.handleLogoutClick = this.handleLogoutClick.bind(this);
   }
 
   menuItem(name, linkTo, content, label) {
@@ -33,6 +37,12 @@ class Menubar extends Component {
         {content}
       </Menu.Item>
     );
+  }
+
+  handleLogoutClick(event) {
+    event.preventDefault();
+    this.props.logoutMe();
+    this.props.history.push('/');
   }
 
   render() {
@@ -65,18 +75,32 @@ class Menubar extends Component {
         <Menu.Item>
           <Menu.Header>お問合せ</Menu.Header>
           <Menu.Menu>
-
+            <Menu.Item
+              onClick={this.handleLogoutClick}
+              as='a'
+              content='ログアウト' />
             <Menu.Item as="a">
               <Image centered src={gitobi_logo} size="tiny" />
               <p style={{ textAlign: 'center' }}>&copy; Gitobi LLC.</p>
             </Menu.Item>
           </Menu.Menu>
         </Menu.Item>
-
       </Menu>
-
     );
   }
 }
 
-export default Menubar;
+function mapStateToProps(state) {
+  return (
+    {}
+  );
+}
+
+const mapDispatchToProps = {
+  logoutMe
+}
+
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Menubar));

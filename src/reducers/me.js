@@ -8,12 +8,6 @@ const initialState = Map({
 
 const me = (state = initialState, action) => {
   switch (action.type) {
-    case Me.SIGN_UP_REQUEST:
-      return state;
-    case Me.SIGN_UP_FAILURE:
-      return state.set('error', action.error);
-    case Me.SIGN_UP_SUCCESS:
-      return state.set('username', action.username);
     case Me.CONFIRM_REQUEST:
       return state;
     case Me.CONFIRM_FAILURE:
@@ -28,8 +22,17 @@ const me = (state = initialState, action) => {
         .set('error', action.error);
     case Me.LOGIN_SUCCESS:
       return state.set('isAuthenticated', true);
+    case Me.LOGOUT:
+      return state
+        .set('isAuthenticated', false);
     case Me.RENAME:
       return state.set('name', action.name);
+    case Me.SIGN_UP_REQUEST:
+      return state;
+    case Me.SIGN_UP_FAILURE:
+      return state.set('error', action.error);
+    case Me.SIGN_UP_SUCCESS:
+      return state.set('username', action.username);
     default:
       return state;
   }

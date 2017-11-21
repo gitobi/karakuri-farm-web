@@ -119,6 +119,22 @@ export function loginMe(username, password) {
   });
 }
 
+// ログアウト
+export function logoutMe() {
+  return ((dispatch, getState) => {
+    let username = getState().me.get('username');
+    let userData = {
+      Username: username,
+      Pool: userPool,
+    }
+    let cognitoUser = new CognitoUser(userData);
+    cognitoUser.signOut();
+    // ローカルストレージに保存したトークンを削除
+    localStorage.removeItem('id_token');
+    dispatch({ type: Me.LOGOUT });
+  });
+}
+
 export function renameMe(name) {
   return (
     {
