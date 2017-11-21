@@ -73,6 +73,7 @@ class SignupForm extends Component {
     this.setState({'data': this.state.data.set('username', event.target.value)});
   }
 }
+
 function mapStateToProps(state) {
   return (
     {}
