@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../components/App.css';
 import { Segment } from 'semantic-ui-react';
 import Logger from '../js/Logger';
-import Menubar from '../components/MenuBar';
+import Menubar from '../containers/MenuBar';
 
 class AppLayout extends Component {
   constructor(props) {

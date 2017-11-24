@@ -2,8 +2,7 @@ import { Map } from 'immutable';
 import { Me } from '../constants/me';
 
 const initialState = Map({
-  'name': 'Ninja',
-  'username': 'ninja'
+  'isAuthenticated': false,
 });
 
 const me = (state = initialState, action) => {
@@ -13,15 +12,21 @@ const me = (state = initialState, action) => {
     case Me.CONFIRM_FAILURE:
       return state.set('error', action.error);
     case Me.CONFIRM_SUCCESS:
-      return state;
+      return state.set('error', '');
+    case Me.GET_CURRENT:
+      return state
+        .set('isAuthenticated', action.isAuthenticated);
     case Me.LOGIN_REQUEST:
-      return state.set('isAuthenticated', false);
+      return state
+        .set('isAuthenticated', false);
     case Me.LOGIN_FAILURE:
       return state
         .set('isAuthenticated', false)
         .set('error', action.error);
     case Me.LOGIN_SUCCESS:
-      return state.set('isAuthenticated', true);
+      return state
+        .set('isAuthenticated', true)
+        .set('error', '');
     case Me.LOGOUT:
       return state
         .set('isAuthenticated', false);
@@ -32,7 +37,9 @@ const me = (state = initialState, action) => {
     case Me.SIGN_UP_FAILURE:
       return state.set('error', action.error);
     case Me.SIGN_UP_SUCCESS:
-      return state.set('username', action.username);
+      return state
+        .set('username', action.username)
+        .set('error', '');
     default:
       return state;
   }

@@ -11,8 +11,7 @@ describe('me reducer', () => {
       )
     ).toEqual(
       Map({
-        'name': 'Ninja',
-        'username': 'ninja'
+        'isAuthenticated': false,
       })
     );
   });
@@ -27,8 +26,7 @@ describe('me reducer', () => {
       )
     ).toEqual(
       Map({
-        'name': 'Ninja',
-        'username': 'ninja'
+        'isAuthenticated': false,
       })
     );
   });
@@ -44,9 +42,8 @@ describe('me reducer', () => {
       )
     ).toEqual(
       Map({
-        'name': 'Ninja',
-        'username': 'ninja',
-        'error': 'Error object'
+        'isAuthenticated': false,
+        'error': 'Error object',
       })
     );
   });
@@ -62,8 +59,9 @@ describe('me reducer', () => {
       )
     ).toEqual(
       Map({
-        'name': 'Ninja',
-        'username': 'CreatedUsername'
+        'isAuthenticated': false,
+        'username': 'CreatedUsername',
+          error: '',
       })
     );
   });
@@ -79,8 +77,8 @@ describe('me reducer', () => {
       )
     ).toEqual(
       Map({
+        'isAuthenticated': false,
         'name': 'Renamed Name',
-        'username': 'ninja'
       })
     );
   });
