@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getCurrentMe } from '../actions/me';
 
 import App from '../components/App';
 import Home from '../components/home/Home';
@@ -10,9 +12,11 @@ import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
 
-const isLoggedIn = false;
-
 class AppRoute extends Component {
+  componentDidMount() {
+    this.props.getCurrentMe();
+  }
+
   render() {
     return (
       <BrowserRouter>
@@ -21,7 +25,7 @@ class AppRoute extends Component {
             exact
             path="/"
             render={() =>(
-              isLoggedIn ? (<Route component={App} />) : (<Route component={Home} />)
+              this.props.me.get('isAuthenticated') ? (<Route component={App} />) : (<Route component={Home} />)
             )} />
           <Route path="/signup" component={Signup} />
           <Route path="/confirm" component={Confirm} />
@@ -37,4 +41,19 @@ class AppRoute extends Component {
   }
 }
 
-export default AppRoute;
+function mapStateToProps(state) {
+  return (
+    {
+      me: state.me
+    }
+  );
+}
+
+const mapDispatchToProps = {
+  getCurrentMe
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppRoute);

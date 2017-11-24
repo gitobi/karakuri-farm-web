@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import icon from '../images/logo.svg';
 import { logoutMe } from '../actions/me';
 import gitobi_logo from '../images/gitobi.png';
-import './Logo.css';
-import './App.css';
+import '../components/Logo.css';
+import '../components/App.css';
 import { Image, Menu, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
@@ -78,6 +78,10 @@ class Menubar extends Component {
             <Menu.Item
               onClick={this.handleLogoutClick}
               as='a'
+              content={this.props.me.get('username')} />
+            <Menu.Item
+              onClick={this.handleLogoutClick}
+              as='a'
               content='ログアウト' />
             <Menu.Item as="a">
               <Image centered src={gitobi_logo} size="tiny" />
@@ -92,7 +96,9 @@ class Menubar extends Component {
 
 function mapStateToProps(state) {
   return (
-    {}
+    {
+      me: state.me
+    }
   );
 }
 

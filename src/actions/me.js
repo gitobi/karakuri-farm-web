@@ -9,6 +9,17 @@ const poolData = {
 
 const userPool = new CognitoUserPool(poolData);
 
+export function getCurrentMe() {
+  let isAuthenticated = false;
+
+  let cognitoUser = userPool.getCurrentUser();
+  if (cognitoUser != null) {
+    isAuthenticated = true;
+  }
+
+  return ({ type: Me.GET_CURRENT, isAuthenticated });
+}
+
 // 会員登録
 export function signUpMe(username, email, password) {
   return ((dispatch) => {
@@ -105,10 +116,7 @@ export function loginMe(username, password) {
         }
       });
     }).then(
-      // 成功時はトークンをローカルストレージに保存して、成功ActionをDispatch
       (result) => {
-        let id_token = result.getIdToken().getJwtToken();
-        localStorage.setItem('id_token', id_token);
         dispatch({ type: Me.LOGIN_SUCCESS });
       },
       (error) => {
@@ -121,18 +129,13 @@ export function loginMe(username, password) {
 
 // ログアウト
 export function logoutMe() {
-  return ((dispatch, getState) => {
-    let username = getState().me.get('username');
-    let userData = {
-      Username: username,
-      Pool: userPool,
-    }
-    let cognitoUser = new CognitoUser(userData);
+  let cognitoUser = userPool.getCurrentUser();
+
+  if (cognitoUser != null) {
     cognitoUser.signOut();
-    // ローカルストレージに保存したトークンを削除
-    localStorage.removeItem('id_token');
-    dispatch({ type: Me.LOGOUT });
-  });
+  }
+
+  return ({ type: Me.LOGOUT });
 }
 
 export function renameMe(name) {

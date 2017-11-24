@@ -54,6 +54,7 @@ class ConfirmForm extends Component {
     this.setState({'data': this.state.data.set('pincode', event.target.value)});
   }
 }
+
 function mapStateToProps(state) {
   return (
     {}
