@@ -82,13 +82,18 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
+  getDevicesAlerts(deviceId) {
+    var url = this.host + '/devices/' + deviceId + '/alerts';
+    return this.callApi(this.get, url);
+  }
+
   ///// lowlevel functions
   callApi(api, url, query={}) {
     return api(url, query)
       .then((data) => {
-        this.logger.log('url', url);
-        this.logger.log('query', query);
-        this.logger.log('response', data);
+        // this.logger.log('url', url);
+        // this.logger.log('query', query);
+        // this.logger.log('response', data);
         return(data.body);
 
       }).catch((err) => {
