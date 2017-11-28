@@ -1,9 +1,9 @@
 import { List, Map, fromJS } from 'immutable';
 import { DevicesWatering } from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
-import Logger from '../js/Logger'
 
-const _logger = new Logger({prefix: 'devicesWatering'});
+// import Logger from '../js/Logger'
+// const _logger = new Logger({prefix: 'devicesWatering'});
 
 const initialDevicesWatering = Map({
   'list': List([]),
@@ -15,8 +15,8 @@ const initialDevicesWatering = Map({
 });
 
 const deviceWatering = (state = initialDevicesWatering, action) => {
-  _logger.info('state :', state.toJS());
-  _logger.info('action :', action);
+  // _logger.info('state :', state.toJS());
+  // _logger.info('action :', action);
 
   switch (action.type) {
     case DevicesWatering.LOAD_REQUEST:
