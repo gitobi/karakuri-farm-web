@@ -1,28 +1,28 @@
 import { List, Map, fromJS } from 'immutable';
-import { DevicesAlert } from '../constants/devicesAlert';
+import { DevicesSystemLog } from '../constants/devicesSystemLog';
 import GtbUtils from '../js/GtbUtils'
 import Logger from '../js/Logger'
 
-const _logger = new Logger({prefix: 'devicesAlert'});
+const _logger = new Logger({prefix: 'devicesSystemLog'});
 
-const initialDevicesAlert = Map({
+const initialDevicesSystemLog = Map({
   'list': List([]),
   'progress': false,
 });
 
-const deviceAlert = (state = initialDevicesAlert, action) => {
+const deviceSystemLog = (state = initialDevicesSystemLog, action) => {
   _logger.info('state :', state.toJS());
   _logger.info('action :', action);
 
   switch (action.type) {
-    case DevicesAlert.LOAD_REQUEST:
+    case DevicesSystemLog.LOAD_REQUEST:
       // アラートの取得開始
       return state.set('progress', true);
 
-    case DevicesAlert.LOAD_SUCCESS:
+    case DevicesSystemLog.LOAD_SUCCESS:
       // アラート情報の取得完了
 
-      let alert = action.list.map((value) => {
+      let system_logs = action.list.map((value) => {
           return {
             // key: value["key"],
             id: value["id"],
@@ -34,12 +34,12 @@ const deviceAlert = (state = initialDevicesAlert, action) => {
         });
 
       return state.withMutations(map => { map
-        .set('list', fromJS(alert))
+        .set('list', fromJS(system_logs))
         .set('progress', false)
         ;
       });
 
-    case DevicesAlert.LOAD_FAILURE:
+    case DevicesSystemLog.LOAD_FAILURE:
       // アラート情報の取得失敗
       return state.set('progress', false);
 
@@ -48,4 +48,4 @@ const deviceAlert = (state = initialDevicesAlert, action) => {
   }
 }
 
-export default deviceAlert;
+export default deviceSystemLog;

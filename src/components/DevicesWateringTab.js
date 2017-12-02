@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Logger from '../js/Logger'
 import DevicesWateringSchedules from '../containers/DevicesWateringSchedules'
 import DevicesWateringOperationalRecords from '../containers/DevicesWateringOperationalRecords'
-import DevicesAlerts from '../containers/DevicesAlerts'
+import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 
 export default class DevicesWateringTab extends Component {
   constructor(props) {
@@ -54,7 +54,7 @@ export default class DevicesWateringTab extends Component {
           {this.createTabHeader("settingBasic", "基本設定")}
           {this.createTabHeader("settingSchedules", "スケジュール")}
           {this.createTabHeader("operationalRecords", "灌水実績")}
-          {this.createTabHeader("alerts", "ログ")}
+          {this.createTabHeader("systemLogs", "ログ")}
         </div>
         {this.createTabContent("settingBasic",
           "基本設定"
@@ -70,8 +70,8 @@ export default class DevicesWateringTab extends Component {
             deviceId={this.props.deviceId}
            />
         )}
-        {this.createTabContent("alerts",
-          <DevicesAlerts
+        {this.createTabContent("systemLogs",
+          <DevicesSystemLogs
             deviceId={this.props.deviceId}
            />
         )}
