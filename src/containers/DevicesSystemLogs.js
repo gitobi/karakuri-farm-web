@@ -4,12 +4,12 @@ import Logger from '../js/Logger'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions/devicesAlert';
+import * as Actions from '../actions/devicesSystemLog';
 
-class DevicesAlerts extends React.Component {
+class DevicesSystemLogs extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesAlerts'});
+    this.logger = new Logger({prefix: 'DevicesSystemLogs'});
   }
 
   componentWillReceiveProps(nextProps, nextState) {
@@ -17,7 +17,7 @@ class DevicesAlerts extends React.Component {
     // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
     if (nextProps.deviceId !== "" &&
       this.props.deviceId !== nextProps.deviceId) {
-      nextProps.actions.loadDevicesAlerts(nextProps.deviceId);
+      nextProps.actions.loadDevicesSystemLogs(nextProps.deviceId);
     }
   }
 
@@ -54,7 +54,7 @@ class DevicesAlerts extends React.Component {
     return (
       <div className="ui container">
         <EditableTable
-          data={this.props.devicesAlerts}
+          data={this.props.devicesSystemLogs}
           columns={columns}
           loading={this.props.progress}
           sortable={true}
@@ -68,8 +68,8 @@ class DevicesAlerts extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    devicesAlerts: state.devicesAlert.get('list').toJS(),
-    progress: state.devicesAlert.get('progress'),
+    devicesSystemLogs: state.devicesSystemLog.get('list').toJS(),
+    progress: state.devicesSystemLog.get('progress'),
   };
 }
 
@@ -80,4 +80,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DevicesAlerts);
+)(DevicesSystemLogs);
