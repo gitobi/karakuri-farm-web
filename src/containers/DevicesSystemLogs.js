@@ -25,13 +25,23 @@ class DevicesSystemLogs extends React.Component {
 
     // テーブルのカラムレイアウト
     const columns = [{
-        Header: 'ID',
-        accessor: 'id',
-        width: 120,
+        Header: '発生日時',
+        accessor: 'raised_at',
+        width: 180,
         Cell: EditableTable.createNormalCell()
       }, {
-        Header: 'Updated at',
-        accessor: 'updated_at',
+        Header: 'Application',
+        accessor: 'application',
+        width: 180,
+        Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'Process',
+        accessor: 'process',
+        width: 180,
+        Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'Thread',
+        accessor: 'thread',
         width: 180,
         Cell: EditableTable.createNormalCell()
       }, {
