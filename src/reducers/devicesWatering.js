@@ -6,9 +6,11 @@ import GtbUtils from '../js/GtbUtils'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
 const initialDevicesWatering = Map({
-  'list': List([]),
+  'names': List([]),
+  'devices': List([]),
   'schedules': List([]),
   'selectedId': '',
+  'selected': Map({}),
   'changed': Map({}),
   'operationalRecords': List([]),
   'progress': false,
@@ -25,19 +27,34 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
     case DevicesWatering.LOAD_SUCCESS:
       // デバイス情報の取得完了
-      let list = action.list.map((value) => {
+      let names = action.list.map((value) => {
           return {
-            key: value["key"],
+            key: value["id"],
             id: value["id"],
             name: value["name"],
             active: false,
           };
         });
+      let devices = action.list.map((value) => {
+          return {
+            id: value["id"],
+            device_type: value["device_type"],
+            name: value["name"],
+            software_version: value["software_version"],
+            model_number: value["model_number"],
+            heartbeated_at: value["heartbeated_at"],
+            inserted_at: value["inserted_at"],
+            updated_at: value["updated_at"],
+          };
+        });
 
       return state.withMutations(map => { map
-        .set('list', fromJS(list))
+        .set('names', fromJS(names))
+        .set('devices', fromJS(devices))
         .set('schedules', List([]))
         .set('changed', Map({}))
+        .set('selectedId', '')
+        .set('selected', Map({}))
         .set('progress', false)
         ;
       });
@@ -54,10 +71,12 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
       return state.withMutations(map => { map
         .set('selectedId', action.id)
-        .update('list', list => list.map(
-          // 選択されたidであればtrue、それ以外はfalseに更新する
-          object => object.set('active', object.get('id') === action.id))
+        .update('names', list => list.map(
+            // 選択されたidであればtrue、それ以外はfalseに更新する
+            object => object.set('active', object.get('id') === action.id)
+          )
         )
+        .set('selected', map.get('devices').find(object => object.get('id') === action.id))
       });
 
     case DevicesWatering.LOAD_SCHEDULES_REQUEST:

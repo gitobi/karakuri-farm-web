@@ -43,7 +43,7 @@ class DevicesWaterings extends Component {
               vertical
               secondary
               pointing
-              items={this.props.devicesWaterings}
+              items={this.props.names}
               onItemClick={(event, data) => {this.onChangeDevice(data.id);}}
               />
 
@@ -51,6 +51,7 @@ class DevicesWaterings extends Component {
           <Grid.Column stretched width={13}>
             <DevicesWateringTab
               deviceId = {this.props.selectedDevicesWateringId}
+              device = {this.props.selectedDevicesWatering}
               />
           </Grid.Column>
         </Grid>
@@ -61,8 +62,9 @@ class DevicesWaterings extends Component {
 
 function mapStateToProps(state) {
   return  {
-    devicesWaterings: state.devicesWatering.get('list').toJS(),
+    names: state.devicesWatering.get('names').toJS(),
     selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
+    selectedDevicesWatering: state.devicesWatering.get('selected').toJS(),
   };
 }
 
