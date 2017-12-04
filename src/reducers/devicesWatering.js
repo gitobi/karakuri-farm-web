@@ -42,9 +42,9 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
             name: value["name"],
             software_version: value["software_version"],
             model_number: value["model_number"],
-            heartbeated_at: value["heartbeated_at"],
-            inserted_at: value["inserted_at"],
-            updated_at: value["updated_at"],
+            heartbeated_at: GtbUtils.dateString(new Date(value["heartbeated_at"])),
+            inserted_at: GtbUtils.dateString(new Date(value["inserted_at"])),
+            updated_at: GtbUtils.dateString(new Date(value["updated_at"])),
           };
         });
 
