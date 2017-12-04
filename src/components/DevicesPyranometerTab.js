@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger'
 import DevicesPyranometerSensingRecords from '../containers/DevicesPyranometerSensingRecords'
+import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 
 export default class DevicesPyranometerTab extends Component {
   constructor(props) {
@@ -51,12 +52,18 @@ export default class DevicesPyranometerTab extends Component {
         <div className="ui top attached tabular menu">
           {this.createTabHeader("settingBasic", "基本設定")}
           {this.createTabHeader("sensingRecords", "計測実績")}
+          {this.createTabHeader("systemLogs", "ログ")}
         </div>
         {this.createTabContent("settingBasic",
           "基本設定"
         )}
         {this.createTabContent("sensingRecords",
           <DevicesPyranometerSensingRecords
+            deviceId={this.props.deviceId}
+           />
+        )}
+        {this.createTabContent("systemLogs",
+          <DevicesSystemLogs
             deviceId={this.props.deviceId}
            />
         )}
