@@ -11,7 +11,6 @@ import * as Actions from '../actions/devicesWatering';
 class DevicesWateringSchedules extends React.Component {
   constructor(props) {
     super(props);
-
     this.logger = new Logger({prefix: 'DevicesWateringsSchedules'});
 
     this.update = this.update.bind(this);
