@@ -11,8 +11,8 @@ const initialDevicesSystemLog = Map({
 });
 
 const deviceSystemLog = (state = initialDevicesSystemLog, action) => {
-  _logger.info('state :', state.toJS());
-  _logger.info('action :', action);
+  // _logger.info('state :', state.toJS());
+  // _logger.info('action :', action);
 
   switch (action.type) {
     case DevicesSystemLog.LOAD_REQUEST:

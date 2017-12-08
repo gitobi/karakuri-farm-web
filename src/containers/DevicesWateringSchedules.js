@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'semantic-ui-react';
+import { Button, Checkbox } from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
 import Formatter from '../js/Formatter'
@@ -11,6 +11,10 @@ import * as Actions from '../actions/devicesWatering';
 class DevicesWateringSchedules extends React.Component {
   constructor(props) {
     super(props);
+
+    // this.state = {
+    // };
+
     this.logger = new Logger({prefix: 'DevicesWateringsSchedules'});
 
     this.update = this.update.bind(this);
@@ -23,15 +27,17 @@ class DevicesWateringSchedules extends React.Component {
 
   update(event, data, row, args) {
     // セル入力時の処理
+    this.refs.editableTable.disableSort();
     this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
     this.setState({saveButtonDisabled: false});
 
-    // this.logger.info('updated',
-    //   'event', event,
-    //   'data', data,
-    //   'row', row,
-    //   'args', args,
-    //   'props', this.props,
+    this.logger.info('updated',
+      'event', event,
+      'data', data,
+      'row', row,
+      'args', args,
+      'props', this.props,
+      )
 
     // this.props.deviceWateringsSchedules[0].amount = 'aaa';
 
@@ -128,7 +134,9 @@ class DevicesWateringSchedules extends React.Component {
           data={this.props.devicesWateringSchedules}
           columns={columns}
           loading={this.props.progress}
-          sortable={false}
+          defaultSorted={[{id: 'name', desc: false}]}
+          defaultSorted={[]}
+          ref='editableTable'
         />
 
       </div>

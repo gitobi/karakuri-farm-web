@@ -86,7 +86,11 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     case DevicesWatering.LOAD_SCHEDULES_SUCCESS:
       // スケジュール情報の取得完了
       return state.withMutations(map => { map
-        .set('schedules', fromJS(action.schedules))
+        .set('schedules', fromJS(action.schedules).sort((a, b) => {
+          if( a < b ) return -1;
+          if( a > b ) return 1;
+          return 0;
+        }))
         .set('changed', Map({}))
         .set('progress', false)
         ;
