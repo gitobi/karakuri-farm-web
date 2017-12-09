@@ -32,6 +32,7 @@ class DevicesWateringSchedules extends React.Component {
     //   'row', row,
     //   'args', args,
     //   'props', this.props,
+    //   )
 
     // this.props.deviceWateringsSchedules[0].amount = 'aaa';
 
@@ -128,7 +129,7 @@ class DevicesWateringSchedules extends React.Component {
           data={this.props.devicesWateringSchedules}
           columns={columns}
           loading={this.props.progress}
-          sortable={false}
+          defaultSorted={[{id: 'name', desc: false}]}
         />
 
       </div>

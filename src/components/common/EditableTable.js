@@ -109,20 +109,21 @@ export default class EditableTable extends React.Component {
   render() {
     // this.logger.log('render', this.props, this.state);
     return (
-      <ReactTable
-          className="-striped -highlight"
-          data={this.props.data}
-          columns={this.props.columns}
-          loading={this.props.loading}
-          defaultPageSize={12}
-          minRows={3}
-          sortable={this.props.sortable}
-          defaultSorted={
-            this.props.defaultSorted
-              ? this.props.defaultSorted
-              : [{id: 'id', desc: false}]
-          }
-      />
+      <div>
+        <ReactTable
+            className="-striped -highlight"
+            defaultSortMethod={this.customSortMethod}
+            data={this.props.data}
+            columns={this.props.columns}
+            loading={this.props.loading}
+            defaultPageSize={12}
+            minRows={3}
+            sortable={this.props.sortable}
+            defaultSorted={this.props.defaultSorted
+                ? this.props.defaultSorted
+                : [{id: 'id', desc: false}]}
+        />
+      </div>
     );
   }
 
