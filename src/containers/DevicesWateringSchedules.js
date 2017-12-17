@@ -99,6 +99,14 @@ class DevicesWateringSchedules extends React.Component {
           callback: this.update,
         })
       }, {
+        Header: 'Duration',
+        accessor: 'duration',
+        width: 120,
+        Cell: EditableTable.createInputCell({
+          formatter: new Formatter("decimal"),
+          callback: this.update,
+        })
+      }, {
         Header: 'Amount',
         accessor: 'amount',
         width: 120,
