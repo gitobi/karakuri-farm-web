@@ -112,7 +112,6 @@ export default class EditableTable extends React.Component {
       <div>
         <ReactTable
             className="-striped -highlight"
-            defaultSortMethod={this.customSortMethod}
             data={this.props.data}
             columns={this.props.columns}
             loading={this.props.loading}
