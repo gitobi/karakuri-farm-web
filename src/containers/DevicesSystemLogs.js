@@ -30,19 +30,14 @@ class DevicesSystemLogs extends React.Component {
         width: 180,
         Cell: EditableTable.createNormalCell()
       }, {
-        Header: 'Priority',
-        accessor: 'priority',
-        width: 60,
-        Cell: EditableTable.createNormalCell()
-      }, {
         Header: 'Application',
         accessor: 'application',
-        width: 120,
+        width: 180,
         Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Process',
         accessor: 'process',
-        width: 60,
+        width: 180,
         Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Thread',
@@ -52,17 +47,17 @@ class DevicesSystemLogs extends React.Component {
       }, {
         Header: 'Summary',
         accessor: 'summary',
-        width: 120,
+        width: 180,
         Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Detail',
         accessor: 'detail',
-        width: 180,
+        width: 120,
         Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Trace',
         accessor: 'trace',
-        width: 320,
+        width: 120,
         Cell: EditableTable.createNormalCell()
     }];
 

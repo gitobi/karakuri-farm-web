@@ -27,7 +27,7 @@ const deviceSystemLog = (state = initialDevicesSystemLog, action) => {
             // key: value["key"],
             id: value["id"],
             priority: value["priority"],
-            raised_at: GtbUtils.dateString(new Date(value["raised_at"])),
+            raised_at: GtbUtils.dateString(new Date(value["updated_at"])),
             application: value["application"],
             process: value["process"],
             thread: value["thread"],
