@@ -32,7 +32,7 @@ export default class DevicesSummary extends Component {
 
   render() {
     // TODO nameを変更できるようにする
-    this.logger.log(this.props)
+    // this.logger.log(this.props)
     return (
       <div>
         <div>

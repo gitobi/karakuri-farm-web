@@ -2,8 +2,8 @@ import { List, Map, fromJS } from 'immutable';
 import { DevicesPyranometer } from '../constants/devicesPyranometer';
 import GtbUtils from '../js/GtbUtils'
 
-import Logger from '../js/Logger'
-const _logger = new Logger({prefix: 'devicesPyranometer'});
+// import Logger from '../js/Logger'
+// const _logger = new Logger({prefix: 'devicesPyranometer'});
 
 const initialDevicesPyranometer = Map({
   'names': List([]),
@@ -15,8 +15,8 @@ const initialDevicesPyranometer = Map({
 });
 
 const devicePyranometer = (state = initialDevicesPyranometer, action) => {
-  _logger.info('state :', state.toJS());
-  _logger.info('action :', action);
+  // _logger.info('state :', state.toJS());
+  // _logger.info('action :', action);
 
   switch (action.type) {
     case DevicesPyranometer.LOAD_REQUEST:
