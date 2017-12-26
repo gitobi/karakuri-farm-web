@@ -48,22 +48,22 @@ class DevicesSystemLogs extends React.Component {
         Header: 'Thread',
         accessor: 'thread',
         width: 180,
-        Cell: EditableTable.createNormalCell()
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
       }, {
         Header: 'Summary',
         accessor: 'summary',
         width: 120,
-        Cell: EditableTable.createNormalCell()
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
       }, {
         Header: 'Detail',
         accessor: 'detail',
         width: 180,
-        Cell: EditableTable.createNormalCell()
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
       }, {
         Header: 'Trace',
         accessor: 'trace',
         width: 360,
-        Cell: EditableTable.createNormalCell()
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
     }];
 
     return (
