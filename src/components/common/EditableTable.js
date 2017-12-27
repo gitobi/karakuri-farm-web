@@ -123,7 +123,15 @@ export default class EditableTable extends React.Component {
             }
             defaultFilterMethod={(filter, row, column) => {
               const id = filter.pivotId || filter.id
-              return row[id] !== undefined ? String(row[id]).match(filter.value) : true
+              if (row[id] === undefined) {
+                return true;
+              }
+              try {
+                const regexp = new RegExp(filter.value);
+                return String(row[id]).match(regexp);
+              } catch(e) {
+                return -1 === String(row[id]).indexOf(filter.value) ? false : true;
+              }
             }}
             sortable={this.props.sortable}
             defaultSorted={this.props.defaultSorted
