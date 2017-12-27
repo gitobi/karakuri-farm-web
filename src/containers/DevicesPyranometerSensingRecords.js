@@ -42,6 +42,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
           data={this.props.devicesPyranometerSensingRecords}
           columns={columns}
           loading={this.props.progress}
+          filterable={true}
           sortable={true}
           defaultSorted={[{id: 'sensed_at', desc: true}]}
         />

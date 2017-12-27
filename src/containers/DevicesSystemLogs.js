@@ -67,6 +67,7 @@ class DevicesSystemLogs extends React.Component {
           data={this.props.devicesSystemLogs}
           columns={columns}
           loading={this.props.progress}
+          filterable={true}
           sortable={true}
           defaultSorted={[{id: 'updated_at', desc: true}]}
         />
