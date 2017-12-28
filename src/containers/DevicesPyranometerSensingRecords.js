@@ -13,7 +13,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
   }
 
   render() {

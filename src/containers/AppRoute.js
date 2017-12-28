@@ -8,7 +8,7 @@ import Home from '../components/home/Home';
 import Signup from '../components/home/Signup';
 import Confirm from '../components/home/Confirm';
 import Login from '../components/home/Login';
-import BlankComponent from '@gitobi/react-blank-component';
+import BlankContents from '../components/BlankContents';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
 
@@ -32,9 +32,9 @@ class AppRoute extends Component {
           <Route path="/login" component={Login} />
           <Route path="/devices_waterings" component={DevicesWaterings} />
           <Route path="/devices_pyranometer" component={DevicesPyranometers} />
-          <Route path="/alert" component={BlankComponent} />
-          <Route path="/devices" component={BlankComponent} />
-          <Route path="/stats" component={BlankComponent} />
+          <Route path="/alert" component={BlankContents} />
+          <Route path="/devices" component={BlankContents} />
+          <Route path="/stats" component={BlankContents} />
         </div>
       </BrowserRouter>
     );
