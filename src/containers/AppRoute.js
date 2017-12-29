@@ -6,12 +6,10 @@ import { getCurrentMe } from '../actions/me';
 import Logger from '../js/Logger';
 
 import App from '../components/App';
-import AppLayout from '../layouts/AppLayout';
 import Home from '../components/home/Home';
 import Signup from '../components/home/Signup';
 import Confirm from '../components/home/Confirm';
 import Login from '../components/home/Login';
-import BlankComponent from '@gitobi/react-blank-component';
 import BlankContents from '../components/BlankContents';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
