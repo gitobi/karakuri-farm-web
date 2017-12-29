@@ -82,12 +82,13 @@ export default class EditableTable extends React.Component {
    * 通常セルを作成する
    * @return {((row) => {})}
    */
-  static createNormalCell() {
+  static createNormalCell(args) {
+    var divStyle = args && args.divStyle ? args.divStyle : new Map();
     return ((row) => {
       return (
         <div style={{
           display: 'table',
-          textAlign: 'center',
+          textAlign: divStyle.textAlign ? divStyle.textAlign : 'center',
           verticalAlign: 'middle',
           width: '100%',
           height: '100%',
