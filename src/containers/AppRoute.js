@@ -20,41 +20,13 @@ class AppRoute extends Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'AppRoute'});
-    this.appLayoutRoute = this.appLayoutRoute.bind(this);
   }
 
   componentDidMount() {
     this.props.getCurrentMe();
   }
 
-  appLayoutRoute({component: Component, ...rest}) {
-    this.logger.info(Component, rest);
-    return(
-      <Route {...rest} children={props => (
-        <AppLayout>
-          <Component {...props} />
-        </AppLayout>
-        )} />
-      );
-  }
-
   render() {
-    const AppLayoutRouteRender = ({component: Component, ...rest}) => (
-      <Route {...rest} render={props => (
-        <AppLayout>
-          <Component {...props} />
-        </AppLayout>
-        )} />
-      );
-
-    const AppLayoutRouteChildren = ({path: path, component: Component, ...rest}) => (
-      <Route path={path} children={({match}) => (
-        <AppLayout>
-          <Component />
-        </AppLayout>
-        )} />
-      );
-
     return (
       <BrowserRouter>
         <div>
@@ -70,14 +42,8 @@ class AppRoute extends Component {
           <Route path="/devices_waterings" component={DevicesWaterings} />
           <Route path="/devices_pyranometer" component={DevicesPyranometers} />
           <Route path="/alert" component={BlankContents} />
-          <Route path="/devices" component={BlankComponent} />
-          <Route path="/stats" component={BlankComponent} />
-
-          <Route children={({match, ...rest}) => (
-            <AppLayout>
-              {match && <BlankComponent {...rest} />}
-            </AppLayout>
-            )} />
+          <Route path="/devices" component={BlankContents} />
+          <Route path="/stats" component={BlankContents} />
 
         </div>
       </BrowserRouter>
