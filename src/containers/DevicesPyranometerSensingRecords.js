@@ -34,6 +34,11 @@ class DevicesPyranometerSensingRecords extends React.Component {
         accessor: 'measurement',
         width: 120,
         Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'Samplings',
+        accessor: 'samplings',
+        width: 120,
+        Cell: EditableTable.createNormalCell()
     }];
 
     return (
@@ -42,6 +47,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
           data={this.props.devicesPyranometerSensingRecords}
           columns={columns}
           loading={this.props.progress}
+          filterable={true}
           sortable={true}
           defaultSorted={[{id: 'sensed_at', desc: true}]}
         />

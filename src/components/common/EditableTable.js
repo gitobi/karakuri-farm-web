@@ -118,6 +118,22 @@ export default class EditableTable extends React.Component {
             loading={this.props.loading}
             defaultPageSize={12}
             minRows={3}
+            filterable={this.props.filterable
+              ? this.props.filterable
+              : false
+            }
+            defaultFilterMethod={(filter, row, column) => {
+              const id = filter.pivotId || filter.id
+              if (row[id] === undefined) {
+                return true;
+              }
+              try {
+                const regexp = new RegExp(filter.value);
+                return String(row[id]).match(regexp);
+              } catch(e) {
+                return -1 === String(row[id]).indexOf(filter.value) ? false : true;
+              }
+            }}
             sortable={this.props.sortable}
             defaultSorted={this.props.defaultSorted
                 ? this.props.defaultSorted
