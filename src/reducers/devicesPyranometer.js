@@ -6,8 +6,10 @@ import GtbUtils from '../js/GtbUtils'
 // const _logger = new Logger({prefix: 'devicesPyranometer'});
 
 const initialDevicesPyranometer = Map({
-  'list': List([]),
+  'names': List([]),
+  'devices': List([]),
   'selectedId': '',
+  'selected': Map({}),
   'sensingRecords': List([]),
   'progress': false,
 });
@@ -23,17 +25,33 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
 
     case DevicesPyranometer.LOAD_SUCCESS:
       // デバイス情報の取得完了
-      let list = action.list.map((value) => {
+      let names = action.list.map((value) => {
           return {
-            key: value["key"],
+            key: value["id"],
             id: value["id"],
             name: value["name"],
             active: false,
           };
         });
 
+      let devices = action.list.map((value) => {
+          return {
+            id: value["id"],
+            device_type: value["device_type"],
+            name: value["name"],
+            software_version: value["software_version"],
+            model_number: value["model_number"],
+            heartbeated_at: GtbUtils.dateString(new Date(value["heartbeated_at"])),
+            inserted_at: GtbUtils.dateString(new Date(value["inserted_at"])),
+            updated_at: GtbUtils.dateString(new Date(value["updated_at"])),
+          };
+        });
+
       return state.withMutations(map => { map
-        .set('list', fromJS(list))
+        .set('names', fromJS(names))
+        .set('devices', fromJS(devices))
+        .set('selectedId', '')
+        .set('selected', Map({}))
         .set('progress', false)
         ;
       });
@@ -50,10 +68,12 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
 
       return state.withMutations(map => { map
         .set('selectedId', action.id)
-        .update('list', list => list.map(
-          // 選択されたidであればtrue、それ以外はfalseに更新する
-          object => object.set('active', object.get('id') === action.id))
+        .update('names', list => list.map(
+            // 選択されたidであればtrue、それ以外はfalseに更新する
+            object => object.set('active', object.get('id') === action.id)
+          )
         )
+        .set('selected', map.get('devices').find(object => object.get('id') === action.id))
       });
 
     case DevicesPyranometer.LOAD_SENSING_RECORDS_REQUEST:

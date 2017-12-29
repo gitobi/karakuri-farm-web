@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { Feed } from 'semantic-ui-react';
 import Logger from '../js/Logger'
 
-export default class DevicesWateringSummary extends Component {
+export default class DevicesSummary extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
     };
 
-    this.logger = new Logger({prefix: 'DevicesWateringSummary'});
+    this.logger = new Logger({prefix: 'DevicesSummary'});
     this.createFeed = this.createFeed.bind(this);
   }
 

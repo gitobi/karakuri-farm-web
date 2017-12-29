@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger'
+import DevicesSummary from './DevicesSummary'
 import DevicesPyranometerSensingRecords from '../containers/DevicesPyranometerSensingRecords'
 import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 
@@ -55,7 +56,10 @@ export default class DevicesPyranometerTab extends Component {
           {this.createTabHeader("systemLogs", "ログ")}
         </div>
         {this.createTabContent("settingBasic",
-          "基本設定"
+          <DevicesSummary
+            deviceId={this.props.deviceId}
+            device={this.props.device}
+           />
         )}
         {this.createTabContent("sensingRecords",
           <DevicesPyranometerSensingRecords
