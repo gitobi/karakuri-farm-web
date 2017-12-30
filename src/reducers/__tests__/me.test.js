@@ -12,6 +12,8 @@ describe('me reducer', () => {
     ).toEqual(
       Map({
         'isAuthenticated': false,
+        'username': null,
+        'error': null,
       })
     );
   });
@@ -27,6 +29,8 @@ describe('me reducer', () => {
     ).toEqual(
       Map({
         'isAuthenticated': false,
+        'username': null,
+        'error': null,
       })
     );
   });
@@ -43,6 +47,7 @@ describe('me reducer', () => {
     ).toEqual(
       Map({
         'isAuthenticated': false,
+        'username': null,
         'error': 'Error object',
       })
     );
@@ -61,7 +66,7 @@ describe('me reducer', () => {
       Map({
         'isAuthenticated': false,
         'username': 'CreatedUsername',
-          error: '',
+        'error': null,
       })
     );
   });
@@ -72,13 +77,14 @@ describe('me reducer', () => {
         undefined,
         {
           type: Me.RENAME,
-          name: 'Renamed Name'
+          username: 'Renamed Name'
         }
       )
     ).toEqual(
       Map({
         'isAuthenticated': false,
-        'name': 'Renamed Name',
+        'username': 'Renamed Name',
+        'error': null,
       })
     );
   });
