@@ -5,12 +5,14 @@ import { getCurrentMe } from '../actions/me';
 
 import Logger from '../js/Logger';
 
+import AppLayout from '../layouts/AppLayout';
+
 import App from '../components/App';
 import Home from '../components/home/Home';
 import Signup from '../components/home/Signup';
 import Confirm from '../components/home/Confirm';
 import Login from '../components/home/Login';
-import BlankContents from '../components/BlankContents';
+import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
 
@@ -25,6 +27,17 @@ class AppRoute extends Component {
   }
 
   render() {
+
+    const AppLayoutRoute = ({match}) => (
+      <AppLayout match={match}>
+          <Route path={`${match.url}/devices_waterings`} component={DevicesWaterings} />
+          <Route path={`${match.url}/devices_pyranometer`} component={DevicesPyranometers} />
+          <Route path={`${match.url}/alert`} component={BlankComponent} />
+          <Route path={`${match.url}/devices`} component={BlankComponent} />
+          <Route path={`${match.url}/stats`} component={BlankComponent} />
+      </AppLayout>
+      )
+
     return (
       <BrowserRouter>
         <div>
@@ -37,11 +50,7 @@ class AppRoute extends Component {
           <Route path="/signup" component={Signup} />
           <Route path="/confirm" component={Confirm} />
           <Route path="/login" component={Login} />
-          <Route path="/devices_waterings" component={DevicesWaterings} />
-          <Route path="/devices_pyranometer" component={DevicesPyranometers} />
-          <Route path="/alert" component={BlankContents} />
-          <Route path="/devices" component={BlankContents} />
-          <Route path="/stats" component={BlankContents} />
+          <Route path="/app" component={AppLayoutRoute} />
 
         </div>
       </BrowserRouter>

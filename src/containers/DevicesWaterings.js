@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import AppLayout from '../layouts/AppLayout';
 import { Grid, Menu } from 'semantic-ui-react';
 import Logger from '../js/Logger';
 import DevicesWateringTab from '../components/DevicesWateringTab';
@@ -35,7 +34,7 @@ class DevicesWaterings extends Component {
 
   render() {
     return (
-      <AppLayout>
+      <div>
         <Grid columns={2}>
           <Grid.Column width={3}>
             <Menu
@@ -55,7 +54,7 @@ class DevicesWaterings extends Component {
               />
           </Grid.Column>
         </Grid>
-      </AppLayout>
+      </div>
     );
   }
 }

@@ -15,6 +15,10 @@ class AppLayout extends Component {
     this.handleMenubarItemClick = this.handleMenubarItemClick.bind(this);
   }
 
+  componentWillReceiveProps(nextProps, nextState) {
+    this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+  }
+
   handleMenubarItemClick(e, item) {
     this.logger.info('handleMenubarItemClick', e, item);
     this.setState({ activeMenubarItem: item });
