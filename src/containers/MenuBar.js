@@ -55,7 +55,7 @@ class Menubar extends Component {
       >
 
         {/* sidebar content */}
-        <Menu.Item as="a" header>
+        <Menu.Item as={Link} to='/app' header>
           <Image src={icon} verticalAlign="middle" className="App-logo" />
           <span>Karakuri Farm</span>
         </Menu.Item>

@@ -10,12 +10,24 @@ import karakuriFarmApp from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import AppRoute from './containers/AppRoute'
 
+import { Map } from 'immutable';
+import { userPool } from './js/AuthUserPool';
+
 const composeEnhancers = composeWithDevTools({
   // Specify name here, actionsBlacklist, actionsCreators and other options if needed
 });
 
+const currentUser = userPool.getCurrentUser();
+const initialState = {
+  me: Map({
+    isAuthenticated: null != currentUser,
+    username: currentUser ? currentUser.username : null,
+  }),
+};
+
 const store = createStore(
   karakuriFarmApp,
+  initialState,
   composeEnhancers(
     applyMiddleware(
       thunkMiddleware

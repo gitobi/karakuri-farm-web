@@ -1,22 +1,13 @@
-import { AuthenticationDetails, CognitoUserPool, CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
+import { AuthenticationDetails, CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
 import { Me } from '../constants/me';
-
-// Cognito用の定数
-const poolData = {
-  UserPoolId: 'ap-northeast-1_PxckA7qLJ',
-  ClientId: '1pmlfc9pdu6l981euag6v2ja2o'
-}
-
-const userPool = new CognitoUserPool(poolData);
+import { userPool } from '../js/AuthUserPool';
 
 export function getCurrentMe() {
   let isAuthenticated = false;
-
   let cognitoUser = userPool.getCurrentUser();
   if (cognitoUser != null) {
     isAuthenticated = true;
   }
-
   return ({ type: Me.GET_CURRENT, isAuthenticated });
 }
 

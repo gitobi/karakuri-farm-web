@@ -16,11 +16,11 @@ class AppLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
   }
 
   handleMenubarItemClick(e, item) {
-    this.logger.info('handleMenubarItemClick', e, item);
+    // this.logger.info('handleMenubarItemClick', e, item);
     this.setState({ activeMenubarItem: item });
   }
 
