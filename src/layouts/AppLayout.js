@@ -7,16 +7,20 @@ import Menubar from '../containers/MenuBar';
 class AppLayout extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({ prefix: 'App' });
+    this.logger = new Logger({ prefix: 'AppLayout' });
     this.state = {
-      activeMenubarItem: { name: 'devices' },
+      activeMenubarItem: { name: 'device_waterings' },
       visible: true,
     };
     this.handleMenubarItemClick = this.handleMenubarItemClick.bind(this);
   }
 
+  componentWillReceiveProps(nextProps, nextState) {
+    this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+  }
+
   handleMenubarItemClick(e, item) {
-    this.logger.info(e, item);
+    this.logger.info('handleMenubarItemClick', e, item);
     this.setState({ activeMenubarItem: item });
   }
 

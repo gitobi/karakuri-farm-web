@@ -3,6 +3,10 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCurrentMe } from '../actions/me';
 
+import Logger from '../js/Logger';
+
+import AppLayout from '../layouts/AppLayout';
+
 import App from '../components/App';
 import Home from '../components/home/Home';
 import Signup from '../components/home/Signup';
@@ -13,11 +17,27 @@ import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
 
 class AppRoute extends Component {
+  constructor(props) {
+    super(props);
+    this.logger = new Logger({prefix: 'AppRoute'});
+  }
+
   componentDidMount() {
     this.props.getCurrentMe();
   }
 
   render() {
+
+    const AppLayoutRoute = ({match}, ...rest) => (
+      <AppLayout match={match} rest={rest}>
+          <Route path={`${match.url}/devices_waterings`} component={DevicesWaterings} />
+          <Route path={`${match.url}/devices_pyranometer`} component={DevicesPyranometers} />
+          <Route path={`${match.url}/alert`} component={BlankComponent} />
+          <Route path={`${match.url}/devices`} component={BlankComponent} />
+          <Route path={`${match.url}/stats`} component={BlankComponent} />
+      </AppLayout>
+      )
+
     return (
       <BrowserRouter>
         <div>
@@ -30,11 +50,8 @@ class AppRoute extends Component {
           <Route path="/signup" component={Signup} />
           <Route path="/confirm" component={Confirm} />
           <Route path="/login" component={Login} />
-          <Route path="/devices_waterings" component={DevicesWaterings} />
-          <Route path="/devices_pyranometer" component={DevicesPyranometers} />
-          <Route path="/alert" component={BlankComponent} />
-          <Route path="/devices" component={BlankComponent} />
-          <Route path="/stats" component={BlankComponent} />
+          <Route path="/app" component={AppLayoutRoute} />
+
         </div>
       </BrowserRouter>
     );
