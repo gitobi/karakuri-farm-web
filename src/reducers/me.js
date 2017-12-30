@@ -18,7 +18,8 @@ const me = (state = initialState, action) => {
         .set('isAuthenticated', action.isAuthenticated);
     case Me.LOGIN_REQUEST:
       return state
-        .set('isAuthenticated', false);
+        .set('isAuthenticated', false)
+        .set('username', '');
     case Me.LOGIN_FAILURE:
       return state
         .set('isAuthenticated', false)
@@ -26,10 +27,12 @@ const me = (state = initialState, action) => {
     case Me.LOGIN_SUCCESS:
       return state
         .set('isAuthenticated', true)
+        .set('username', action.username)
         .set('error', '');
     case Me.LOGOUT:
       return state
-        .set('isAuthenticated', false);
+        .set('isAuthenticated', false)
+        .set('username', '');
     case Me.RENAME:
       return state.set('name', action.name);
     case Me.SIGN_UP_REQUEST:

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCurrentMe } from '../actions/me';
 
@@ -28,6 +28,19 @@ class AppRoute extends Component {
 
   render() {
 
+    const PrivateRoute = ({ component: Component, ...rest }) => (
+      <Route {...rest} render={props => (
+        this.props.me.get('isAuthenticated') ? (
+          <Component {...props}/>
+        ) : (
+          <Redirect to={{
+            pathname: '/',
+            state: { from: props.location }
+          }}/>
+        )
+      )}/>
+    )
+
     const AppLayoutRoute = ({match}, ...rest) => (
       <AppLayout match={match} rest={rest}>
           <Route path={`${match.url}/devices_waterings`} component={DevicesWaterings} />
@@ -36,7 +49,7 @@ class AppRoute extends Component {
           <Route path={`${match.url}/devices`} component={BlankComponent} />
           <Route path={`${match.url}/stats`} component={BlankComponent} />
       </AppLayout>
-      )
+    )
 
     return (
       <BrowserRouter>
@@ -44,14 +57,26 @@ class AppRoute extends Component {
           <Route
             exact
             path="/"
-            render={() =>(
-              this.props.me.get('isAuthenticated') ? (<Route component={App} />) : (<Route component={Home} />)
+            render={(props) => (
+              <Redirect to={{
+                pathname: '/app/devices',
+                state: { from: props.location }
+              }} />
             )} />
+          <Route path="/home" component={Home} />
           <Route path="/signup" component={Signup} />
           <Route path="/confirm" component={Confirm} />
           <Route path="/login" component={Login} />
-          <Route path="/app" component={AppLayoutRoute} />
-
+          <Route path="/app" render={(props) => (
+            this.props.me.get('isAuthenticated') ? (
+              <AppLayoutRoute {...props}/>
+            ) : (
+              <Redirect to={{
+                pathname: '/home',
+                state: { from: props.location }
+              }}/>
+              )
+            )} />
         </div>
       </BrowserRouter>
     );

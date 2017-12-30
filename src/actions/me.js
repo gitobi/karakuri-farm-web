@@ -117,7 +117,8 @@ export function loginMe(username, password) {
       });
     }).then(
       (result) => {
-        dispatch({ type: Me.LOGIN_SUCCESS });
+        console.log(result, userPool);
+        dispatch({ type: Me.LOGIN_SUCCESS, username: username });
       },
       (error) => {
         dispatch({ type: Me.LOGIN_FAILURE, error });
