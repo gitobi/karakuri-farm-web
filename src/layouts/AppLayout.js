@@ -9,7 +9,7 @@ class AppLayout extends Component {
     super(props);
     this.logger = new Logger({ prefix: 'AppLayout' });
     this.state = {
-      activeMenubarItem: { name: 'device_waterings' },
+      activeMenubarItem: { name: 'dashboard' },
       visible: true,
     };
     this.handleMenubarItemClick = this.handleMenubarItemClick.bind(this);
