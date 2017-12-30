@@ -108,7 +108,6 @@ export function loginMe(username, password) {
       });
     }).then(
       (result) => {
-        console.log(result, userPool);
         dispatch({ type: Me.LOGIN_SUCCESS, username: username });
       },
       (error) => {

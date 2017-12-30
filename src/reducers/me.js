@@ -3,6 +3,7 @@ import { Me } from '../constants/me';
 
 const initialState = Map({
   'isAuthenticated': false,
+  'username': null,
 });
 
 const me = (state = initialState, action) => {
@@ -19,7 +20,7 @@ const me = (state = initialState, action) => {
     case Me.LOGIN_REQUEST:
       return state
         .set('isAuthenticated', false)
-        .set('username', '');
+        .set('username', null);
     case Me.LOGIN_FAILURE:
       return state
         .set('isAuthenticated', false)
