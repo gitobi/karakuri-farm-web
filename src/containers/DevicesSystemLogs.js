@@ -30,35 +30,40 @@ class DevicesSystemLogs extends React.Component {
         width: 180,
         Cell: EditableTable.createNormalCell()
       }, {
+        Header: 'Priority',
+        accessor: 'priority',
+        width: 60,
+        Cell: EditableTable.createNormalCell()
+      }, {
         Header: 'Application',
         accessor: 'application',
-        width: 180,
+        width: 120,
         Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Process',
         accessor: 'process',
-        width: 180,
+        width: 60,
         Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Thread',
         accessor: 'thread',
         width: 180,
-        Cell: EditableTable.createNormalCell()
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
       }, {
         Header: 'Summary',
         accessor: 'summary',
-        width: 180,
-        Cell: EditableTable.createNormalCell()
+        width: 120,
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
       }, {
         Header: 'Detail',
         accessor: 'detail',
-        width: 120,
-        Cell: EditableTable.createNormalCell()
+        width: 180,
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
       }, {
         Header: 'Trace',
         accessor: 'trace',
-        width: 120,
-        Cell: EditableTable.createNormalCell()
+        width: 360,
+        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
     }];
 
     return (
@@ -67,6 +72,7 @@ class DevicesSystemLogs extends React.Component {
           data={this.props.devicesSystemLogs}
           columns={columns}
           loading={this.props.progress}
+          filterable={true}
           sortable={true}
           defaultSorted={[{id: 'updated_at', desc: true}]}
         />

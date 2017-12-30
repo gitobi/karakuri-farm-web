@@ -52,6 +52,7 @@ class DevicesWateringOperationalRecords extends React.Component {
           data={this.props.devicesWateringOperationalRecords}
           columns={columns}
           loading={this.props.progress}
+          filterable={true}
           sortable={true}
           defaultSorted={[{id: 'started_at', desc: true}]}
         />

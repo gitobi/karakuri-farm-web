@@ -43,7 +43,7 @@ class DevicesPyranometers extends Component {
               vertical
               secondary
               pointing
-              items={this.props.devicesPyranometers}
+              items={this.props.names}
               onItemClick={(event, data) => {this.onChangeDevice(data.id);}}
               />
 
@@ -51,6 +51,7 @@ class DevicesPyranometers extends Component {
           <Grid.Column stretched width={13}>
             <DevicesPyranometerTab
               deviceId = {this.props.selectedDevicesPyranometerId}
+              device = {this.props.selectedDevicesPyranometer}
               />
           </Grid.Column>
         </Grid>
@@ -61,8 +62,9 @@ class DevicesPyranometers extends Component {
 
 function mapStateToProps(state) {
   return  {
-    devicesPyranometers: state.devicesPyranometer.get('list').toJS(),
+    names: state.devicesPyranometer.get('names').toJS(),
     selectedDevicesPyranometerId: state.devicesPyranometer.get('selectedId'),
+    selectedDevicesPyranometer: state.devicesPyranometer.get('selected').toJS(),
   };
 }
 
