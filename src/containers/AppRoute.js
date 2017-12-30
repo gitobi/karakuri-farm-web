@@ -28,8 +28,8 @@ class AppRoute extends Component {
 
   render() {
 
-    const AppLayoutRoute = ({match}) => (
-      <AppLayout match={match}>
+    const AppLayoutRoute = ({match}, ...rest) => (
+      <AppLayout match={match} rest={rest}>
           <Route path={`${match.url}/devices_waterings`} component={DevicesWaterings} />
           <Route path={`${match.url}/devices_pyranometer`} component={DevicesPyranometers} />
           <Route path={`${match.url}/alert`} component={BlankComponent} />
