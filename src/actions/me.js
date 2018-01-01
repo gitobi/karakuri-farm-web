@@ -133,7 +133,7 @@ export function renameMe(name) {
   return (
     {
       type: Me.RENAME,
-      name: name
+      name
     }
   );
 }
