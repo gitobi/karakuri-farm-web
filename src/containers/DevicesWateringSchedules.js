@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
-import Formatter from '../js/Formatter'
+import Formatter from '../js/formatter/Formatter'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
