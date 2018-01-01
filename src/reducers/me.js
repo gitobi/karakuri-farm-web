@@ -38,7 +38,7 @@ const me = (state = initialState, action) => {
         .set('isAuthenticated', false)
         .set('username', null);
     case Me.RENAME:
-      return state.set('username', action.username);
+      return state.set('name', action.name);
     case Me.SIGN_UP_REQUEST:
       return state;
     case Me.SIGN_UP_FAILURE:

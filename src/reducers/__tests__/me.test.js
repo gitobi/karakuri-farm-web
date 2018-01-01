@@ -77,14 +77,15 @@ describe('me reducer', () => {
         undefined,
         {
           type: Me.RENAME,
-          username: 'Renamed Name'
+          name: 'Renamed Name'
         }
       )
     ).toEqual(
       Map({
         'isAuthenticated': false,
-        'username': 'Renamed Name',
+        'username': null,
         'error': null,
+        'name': 'Renamed Name',
       })
     );
   });
