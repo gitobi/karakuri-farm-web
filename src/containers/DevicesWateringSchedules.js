@@ -24,20 +24,17 @@ class DevicesWateringSchedules extends React.Component {
 
   update(event, data, row, args) {
     // セル入力時の処理
-    this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
-    this.setState({saveButtonDisabled: false});
-
     // this.logger.info('updated',
     //   'event', event,
     //   'data', data,
     //   'row', row,
     //   'args', args,
     //   'props', this.props,
-    //   )
+    //   );
 
-    // this.props.deviceWateringsSchedules[0].amount = 'aaa';
-
-    // TODO 変更された値を フォーマッティング
+    data.error ? this.refs.table.setError('入力エラー', data.error) : this.refs.table.clearError();
+    this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
+    this.setState({saveButtonDisabled: false});
   }
 
   load() {
@@ -152,6 +149,7 @@ class DevicesWateringSchedules extends React.Component {
           columns={columns}
           loading={this.props.progress}
           defaultSorted={[{id: 'name', desc: false}]}
+          ref='table'
         />
 
       </div>

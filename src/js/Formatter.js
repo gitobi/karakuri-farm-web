@@ -28,14 +28,27 @@ export default class Formatter {
   }
 
   static none(originalValue, newValue) {
-    return newValue;
+    return {value: newValue, error: null};
   }
+
   static decimal(originalValue, newValue) {
-    // TODO
-    return newValue;
+    // console.log('originalValue:', originalValue, 'newValue:', newValue)
+    if (!newValue) {
+      return {value: null, error: null};
+    }
+
+    let pattern = /^\d*(\.\d*)?$/;
+    if (pattern.test(newValue)) {
+      // console.log('format ok');
+      return {value: newValue, error: null};
+    } else {
+      // console.log('format error');
+      return {value: originalValue, error: '半角整数、または、半角少数を入力してください。'};
+    }
   }
+
   static time(originalValue, newValue) {
     // TODO
-    return newValue;
+    return {value: newValue, error: null};
   }
 }
