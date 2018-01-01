@@ -18,6 +18,7 @@ class DevicesWateringSchedules extends React.Component {
     this.save = this.save.bind(this);
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
+    this.enable = this.enable.bind(this);
     this.isDisableSaveButton = this.isDisableSaveButton.bind(this);
   }
 
@@ -61,6 +62,12 @@ class DevicesWateringSchedules extends React.Component {
     this.props.actions.removeDevicesWateringSchedule(row.row.id);
   }
 
+  enable(event, data, row, args) {
+    // 有効無効チェックボックスクリック時の処理
+    this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.checked);
+    this.setState({saveButtonDisabled: false});
+  }
+
   isDisableSaveButton() {
     // 変更されたデータがあるか判定
     return (0 === Object.keys(this.props.devicesWateringSchedulesChanged).length);
@@ -73,8 +80,15 @@ class DevicesWateringSchedules extends React.Component {
     const columns = [{
         Header: 'ID',
         accessor: 'id',
-        width: 120,
+        width: 32,
         Cell: EditableTable.createNormalCell()
+      }, {
+        Header: 'On/Off',
+        accessor: 'enable',
+        width: 64,
+        Cell: EditableTable.createCheckboxCell({
+          callback: this.enable,
+        })
       }, {
         Header: 'Name',
         accessor: 'name',
@@ -85,7 +99,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Start at',
         accessor: 'start_at',
-        width: 120,
+        width: 100,
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("time"),
           callback: this.update,
@@ -93,7 +107,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Stop at',
         accessor: 'stop_at',
-        width: 120,
+        width: 100,
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("time"),
           callback: this.update,
@@ -101,7 +115,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Duration',
         accessor: 'duration',
-        width: 120,
+        width: 80,
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("decimal"),
           callback: this.update,
@@ -109,7 +123,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Amount',
         accessor: 'amount',
-        width: 120,
+        width: 100,
         Cell: EditableTable.createInputCell({
           formatter: new Formatter("decimal"),
           callback: this.update,
@@ -117,7 +131,7 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: '-',
         accessor: 'remove',
-        width: 64,
+        width: 48,
         Cell: EditableTable.createButtonCell({
           icon: "remove",
           callback: this.remove,
