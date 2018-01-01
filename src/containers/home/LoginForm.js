@@ -47,7 +47,7 @@ class LoginForm extends Component {
       password,
     ).then(
       () => {
-        this.props.history.push('/');
+        this.props.history.push('/app');
       },
       () => {
         console.log('fail');

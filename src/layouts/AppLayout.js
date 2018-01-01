@@ -9,18 +9,18 @@ class AppLayout extends Component {
     super(props);
     this.logger = new Logger({ prefix: 'AppLayout' });
     this.state = {
-      activeMenubarItem: { name: 'device_waterings' },
+      activeMenubarItem: { name: 'dashboard' },
       visible: true,
     };
     this.handleMenubarItemClick = this.handleMenubarItemClick.bind(this);
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
   }
 
   handleMenubarItemClick(e, item) {
-    this.logger.info('handleMenubarItemClick', e, item);
+    // this.logger.info('handleMenubarItemClick', e, item);
     this.setState({ activeMenubarItem: item });
   }
 

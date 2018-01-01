@@ -1,8 +1,12 @@
 import { Map } from 'immutable';
 import { Me } from '../constants/me';
+import { userPool } from '../js/AuthUserPool';
 
+const currentUser = userPool.getCurrentUser();
 const initialState = Map({
-  'isAuthenticated': false,
+  'isAuthenticated': null != currentUser,
+  'username': (currentUser ? currentUser.username : null),
+  'error': null,
 });
 
 const me = (state = initialState, action) => {
@@ -12,13 +16,14 @@ const me = (state = initialState, action) => {
     case Me.CONFIRM_FAILURE:
       return state.set('error', action.error);
     case Me.CONFIRM_SUCCESS:
-      return state.set('error', '');
+      return state.set('error', null);
     case Me.GET_CURRENT:
       return state
         .set('isAuthenticated', action.isAuthenticated);
     case Me.LOGIN_REQUEST:
       return state
-        .set('isAuthenticated', false);
+        .set('isAuthenticated', false)
+        .set('username', null);
     case Me.LOGIN_FAILURE:
       return state
         .set('isAuthenticated', false)
@@ -26,10 +31,12 @@ const me = (state = initialState, action) => {
     case Me.LOGIN_SUCCESS:
       return state
         .set('isAuthenticated', true)
-        .set('error', '');
+        .set('username', action.username)
+        .set('error', null);
     case Me.LOGOUT:
       return state
-        .set('isAuthenticated', false);
+        .set('isAuthenticated', false)
+        .set('username', null);
     case Me.RENAME:
       return state.set('name', action.name);
     case Me.SIGN_UP_REQUEST:
@@ -39,7 +46,7 @@ const me = (state = initialState, action) => {
     case Me.SIGN_UP_SUCCESS:
       return state
         .set('username', action.username)
-        .set('error', '');
+        .set('error', null);
     default:
       return state;
   }

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { logoutMe } from '../actions/me';
 import {
   Button,
   Container,
@@ -7,6 +9,8 @@ import {
   Menu,
   Segment,
 } from 'semantic-ui-react';
+
+import Logger from '../js/Logger';
 
 const Footer = () => (
   <Segment
@@ -33,6 +37,17 @@ const Footer = () => (
 
 class HomeLayout extends Component {
 
+  constructor(props) {
+    super(props);
+    this.logger = new Logger({ prefix: 'HomeLayout' });
+    this.handleLogoutClick = this.handleLogoutClick.bind(this);
+  }
+
+  handleLogoutClick(event) {
+    event.preventDefault();
+    this.props.logoutMe();
+  }
+
   render() {
     return (
       <div>
@@ -46,17 +61,34 @@ class HomeLayout extends Component {
                 content="Home"
                 href="/"
                 active />
-              <Menu.Item position='right'>
-                <Button
-                  content="ログイン"
-                  href="/login"
-                  inverted />
-                <Button
-                  content="会員登録"
-                  href="/signup"
-                  inverted
-                  style={{ marginLeft: '0.5em' }} />
-              </Menu.Item>
+              {(() => {
+                return (this.props.isAuthenticated) ? (
+                    <Menu.Item position='right'>
+                      <Button
+                        content={this.props.username}
+                        href="/app"
+                        inverted />
+                      <Button
+                        content="ログアウト"
+                        onClick={this.handleLogoutClick}
+                        href="/"
+                        inverted
+                        style={{ marginLeft: '0.5em' }} />
+                    </Menu.Item>
+                  ) : (
+                    <Menu.Item position='right'>
+                      <Button
+                        content="ログイン"
+                        href="/login"
+                        inverted />
+                      <Button
+                        content="会員登録"
+                        href="/signup"
+                        inverted
+                        style={{ marginLeft: '0.5em' }} />
+                    </Menu.Item>
+                  );
+                })()}
             </Menu>
           </Container>
         </Segment>
@@ -67,4 +99,20 @@ class HomeLayout extends Component {
   }
 }
 
-export default HomeLayout;
+function mapStateToProps(state) {
+  return (
+    {
+      isAuthenticated: state.me.get('isAuthenticated'),
+      username: state.me.get('username'),
+    }
+  );
+}
+
+const mapDispatchToProps = {
+  logoutMe
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeLayout);

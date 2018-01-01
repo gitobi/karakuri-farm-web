@@ -55,7 +55,7 @@ class Menubar extends Component {
       >
 
         {/* sidebar content */}
-        <Menu.Item as="a" header>
+        <Menu.Item as={Link} to='/app' header>
           <Image src={icon} verticalAlign="middle" className="App-logo" />
           <span>Karakuri Farm</span>
         </Menu.Item>
@@ -75,10 +75,7 @@ class Menubar extends Component {
         <Menu.Item>
           <Menu.Header>お問合せ</Menu.Header>
           <Menu.Menu>
-            <Menu.Item
-              onClick={this.handleLogoutClick}
-              as='a'
-              content={this.props.me.get('username')} />
+            {this.menuItem('user', '/app/user', this.props.me.get('username'))}
             <Menu.Item
               onClick={this.handleLogoutClick}
               as='a'
