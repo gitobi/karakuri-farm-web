@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Input } from 'semantic-ui-react';
+import { Button, Input, Checkbox } from 'semantic-ui-react';
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import Logger from '../../js/Logger'
@@ -65,14 +65,55 @@ export default class EditableTable extends React.Component {
           height: '100%',
         }}>
           <Button
-          icon={icon}
-          onClick={((event, data) => {
-            // this.props.onUpdateFromButton(row.row.id, row.index, row.column.id);
-            if (callback) {
-              callback(event, data, row, args);
-            }
-          })}
+            icon={icon}
+            onClick={((event, data) => {
+              // this.props.onUpdateFromButton(row.row.id, row.index, row.column.id);
+              if (callback) {
+                callback(event, data, row, args);
+              }
+            })}
           />
+        </div>
+      )
+    })
+  }
+
+  /**
+   * チェックボックスセルを作成する
+   * @param  {label: String, callback: ((event, data, row, args) => {})} args
+   * @return {((row) => {})}
+   */
+  static createCheckboxCell(args) {
+    var label = args.label;
+    var callback = args.callback;
+    return ((row) => {
+      return (
+        <div
+           style={{
+            display: 'table',
+            verticalAlign: 'middle',
+            textAlign: 'center',
+            width: "100%",
+            height: '100%',
+          }}
+        >
+          <span
+            style={{
+              verticalAlign: 'middle',
+              display: 'table-cell',
+            }}
+          >
+            <Checkbox
+              as='span'
+              label={label ? label : null}
+              checked={row.value}
+              onChange={((event, data) => {
+                if (callback) {
+                  callback(event, data, row, args);
+                }
+              })}
+            />
+          </span>
         </div>
       )
     })
