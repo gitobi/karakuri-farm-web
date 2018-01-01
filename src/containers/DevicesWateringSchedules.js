@@ -3,6 +3,8 @@ import { Button } from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
 import Formatter from '../js/formatter/Formatter'
+import TimeFormatter from '../js/formatter/TimeFormatter'
+import DecimalFormatter from '../js/formatter/DecimalFormatter'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -90,7 +92,7 @@ class DevicesWateringSchedules extends React.Component {
         Header: 'Name',
         accessor: 'name',
         Cell: EditableTable.createInputCell({
-          formatter: new Formatter("none"),
+          formatter: new Formatter(),
           callback: this.update,
         })
       }, {
@@ -98,7 +100,7 @@ class DevicesWateringSchedules extends React.Component {
         accessor: 'start_at',
         width: 100,
         Cell: EditableTable.createInputCell({
-          formatter: new Formatter("time"),
+          formatter: new TimeFormatter(),
           callback: this.update,
         })
       }, {
@@ -106,7 +108,7 @@ class DevicesWateringSchedules extends React.Component {
         accessor: 'stop_at',
         width: 100,
         Cell: EditableTable.createInputCell({
-          formatter: new Formatter("time"),
+          formatter: new TimeFormatter(),
           callback: this.update,
         })
       }, {
@@ -114,7 +116,7 @@ class DevicesWateringSchedules extends React.Component {
         accessor: 'duration',
         width: 80,
         Cell: EditableTable.createInputCell({
-          formatter: new Formatter("decimal"),
+          formatter: new DecimalFormatter(),
           callback: this.update,
         })
       }, {
@@ -122,7 +124,7 @@ class DevicesWateringSchedules extends React.Component {
         accessor: 'amount',
         width: 100,
         Cell: EditableTable.createInputCell({
-          formatter: new Formatter("decimal"),
+          formatter: new DecimalFormatter(),
           callback: this.update,
         })
       }, {

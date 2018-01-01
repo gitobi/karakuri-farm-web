@@ -52,9 +52,8 @@ export default class EditableTable extends React.Component {
           //   'args', args
           //   );
 
-          let formatted = formatter.format(row.value, data.value);
-          data.value = formatted.value;
-          data.error = formatted.error;
+          data.value = formatter.onChange(row.value, data.value);
+          data.error = formatter.error;
           if (callback) {
             callback(event, data, row, args);
           }
@@ -69,9 +68,8 @@ export default class EditableTable extends React.Component {
           //   'args', args
           //   );
 
-          let formatted = formatter.format(row.value, data.value);
-          data.value = formatted.value;
-          data.error = formatted.error;
+          data.value = formatter.onBlur(row.value, data.value);
+          data.error = formatter.error;
           if (callback) {
             callback(event, data, row, args);
           }
