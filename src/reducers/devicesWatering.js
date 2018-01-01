@@ -216,11 +216,14 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     case DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS:
       // 実績の取得完了
       let operationalRecords = action.operationalRecords.map((value) => {
+          let started_at = new Date(value["started_at"]);
+          let ended_at = new Date(value["ended_at"]);
           return {
             // key: value["key"],
             id: value["id"],
-            started_at: GtbUtils.dateString(new Date(value["started_at"])),
-            ended_at:   GtbUtils.dateString(new Date(value["ended_at"])),
+            started_at: GtbUtils.dateString(started_at),
+            ended_at:   GtbUtils.dateString(ended_at),
+            duration:   GtbUtils.round((ended_at - started_at) / 1000),
             amount: value["amount"],
             is_manual: value["is_manual"],
           };
