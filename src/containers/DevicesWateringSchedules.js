@@ -24,18 +24,22 @@ class DevicesWateringSchedules extends React.Component {
     this.isDisableSaveButton = this.isDisableSaveButton.bind(this);
   }
 
-  update(event, data, row, args) {
+  update(event, data, row, args, changed) {
     // セル入力時の処理
-    this.logger.info('updated',
-      'event', event,
-      'data', data,
-      'row', row,
-      'args', args,
-      'props', this.props,
-      );
+    // this.logger.info('updated',
+    //   'event', event,
+    //   'data', data,
+    //   'row', row,
+    //   'args', args,
+    //   'changed', changed,
+    //   'props', this.props,
+    //   );
 
-    data.error ? this.refs.table.setError('入力エラー', data.error) : this.refs.table.clearError();
-    this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
+    this.props.actions.updateDevicesWateringSchedule(
+      changed.rowId,
+      changed.columnId,
+      changed.value,
+      changed.error);
     this.setState({saveButtonDisabled: false});
   }
 
@@ -91,39 +95,44 @@ class DevicesWateringSchedules extends React.Component {
       }, {
         Header: 'Name',
         accessor: 'name',
-        Cell: EditableTable.createInputCell({
+        customCell: {
+          type: 'input',
           formatter: new Formatter(),
           callback: this.update,
-        })
+        }
       }, {
         Header: 'Start at',
         accessor: 'start_at',
         width: 100,
-        Cell: EditableTable.createInputCell({
+        customCell: {
+          type: 'input',
           formatter: new TimeFormatter(),
           callback: this.update,
-        })
+        }
       }, {
         Header: 'Stop at',
         accessor: 'stop_at',
         width: 100,
-        Cell: EditableTable.createInputCell({
+        customCell: {
+          type: 'input',
           formatter: new TimeFormatter(),
           callback: this.update,
-        })
+        }
       }, {
         Header: 'Duration',
         accessor: 'duration',
         width: 80,
-        Cell: EditableTable.createInputCell({
+        customCell: {
+          type: 'input',
           formatter: new DecimalFormatter(),
           callback: this.update,
-        })
+        }
       }, {
         Header: 'Amount',
         accessor: 'amount',
         width: 100,
         customCell: {
+          type: 'input',
           formatter: new DecimalFormatter(),
           callback: this.update,
         }

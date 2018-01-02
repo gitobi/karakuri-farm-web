@@ -11,14 +11,5 @@ export default class DecimalFormatter extends Formatter {
     this.placeholder = "00:00:00";
   }
 
-  onChange(originalValue, newValue) {
-    // TODO
-    return newValue;
-  }
-
-  onBlur(originalValue, newValue) {
-    // TODO
-    return newValue;
-  }
 
 }

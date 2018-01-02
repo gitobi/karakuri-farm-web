@@ -61,8 +61,28 @@ export function loadDevicesWateringSchedules(deviceId) {
   }
 };
 
+function checkValid(changed) {
+  let valid = true;
+  Object.keys(changed).forEach((key) => {
+    let change = changed[key];
+    if (change._errors) {
+      Object.keys(change._errors).forEach((column) => {
+        // console.log('check...', change._errors[column], null === change._errors[column]);
+        valid &= (null === change._errors[column]);
+      });
+    }
+  });
+  return valid;
+}
+
 export function saveDevicesWateringSchedules(schedules, changed) {
   return function(dispatch) {
+
+    if (!checkValid(changed)) {
+      // TODO エラーメッセージ
+      return false;
+    }
+
     dispatch({ type: DevicesWatering.SAVE_SCHEDULES_REQUEST });
     let bastet = new Bastet();
 
@@ -140,12 +160,13 @@ export function removeDevicesWateringSchedule(id) {
   };
 };
 
-export function updateDevicesWateringSchedule(id, column, value) {
+export function updateDevicesWateringSchedule(id, column, value, error) {
   return {
     type: DevicesWatering.UPDATE_SCHEDULE,
     id: id,
     column: column,
     value: value,
+    error: error,
   };
 };
 

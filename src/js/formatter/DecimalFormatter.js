@@ -11,28 +11,18 @@ export default class DecimalFormatter extends Formatter {
     this.placeholder = "0.0";
   }
 
-  onChange(originalValue, newValue) {
-    // console.log('originalValue:', originalValue, 'newValue:', newValue)
-    if (!newValue) {
-      return newValue;
+  checkFormat(value) {
+    if (!value) {
+      return true;
     }
 
     let pattern = /^\d*(\.\d*)?$/;
-    if (pattern.test(newValue)) {
+    if (pattern.test(value)) {
       // console.log('format ok');
-      this.error = null;
-      return newValue;
+      return true;
     } else {
       // console.log('format error');
-      this.error = '半角整数、または、半角少数を入力してください。'
-      return originalValue;
+      return '半角整数、または、半角少数を入力してください。';
     }
   }
-
-  onBlur(originalValue, newValue) {
-    this.error = null;
-    return newValue;
-  }
-
-
 }

@@ -12,20 +12,49 @@ export default class EditableTable extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'EditableTable'});
-    this.update = this.update.bind(this);
-    this.setError = this.setError.bind(this);
-    this.clearError = this.clearError.bind(this);
+
+    this.cellOnChange = this.cellOnChange.bind(this);
+    this.cellOnBlur = this.cellOnBlur.bind(this);
+    this.setErrorMessage = this.setErrorMessage.bind(this);
+    this.clearErrorMessage = this.clearErrorMessage.bind(this);
+    this.isCellError = this.isCellError.bind(this);
+    this.setCellError = this.setCellError.bind(this);
+    this.clearCellError = this.clearCellError.bind(this);
     this.createColumns = this.createColumns.bind(this);
-    this.createInputCell2 = this.createInputCell2.bind(this);
+    this.createInputCell = this.createInputCell.bind(this);
+
     this.state = {
       // columns: props.columns,
       columns: this.createColumns(props.columns),
-      error: {header: null, message: null},
+      errorMessage: {header: null, content: null},
+      errorCells: {},
     };
   }
 
+  componentWillReceiveProps(nextProps, nextState) {
+    if ((this.props.data && nextProps.data)
+      && (this.props.data !== nextProps.data)) {
+      // props.dataが変更された場合はエラーセルを設定し直す
+      this.clearCellError();
+      nextProps.data.forEach((element, index, array) => {
+        if (element._errors) {
+          // this.logger.log('each', element)
+          Object.keys(element._errors).forEach((column) => {
+            let error = element._errors[column];
+            let row = {
+              row: {id: element.id},
+              column: {id: column},
+            }
+            this.setCellError(row, error);
+          });
+        }
+      });
+    }
+    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+  }
+
   createColumns(params) {
-    this.logger.log('createColumns bef', params);
+    // this.logger.log('createColumns bef', params);
     let columns = [];
     params.forEach((element, index, array) => {
       let column = {
@@ -39,25 +68,86 @@ export default class EditableTable extends React.Component {
         column.Cell = element.Cell;
       }
       if (element.customCell) {
-        column.Cell = this.createInputCell2({
-          formatter: element.customCell.formatter,
-          callback: element.customCell.callback,
-        });
+        switch (element.customCell.type) {
+          case 'input':
+            column.Cell = this.createInputCell({
+              formatter: element.customCell.formatter,
+              callback: element.customCell.callback,
+            });
+            break;
+          default:
+            break;
+        }
       }
       columns.push(column);
     });
-    this.logger.log('createColumns aft', columns);
+    // this.logger.log('createColumns aft', columns);
     return columns;
   }
 
-  update(event, data, row, args) {
-    // this.logger.info('updated',
+  cellOnChange(event, data, row, args, value, formatter) {
+    // this.logger.info('cellOnChange',
     //   'event', event,
     //   'data', data,
     //   'row', row,
     //   'args', args,
+    //   'value', value,
+    //   'formatter', formatter,
     //   'props', this.props,
-    //   'state', this.state);
+    //   'state', this.state
+    // );
+
+    let changed = {
+      rowId: row.row.id,
+      columnId: row.column.id,
+      newValue: value,
+      originalValue: row.value,
+    };
+
+    if (formatter) {
+      let returnMap = formatter.onChange(row.value, value);
+      this.setCellError(row, returnMap.error);
+      returnMap.error
+        ? this.setErrorMessage('入力エラー', returnMap.error)
+        : this.clearErrorMessage()
+        ;
+      changed.value = returnMap.value;
+      changed.error = returnMap.error;
+      changed.valid = returnMap.valid;
+    }
+
+    return changed;
+  }
+
+  cellOnBlur(event, data, row, args, value, formatter) {
+    // this.logger.info('cellOnChange',
+    //   'event', event,
+    //   'data', data,
+    //   'row', row,
+    //   'args', args,
+    //   'value', value,
+    //   'formatter', formatter,
+    //   'props', this.props,
+    //   'state', this.state
+    // );
+
+    let changed = {
+      rowId: row.row.id,
+      columnId: row.column.id,
+      newValue: value,
+      originalValue: row.value,
+    };
+
+    if (formatter) {
+      let returnMap = formatter.onBlur(value);
+      this.setCellError(row, returnMap.error);
+      this.clearErrorMessage();
+      changed.value = returnMap.value;
+      changed.error = returnMap.error;
+      changed.valid = returnMap.valid;
+    }
+
+    return changed;
   }
 
 
@@ -66,51 +156,27 @@ export default class EditableTable extends React.Component {
    * @param  {formatter: Formatter, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  createInputCell2(args) {
-    let formatter = args.formatter;
-    let callback = args.callback;
-    let errors = {};
+  createInputCell(args) {
+    var formatter = args.formatter;
+    var callback = args.callback;
     return ((row) => {
+      // console.log('createInputCell on method call!', row.index, row.column.id);
       return <Input
         fluid
         placeholder={formatter.placeholder}
         value={(row.value || '')}
-        error={errors[row.row.id] ? true : false}
+        error={this.isCellError(row)}
         onChange={((event, data) => {
-
-          console.log('inputCell.onChange:',
-            'event', event,
-            'data', data,
-            'row', row,
-            'args', args
-            );
-
-          data.value = formatter.onChange(row.value, data.value);
-          data.error = formatter.error;
-          errors[row.row.id] = data.error ? true : false;
-          console.log('errors', errors);
+          let changed = this.cellOnChange(event, data, row, args, data.value, formatter);
           if (callback) {
-            callback(event, data, row, args);
+            callback(event, data, row, args, changed);
           }
         })}
         onBlur={((event, data) => {
-          data.value = row.value;
-
-          console.log('inputCell.onBlur:',
-            'event', event,
-            'data', data,
-            'row', row,
-            'args', args
-            );
-
-          data.value = formatter.onBlur(row.value, data.value);
-          data.error = formatter.error;
-          if (callback) {
-            callback(event, data, row, args);
-          }
+          this.cellOnBlur(event, data, row, args, row.value, formatter);
         })}
       />
-    })
+    });
   }
 
   /**
@@ -118,52 +184,59 @@ export default class EditableTable extends React.Component {
    * @param  {formatter: Formatter, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  static createInputCell(args) {
-    let formatter = args.formatter;
-    let callback = args.callback;
-    let errors = {};
-    return ((row) => {
-      return <Input
-        fluid
-        placeholder={formatter.placeholder}
-        value={(row.value || '')}
-        error={errors[row.row.id] ? true : false}
-        onChange={((event, data) => {
+  // static createInputCell(args) {
+  //   var formatter = args.formatter;
+  //   var callback = args.callback;
+  //     var errors = {};
+  //   const method = (row) => {
+  //     console.log('createInputCell on method call!', row.index, row.column.id);
+  //     // var errors = _errors;
+  //     return <Input
+  //       fluid
+  //       placeholder={formatter.placeholder}
+  //       value={(row.value || '')}
+  //       error={errors[row.row.id + row.column.id] ? true : false}
+  //       onChange={((event, data) => {
 
-          console.log('inputCell.onChange:',
-            'event', event,
-            'data', data,
-            'row', row,
-            'args', args
-            );
+  //         console.log('inputCell.onChange:',
+  //           'event', event,
+  //           'data', data,
+  //           'row', row,
+  //           'args', args,
+  //           'errors', errors,
+  //           );
 
-          data.value = formatter.onChange(row.value, data.value);
-          data.error = formatter.error;
-          errors[row.row.id] = data.error ? true : false;
-          if (callback) {
-            callback(event, data, row, args);
-          }
-        })}
-        onBlur={((event, data) => {
-          data.value = row.value;
+  //         data.value = formatter.onChange(row.value, data.value);
+  //         data.error = formatter.error;
+  //         errors[row.row.id + row.column.id] = data.error ? true : false;
+  //         console.log('errors', errors);
+  //         if (callback) {
+  //           callback(event, data, row, args);
+  //         }
+  //       })}
+  //       onBlur={((event, data) => {
+  //         data.value = row.value;
 
-          console.log('inputCell.onBlur:',
-            'event', event,
-            'data', data,
-            'row', row,
-            'args', args
-            );
+  //         console.log('inputCell.onBlur:',
+  //           'event', event,
+  //           'data', data,
+  //           'row', row,
+  //           'args', args,
+  //           'errors', errors,
+  //           );
 
-          data.value = formatter.onBlur(row.value, data.value);
-          data.error = formatter.error;
-          errors[row.row.id] = data.error ? true : false;
-          if (callback) {
-            callback(event, data, row, args);
-          }
-        })}
-      />
-    })
-  }
+  //         data.value = formatter.onBlur(row.value, data.value);
+  //         data.error = formatter.error;
+  //         errors[row.row.id + row.column.id] = data.error ? true : false;
+  //         console.log('errors', errors);
+  //         if (callback) {
+  //           callback(event, data, row, args);
+  //         }
+  //       })}
+  //     />
+  //   };
+  //   return method;
+  // }
 
   /**
    * ボタンセルを作成する
@@ -263,14 +336,34 @@ export default class EditableTable extends React.Component {
     })
   }
 
-  clearError() {
-    this.setError(null, null);
-  }
-  setError(header, message) {
-    let error = this.state.error;
+  setErrorMessage(header, content) {
+    let error = this.state.errorMessage;
     error.header = header;
-    error.message = message;
-    this.setState({error: error});
+    error.content = content;
+    this.setState({errorMessage: error});
+  }
+
+  clearErrorMessage() {
+    this.setErrorMessage(null, null);
+  }
+
+  isCellError(row) {
+    return this.state.errorCells[row.row.id + row.column.id] ? true : false;
+  }
+
+  setCellError(row, error) {
+    // this.logger.log('setCellError', row, error);
+    let errorCells = this.state.errorCells;
+    errorCells[row.row.id + row.column.id] = error ? true : false;
+    this.setState({errorCells: errorCells});
+  }
+
+  clearCellError() {
+    let errorCells = this.state.errorCells;
+    for(var key in errorCells){
+        delete errorCells[key];
+    }
+    this.setState({errorCells: errorCells});
   }
 
   /**
@@ -321,9 +414,9 @@ export default class EditableTable extends React.Component {
         on='click'
         hideOnScroll
         position='top center'
-        header={this.state.error.header}
-        content={this.state.error.message}
-        open={(this.state.error.header || this.state.error.message) ? true : false}
+        header={this.state.errorMessage.header}
+        content={this.state.errorMessage.content}
+        open={(this.state.errorMessage.header || this.state.errorMessage.content) ? true : false}
       />
     );
   }
