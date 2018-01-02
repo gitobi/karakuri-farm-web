@@ -26,13 +26,13 @@ class DevicesWateringSchedules extends React.Component {
 
   update(event, data, row, args) {
     // セル入力時の処理
-    // this.logger.info('updated',
-    //   'event', event,
-    //   'data', data,
-    //   'row', row,
-    //   'args', args,
-    //   'props', this.props,
-    //   );
+    this.logger.info('updated',
+      'event', event,
+      'data', data,
+      'row', row,
+      'args', args,
+      'props', this.props,
+      );
 
     data.error ? this.refs.table.setError('入力エラー', data.error) : this.refs.table.clearError();
     this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
@@ -123,10 +123,10 @@ class DevicesWateringSchedules extends React.Component {
         Header: 'Amount',
         accessor: 'amount',
         width: 100,
-        Cell: EditableTable.createInputCell({
+        customCell: {
           formatter: new DecimalFormatter(),
           callback: this.update,
-        })
+        }
       }, {
         Header: '-',
         accessor: 'remove',

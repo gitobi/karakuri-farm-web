@@ -11,13 +11,43 @@ export default class EditableTable extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {
-      error: {header: null, message: null},
-    };
     this.logger = new Logger({prefix: 'EditableTable'});
     this.update = this.update.bind(this);
     this.setError = this.setError.bind(this);
     this.clearError = this.clearError.bind(this);
+    this.createColumns = this.createColumns.bind(this);
+    this.createInputCell2 = this.createInputCell2.bind(this);
+    this.state = {
+      // columns: props.columns,
+      columns: this.createColumns(props.columns),
+      error: {header: null, message: null},
+    };
+  }
+
+  createColumns(params) {
+    this.logger.log('createColumns bef', params);
+    let columns = [];
+    params.forEach((element, index, array) => {
+      let column = {
+        Header: element.Header,
+        accessor: element.accessor,
+      };
+      if (element.width) {
+        column.width = element.width;
+      }
+      if (element.Cell) {
+        column.Cell = element.Cell;
+      }
+      if (element.customCell) {
+        column.Cell = this.createInputCell2({
+          formatter: element.customCell.formatter,
+          callback: element.customCell.callback,
+        });
+      }
+      columns.push(column);
+    });
+    this.logger.log('createColumns aft', columns);
+    return columns;
   }
 
   update(event, data, row, args) {
@@ -30,30 +60,35 @@ export default class EditableTable extends React.Component {
     //   'state', this.state);
   }
 
+
   /**
    * 入力セルを作成する
    * @param  {formatter: Formatter, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  static createInputCell(args) {
-    var formatter = args.formatter;
-    var callback = args.callback;
+  createInputCell2(args) {
+    let formatter = args.formatter;
+    let callback = args.callback;
+    let errors = {};
     return ((row) => {
       return <Input
         fluid
         placeholder={formatter.placeholder}
-        value={row.value || ''}
+        value={(row.value || '')}
+        error={errors[row.row.id] ? true : false}
         onChange={((event, data) => {
 
-          // console.log('inputCell.onChange:',
-          //   'event', event,
-          //   'data', data,
-          //   'row', row,
-          //   'args', args
-          //   );
+          console.log('inputCell.onChange:',
+            'event', event,
+            'data', data,
+            'row', row,
+            'args', args
+            );
 
           data.value = formatter.onChange(row.value, data.value);
           data.error = formatter.error;
+          errors[row.row.id] = data.error ? true : false;
+          console.log('errors', errors);
           if (callback) {
             callback(event, data, row, args);
           }
@@ -61,15 +96,67 @@ export default class EditableTable extends React.Component {
         onBlur={((event, data) => {
           data.value = row.value;
 
-          // console.log('inputCell.onBlur:',
-          //   'event', event,
-          //   'data', data,
-          //   'row', row,
-          //   'args', args
-          //   );
+          console.log('inputCell.onBlur:',
+            'event', event,
+            'data', data,
+            'row', row,
+            'args', args
+            );
 
           data.value = formatter.onBlur(row.value, data.value);
           data.error = formatter.error;
+          if (callback) {
+            callback(event, data, row, args);
+          }
+        })}
+      />
+    })
+  }
+
+  /**
+   * 入力セルを作成する
+   * @param  {formatter: Formatter, callback: ((event, data, row, args) => {})} args
+   * @return {((row) => {})}
+   */
+  static createInputCell(args) {
+    let formatter = args.formatter;
+    let callback = args.callback;
+    let errors = {};
+    return ((row) => {
+      return <Input
+        fluid
+        placeholder={formatter.placeholder}
+        value={(row.value || '')}
+        error={errors[row.row.id] ? true : false}
+        onChange={((event, data) => {
+
+          console.log('inputCell.onChange:',
+            'event', event,
+            'data', data,
+            'row', row,
+            'args', args
+            );
+
+          data.value = formatter.onChange(row.value, data.value);
+          data.error = formatter.error;
+          errors[row.row.id] = data.error ? true : false;
+          if (callback) {
+            callback(event, data, row, args);
+          }
+        })}
+        onBlur={((event, data) => {
+          data.value = row.value;
+
+          console.log('inputCell.onBlur:',
+            'event', event,
+            'data', data,
+            'row', row,
+            'args', args
+            );
+
+          data.value = formatter.onBlur(row.value, data.value);
+          data.error = formatter.error;
+          errors[row.row.id] = data.error ? true : false;
           if (callback) {
             callback(event, data, row, args);
           }
@@ -197,7 +284,7 @@ export default class EditableTable extends React.Component {
         <ReactTable
           className="-striped -highlight"
           data={this.props.data}
-          columns={this.props.columns}
+          columns={this.state.columns}
           loading={this.props.loading}
           defaultPageSize={12}
           minRows={3}

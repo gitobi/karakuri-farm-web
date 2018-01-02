@@ -30,6 +30,7 @@ export default class DecimalFormatter extends Formatter {
   }
 
   onBlur(originalValue, newValue) {
+    this.error = null;
     return newValue;
   }
 
