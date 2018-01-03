@@ -15,6 +15,7 @@ export default class EditableTable extends React.Component {
 
     this.cellOnChange = this.cellOnChange.bind(this);
     this.cellOnBlur = this.cellOnBlur.bind(this);
+
     this.setErrorMessage = this.setErrorMessage.bind(this);
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.isCellError = this.isCellError.bind(this);
@@ -57,6 +58,9 @@ export default class EditableTable extends React.Component {
     // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
   }
 
+  /**
+   * ReactTableのColumnsに準拠するオブジェクトを作成する。
+   */
   createColumns(params) {
     // this.logger.log('createColumns bef', params);
     let columns = [];
@@ -96,6 +100,9 @@ export default class EditableTable extends React.Component {
     return columns;
   }
 
+  /**
+   * 入力タイプのセルの値が変更された際にフォーマッターを呼び出す。
+   */
   cellOnChange(event, data, row, args, value, formatter) {
     // this.logger.info('cellOnChange',
     //   'event', event,
@@ -130,6 +137,9 @@ export default class EditableTable extends React.Component {
     return changed;
   }
 
+  /**
+   * 入力タイプのセルからフォーカスが外れた際にフォーマッターを呼び出す。
+   */
   cellOnBlur(event, data, row, args, value, formatter) {
     // this.logger.info('cellOnChange',
     //   'event', event,
@@ -288,6 +298,11 @@ export default class EditableTable extends React.Component {
     })
   }
 
+  /**
+   * エラーメッセージを設定する
+   * @param {[type]} header  [description]
+   * @param {[type]} content [description]
+   */
   setErrorMessage(header, content) {
     let error = this.state.errorMessage;
     error.header = header;
@@ -295,14 +310,28 @@ export default class EditableTable extends React.Component {
     this.setState({errorMessage: error});
   }
 
+  /**
+   * エラーメッセージを削除する
+   * @return {[type]} [description]
+   */
   clearErrorMessage() {
     this.setErrorMessage(null, null);
   }
 
+  /**
+   * 対象セルでエラーが発生しているかを確認する
+   * @param  {[type]}  row [description]
+   * @return {Boolean}     [description]
+   */
   isCellError(row) {
     return this.state.errorCells[row.row.id + row.column.id] ? true : false;
   }
 
+  /**
+   * 対象セルにエラーを設定する
+   * @param {[type]} row   [description]
+   * @param {[type]} error [description]
+   */
   setCellError(row, error) {
     // this.logger.log('setCellError', row, error);
     let errorCells = this.state.errorCells;
@@ -310,6 +339,10 @@ export default class EditableTable extends React.Component {
     this.setState({errorCells: errorCells});
   }
 
+  /**
+   * 全てのセルのエラーを削除する
+   * @return {[type]} [description]
+   */
   clearCellError() {
     let errorCells = this.state.errorCells;
     for(var key in errorCells){
@@ -324,6 +357,7 @@ export default class EditableTable extends React.Component {
   render() {
     // this.logger.log('render', this.props, this.state);
 
+    // ReactTable
     const table = (
       <div>
         <ReactTable
@@ -357,6 +391,7 @@ export default class EditableTable extends React.Component {
       </div>
     );
 
+    // エラー発生時のポップアップを表示するため、Popupでwrapする。
     return (
       <Popup
         trigger={table}
