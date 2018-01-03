@@ -2,7 +2,9 @@ import React from 'react'
 import { Button } from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
-import Formatter from '../js/Formatter'
+import Formatter from '../js/formatter/Formatter'
+import TimeFormatter from '../js/formatter/TimeFormatter'
+import DecimalFormatter from '../js/formatter/DecimalFormatter'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -22,22 +24,23 @@ class DevicesWateringSchedules extends React.Component {
     this.isDisableSaveButton = this.isDisableSaveButton.bind(this);
   }
 
-  update(event, data, row, args) {
+  update(event, data, row, args, changed) {
     // セル入力時の処理
-    this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.value);
-    this.setState({saveButtonDisabled: false});
-
     // this.logger.info('updated',
     //   'event', event,
     //   'data', data,
     //   'row', row,
     //   'args', args,
+    //   'changed', changed,
     //   'props', this.props,
-    //   )
+    //   );
 
-    // this.props.deviceWateringsSchedules[0].amount = 'aaa';
-
-    // TODO 変更された値を フォーマッティング
+    this.props.actions.updateDevicesWateringSchedule(
+      changed.rowId,
+      changed.columnId,
+      changed.value,
+      changed.error);
+    this.setState({saveButtonDisabled: false});
   }
 
   load() {
@@ -81,61 +84,40 @@ class DevicesWateringSchedules extends React.Component {
         Header: 'ID',
         accessor: 'id',
         width: 32,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'On/Off',
         accessor: 'enable',
         width: 64,
-        Cell: EditableTable.createCheckboxCell({
-          callback: this.enable,
-        })
+        customCell: { type: 'checkbox', callback: this.enable }
       }, {
         Header: 'Name',
         accessor: 'name',
-        Cell: EditableTable.createInputCell({
-          formatter: new Formatter("none"),
-          callback: this.update,
-        })
+        customCell: { type: 'input', formatter: new Formatter(), callback: this.update }
       }, {
         Header: 'Start at',
         accessor: 'start_at',
         width: 100,
-        Cell: EditableTable.createInputCell({
-          formatter: new Formatter("time"),
-          callback: this.update,
-        })
-      }, {
-        Header: 'Stop at',
-        accessor: 'stop_at',
-        width: 100,
-        Cell: EditableTable.createInputCell({
-          formatter: new Formatter("time"),
-          callback: this.update,
-        })
+        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
+      // }, {
+      //   Header: 'Stop at',
+      //   accessor: 'stop_at',
+      //   width: 100,
+      //   customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
       }, {
         Header: 'Duration',
         accessor: 'duration',
         width: 80,
-        Cell: EditableTable.createInputCell({
-          formatter: new Formatter("decimal"),
-          callback: this.update,
-        })
+        customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
       }, {
         Header: 'Amount',
         accessor: 'amount',
         width: 100,
-        Cell: EditableTable.createInputCell({
-          formatter: new Formatter("decimal"),
-          callback: this.update,
-        })
+        customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
       }, {
         Header: '-',
         accessor: 'remove',
         width: 48,
-        Cell: EditableTable.createButtonCell({
-          icon: "remove",
-          callback: this.remove,
-        })
+        customCell: { type: 'button', icon: 'remove', callback: this.remove }
     }];
 
     return (

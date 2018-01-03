@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Input, Checkbox } from 'semantic-ui-react';
+import { Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import Logger from '../../js/Logger'
@@ -12,39 +12,192 @@ export default class EditableTable extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'EditableTable'});
-    this.update = this.update.bind(this);
+
+    this.cellOnChange = this.cellOnChange.bind(this);
+    this.cellOnBlur = this.cellOnBlur.bind(this);
+
+    this.setErrorMessage = this.setErrorMessage.bind(this);
+    this.clearErrorMessage = this.clearErrorMessage.bind(this);
+    this.isCellError = this.isCellError.bind(this);
+    this.setCellError = this.setCellError.bind(this);
+    this.clearCellError = this.clearCellError.bind(this);
+
+    this.createColumns = this.createColumns.bind(this);
+    this.createInputCell = this.createInputCell.bind(this);
+    this.createButtonCell = this.createButtonCell.bind(this);
+    this.createCheckboxCell = this.createCheckboxCell.bind(this);
+    this.createNormalCell = this.createNormalCell.bind(this);
+
+    this.state = {
+      // columns: props.columns,
+      columns: this.createColumns(props.columns),
+      errorMessage: {header: null, content: null},
+      errorCells: {},
+    };
   }
 
-  update(event, data, row, args) {
-    // this.logger.info('updated',
+  componentWillReceiveProps(nextProps, nextState) {
+    if ((this.props.data && nextProps.data)
+      && (this.props.data !== nextProps.data)) {
+      // props.dataが変更された場合はエラーセルを設定し直す
+      this.clearCellError();
+      nextProps.data.forEach((element, index, array) => {
+        if (element._errors) {
+          // this.logger.log('each', element)
+          Object.keys(element._errors).forEach((column) => {
+            let error = element._errors[column];
+            let row = {
+              row: {id: element.id},
+              column: {id: column},
+            }
+            this.setCellError(row, error);
+          });
+        }
+      });
+    }
+    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+  }
+
+  /**
+   * ReactTableのColumnsに準拠するオブジェクトを作成する。
+   */
+  createColumns(params) {
+    // this.logger.log('createColumns bef', params);
+    let columns = [];
+    params.forEach((element, index, array) => {
+      let column = {
+        Header: element.Header,
+        accessor: element.accessor,
+      };
+      if (element.width) {
+        column.width = element.width;
+      }
+      if (element.Cell) {
+        column.Cell = element.Cell;
+      }
+      if (element.customCell) {
+        switch (element.customCell.type) {
+          case 'input':
+            column.Cell = this.createInputCell(element.customCell);
+            break;
+          case 'button':
+            column.Cell = this.createButtonCell(element.customCell);
+            break;
+          case 'checkbox':
+            column.Cell = this.createCheckboxCell(element.customCell);
+            break;
+          default:
+            column.Cell = this.createNormalCell(element.customCell);
+            break;
+        }
+      } else {
+        column.Cell = this.createNormalCell(element.customCell);
+      }
+
+      columns.push(column);
+    });
+    // this.logger.log('createColumns aft', columns);
+    return columns;
+  }
+
+  /**
+   * 入力タイプのセルの値が変更された際にフォーマッターを呼び出す。
+   */
+  cellOnChange(event, data, row, args, value, formatter) {
+    // this.logger.info('cellOnChange',
     //   'event', event,
     //   'data', data,
     //   'row', row,
     //   'args', args,
+    //   'value', value,
+    //   'formatter', formatter,
     //   'props', this.props,
-    //   'state', this.state);
+    //   'state', this.state
+    // );
+
+    let changed = {
+      rowId: row.row.id,
+      columnId: row.column.id,
+      newValue: value,
+      originalValue: row.value,
+    };
+
+    if (formatter) {
+      let returnMap = formatter.onChange(row.value, value);
+      this.setCellError(row, returnMap.error);
+      returnMap.error
+        ? this.setErrorMessage('入力エラー', returnMap.error)
+        : this.clearErrorMessage()
+        ;
+      changed.value = returnMap.value;
+      changed.error = returnMap.error;
+      changed.valid = returnMap.valid;
+    }
+
+    return changed;
   }
+
+  /**
+   * 入力タイプのセルからフォーカスが外れた際にフォーマッターを呼び出す。
+   */
+  cellOnBlur(event, data, row, args, value, formatter) {
+    // this.logger.info('cellOnChange',
+    //   'event', event,
+    //   'data', data,
+    //   'row', row,
+    //   'args', args,
+    //   'value', value,
+    //   'formatter', formatter,
+    //   'props', this.props,
+    //   'state', this.state
+    // );
+
+    let changed = {
+      rowId: row.row.id,
+      columnId: row.column.id,
+      newValue: value,
+      originalValue: row.value,
+    };
+
+    if (formatter) {
+      let returnMap = formatter.onBlur(value);
+      this.setCellError(row, returnMap.error);
+      this.clearErrorMessage();
+      changed.value = returnMap.value;
+      changed.error = returnMap.error;
+      changed.valid = returnMap.valid;
+    }
+
+    return changed;
+  }
+
 
   /**
    * 入力セルを作成する
    * @param  {formatter: Formatter, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  static createInputCell(args) {
+  createInputCell(args) {
     var formatter = args.formatter;
     var callback = args.callback;
     return ((row) => {
+      // console.log('createInputCell on method call!', row.index, row.column.id);
       return <Input
         fluid
         placeholder={formatter.placeholder}
-        value={row.value || ''}
+        value={(row.value || '')}
+        error={this.isCellError(row)}
         onChange={((event, data) => {
+          let changed = this.cellOnChange(event, data, row, args, data.value, formatter);
           if (callback) {
-            callback(event, data, row, args);
+            callback(event, data, row, args, changed);
           }
         })}
+        onBlur={((event, data) => {
+          this.cellOnBlur(event, data, row, args, row.value, formatter);
+        })}
       />
-    })
+    });
   }
 
   /**
@@ -52,7 +205,7 @@ export default class EditableTable extends React.Component {
    * @param  {icon: String, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  static createButtonCell(args) {
+  createButtonCell(args) {
     var icon = args.icon;
     var callback = args.callback;
     return ((row) => {
@@ -83,7 +236,7 @@ export default class EditableTable extends React.Component {
    * @param  {label: String, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  static createCheckboxCell(args) {
+  createCheckboxCell(args) {
     var label = args.label;
     var callback = args.callback;
     return ((row) => {
@@ -123,7 +276,7 @@ export default class EditableTable extends React.Component {
    * 通常セルを作成する
    * @return {((row) => {})}
    */
-  static createNormalCell(args) {
+  createNormalCell(args) {
     var divStyle = args && args.divStyle ? args.divStyle : new Map();
     return ((row) => {
       return (
@@ -146,41 +299,121 @@ export default class EditableTable extends React.Component {
   }
 
   /**
+   * エラーメッセージを設定する
+   * @param {[type]} header  [description]
+   * @param {[type]} content [description]
+   */
+  setErrorMessage(header, content) {
+    let error = this.state.errorMessage;
+    error.header = header;
+    error.content = content;
+    this.setState({errorMessage: error});
+  }
+
+  /**
+   * エラーメッセージを削除する
+   * @return {[type]} [description]
+   */
+  clearErrorMessage() {
+    this.setErrorMessage(null, null);
+  }
+
+  /**
+   * 対象セルでエラーが発生しているかを確認する
+   * @param  {[type]}  row [description]
+   * @return {Boolean}     [description]
+   */
+  isCellError(row) {
+    return this.state.errorCells[row.row.id + row.column.id] ? true : false;
+  }
+
+  /**
+   * 対象セルにエラーを設定する
+   * @param {[type]} row   [description]
+   * @param {[type]} error [description]
+   */
+  setCellError(row, error) {
+    // this.logger.log('setCellError', row, error);
+    let errorCells = this.state.errorCells;
+    errorCells[row.row.id + row.column.id] = error ? true : false;
+    this.setState({errorCells: errorCells});
+  }
+
+  /**
+   * 全てのセルのエラーを削除する
+   * @return {[type]} [description]
+   */
+  clearCellError() {
+    let errorCells = this.state.errorCells;
+    for(var key in errorCells){
+        delete errorCells[key];
+    }
+    this.setState({errorCells: errorCells});
+  }
+
+  /**
    * TODO テーブル描画 必要に応じて外部から設定できるように修正していく
    */
   render() {
     // this.logger.log('render', this.props, this.state);
-    return (
+
+    // ReactTable
+    const table = (
       <div>
         <ReactTable
-            className="-striped -highlight"
-            data={this.props.data}
-            columns={this.props.columns}
-            loading={this.props.loading}
-            defaultPageSize={12}
-            minRows={3}
-            filterable={this.props.filterable
-              ? this.props.filterable
-              : false
+          className="-striped -highlight"
+          data={this.props.data}
+          columns={this.state.columns}
+          loading={this.props.loading}
+          defaultPageSize={12}
+          minRows={3}
+          filterable={this.props.filterable
+            ? this.props.filterable
+            : false
+          }
+          defaultFilterMethod={(filter, row, column) => {
+            const id = filter.pivotId || filter.id
+            if (row[id] === undefined) {
+              return true;
             }
-            defaultFilterMethod={(filter, row, column) => {
-              const id = filter.pivotId || filter.id
-              if (row[id] === undefined) {
-                return true;
-              }
-              try {
-                const regexp = new RegExp(filter.value);
-                return String(row[id]).match(regexp);
-              } catch(e) {
-                return -1 === String(row[id]).indexOf(filter.value) ? false : true;
-              }
-            }}
-            sortable={this.props.sortable}
-            defaultSorted={this.props.defaultSorted
-                ? this.props.defaultSorted
-                : [{id: 'id', desc: false}]}
+            try {
+              const regexp = new RegExp(filter.value);
+              return String(row[id]).match(regexp);
+            } catch(e) {
+              return -1 === String(row[id]).indexOf(filter.value) ? false : true;
+            }
+          }}
+          sortable={this.props.sortable}
+          defaultSorted={this.props.defaultSorted
+              ? this.props.defaultSorted
+              : [{id: 'id', desc: false}]}
         />
       </div>
+    );
+
+    // エラー発生時のポップアップを表示するため、Popupでwrapする。
+    return (
+      <Popup
+        trigger={table}
+        wide='very'
+        size='large'
+        inverted
+        on='click'
+        hideOnScroll
+        position='top center'
+        open={(this.state.errorMessage.header || this.state.errorMessage.content) ? true : false}
+      >
+        <Popup.Header>{this.state.errorMessage.header}</Popup.Header>
+        <Popup.Content>
+          {(() => {
+            if (this.state.errorMessage.content instanceof Array) {
+              return <List items={this.state.errorMessage.content} />
+            } else {
+              return this.state.errorMessage.content;
+            }
+          })()}
+        </Popup.Content>
+      </Popup>
     );
   }
 

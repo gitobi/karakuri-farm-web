@@ -23,32 +23,26 @@ class DevicesWateringOperationalRecords extends React.Component {
         Header: 'ID',
         accessor: 'id',
         width: 120,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Started at',
         accessor: 'started_at',
         width: 180,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Ended at',
         accessor: 'ended_at',
         width: 180,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Duration',
         accessor: 'duration',
         width: 120,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Amount',
         accessor: 'amount',
         width: 120,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'is Manual',
         accessor: 'is_manual',
         width: 120,
-        Cell: EditableTable.createNormalCell()
     }];
 
     return (
