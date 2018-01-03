@@ -98,11 +98,11 @@ class DevicesWateringSchedules extends React.Component {
         accessor: 'start_at',
         width: 100,
         customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
-      }, {
-        Header: 'Stop at',
-        accessor: 'stop_at',
-        width: 100,
-        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
+      // }, {
+      //   Header: 'Stop at',
+      //   accessor: 'stop_at',
+      //   width: 100,
+      //   customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
       }, {
         Header: 'Duration',
         accessor: 'duration',
