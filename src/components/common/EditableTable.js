@@ -20,8 +20,12 @@ export default class EditableTable extends React.Component {
     this.isCellError = this.isCellError.bind(this);
     this.setCellError = this.setCellError.bind(this);
     this.clearCellError = this.clearCellError.bind(this);
+
     this.createColumns = this.createColumns.bind(this);
     this.createInputCell = this.createInputCell.bind(this);
+    this.createButtonCell = this.createButtonCell.bind(this);
+    this.createCheckboxCell = this.createCheckboxCell.bind(this);
+    this.createNormalCell = this.createNormalCell.bind(this);
 
     this.state = {
       // columns: props.columns,
@@ -70,15 +74,22 @@ export default class EditableTable extends React.Component {
       if (element.customCell) {
         switch (element.customCell.type) {
           case 'input':
-            column.Cell = this.createInputCell({
-              formatter: element.customCell.formatter,
-              callback: element.customCell.callback,
-            });
+            column.Cell = this.createInputCell(element.customCell);
+            break;
+          case 'button':
+            column.Cell = this.createButtonCell(element.customCell);
+            break;
+          case 'checkbox':
+            column.Cell = this.createCheckboxCell(element.customCell);
             break;
           default:
+            column.Cell = this.createNormalCell(element.customCell);
             break;
         }
+      } else {
+        column.Cell = this.createNormalCell(element.customCell);
       }
+
       columns.push(column);
     });
     // this.logger.log('createColumns aft', columns);
@@ -180,70 +191,11 @@ export default class EditableTable extends React.Component {
   }
 
   /**
-   * 入力セルを作成する
-   * @param  {formatter: Formatter, callback: ((event, data, row, args) => {})} args
-   * @return {((row) => {})}
-   */
-  // static createInputCell(args) {
-  //   var formatter = args.formatter;
-  //   var callback = args.callback;
-  //     var errors = {};
-  //   const method = (row) => {
-  //     console.log('createInputCell on method call!', row.index, row.column.id);
-  //     // var errors = _errors;
-  //     return <Input
-  //       fluid
-  //       placeholder={formatter.placeholder}
-  //       value={(row.value || '')}
-  //       error={errors[row.row.id + row.column.id] ? true : false}
-  //       onChange={((event, data) => {
-
-  //         console.log('inputCell.onChange:',
-  //           'event', event,
-  //           'data', data,
-  //           'row', row,
-  //           'args', args,
-  //           'errors', errors,
-  //           );
-
-  //         data.value = formatter.onChange(row.value, data.value);
-  //         data.error = formatter.error;
-  //         errors[row.row.id + row.column.id] = data.error ? true : false;
-  //         console.log('errors', errors);
-  //         if (callback) {
-  //           callback(event, data, row, args);
-  //         }
-  //       })}
-  //       onBlur={((event, data) => {
-  //         data.value = row.value;
-
-  //         console.log('inputCell.onBlur:',
-  //           'event', event,
-  //           'data', data,
-  //           'row', row,
-  //           'args', args,
-  //           'errors', errors,
-  //           );
-
-  //         data.value = formatter.onBlur(row.value, data.value);
-  //         data.error = formatter.error;
-  //         errors[row.row.id + row.column.id] = data.error ? true : false;
-  //         console.log('errors', errors);
-  //         if (callback) {
-  //           callback(event, data, row, args);
-  //         }
-  //       })}
-  //     />
-  //   };
-  //   return method;
-  // }
-
-  /**
    * ボタンセルを作成する
    * @param  {icon: String, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  static createButtonCell(args) {
+  createButtonCell(args) {
     var icon = args.icon;
     var callback = args.callback;
     return ((row) => {
@@ -274,7 +226,7 @@ export default class EditableTable extends React.Component {
    * @param  {label: String, callback: ((event, data, row, args) => {})} args
    * @return {((row) => {})}
    */
-  static createCheckboxCell(args) {
+  createCheckboxCell(args) {
     var label = args.label;
     var callback = args.callback;
     return ((row) => {
@@ -314,7 +266,7 @@ export default class EditableTable extends React.Component {
    * 通常セルを作成する
    * @return {((row) => {})}
    */
-  static createNormalCell(args) {
+  createNormalCell(args) {
     var divStyle = args && args.divStyle ? args.divStyle : new Map();
     return ((row) => {
       return (

@@ -28,42 +28,38 @@ class DevicesSystemLogs extends React.Component {
         Header: '発生日時',
         accessor: 'raised_at',
         width: 180,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Priority',
         accessor: 'priority',
         width: 60,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Application',
         accessor: 'application',
         width: 120,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Process',
         accessor: 'process',
         width: 60,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Thread',
         accessor: 'thread',
         width: 180,
-        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
+        customCell: { divStyle: { textAlign: 'left' }}
       }, {
         Header: 'Summary',
         accessor: 'summary',
         width: 120,
-        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
+        customCell: { divStyle: { textAlign: 'left' }}
       }, {
         Header: 'Detail',
         accessor: 'detail',
         width: 180,
-        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
+        customCell: { divStyle: { textAlign: 'left' }}
       }, {
         Header: 'Trace',
         accessor: 'trace',
         width: 360,
-        Cell: EditableTable.createNormalCell({divStyle: {textAlign: 'left'}})
+        customCell: { divStyle: { textAlign: 'left' }}
     }];
 
     return (

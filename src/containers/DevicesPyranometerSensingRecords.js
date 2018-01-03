@@ -23,22 +23,18 @@ class DevicesPyranometerSensingRecords extends React.Component {
         Header: 'ID',
         accessor: 'id',
         width: 120,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Sensed at',
         accessor: 'sensed_at',
         width: 180,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Measurement',
         accessor: 'measurement',
         width: 120,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'Samplings_count',
         accessor: 'samplings_count',
         width: 120,
-        Cell: EditableTable.createNormalCell()
     }];
 
     return (

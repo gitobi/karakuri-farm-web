@@ -84,66 +84,40 @@ class DevicesWateringSchedules extends React.Component {
         Header: 'ID',
         accessor: 'id',
         width: 32,
-        Cell: EditableTable.createNormalCell()
       }, {
         Header: 'On/Off',
         accessor: 'enable',
         width: 64,
-        Cell: EditableTable.createCheckboxCell({
-          callback: this.enable,
-        })
+        customCell: { type: 'checkbox', callback: this.enable }
       }, {
         Header: 'Name',
         accessor: 'name',
-        customCell: {
-          type: 'input',
-          formatter: new Formatter(),
-          callback: this.update,
-        }
+        customCell: { type: 'input', formatter: new Formatter(), callback: this.update }
       }, {
         Header: 'Start at',
         accessor: 'start_at',
         width: 100,
-        customCell: {
-          type: 'input',
-          formatter: new TimeFormatter(),
-          callback: this.update,
-        }
+        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
       }, {
         Header: 'Stop at',
         accessor: 'stop_at',
         width: 100,
-        customCell: {
-          type: 'input',
-          formatter: new TimeFormatter(),
-          callback: this.update,
-        }
+        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
       }, {
         Header: 'Duration',
         accessor: 'duration',
         width: 80,
-        customCell: {
-          type: 'input',
-          formatter: new DecimalFormatter(),
-          callback: this.update,
-        }
+        customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
       }, {
         Header: 'Amount',
         accessor: 'amount',
         width: 100,
-        customCell: {
-          type: 'input',
-          formatter: new DecimalFormatter(),
-          callback: this.update,
-        }
+        customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
       }, {
         Header: '-',
         accessor: 'remove',
         width: 48,
-        Cell: EditableTable.createButtonCell({
-          icon: "remove",
-          callback: this.remove,
-        })
+        customCell: { type: 'button', icon: 'remove', callback: this.remove }
     }];
 
     return (
