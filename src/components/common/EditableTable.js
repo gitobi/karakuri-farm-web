@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Input, Checkbox, Popup } from 'semantic-ui-react';
+import { Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import Logger from '../../js/Logger'
@@ -366,10 +366,19 @@ export default class EditableTable extends React.Component {
         on='click'
         hideOnScroll
         position='top center'
-        header={this.state.errorMessage.header}
-        content={this.state.errorMessage.content}
         open={(this.state.errorMessage.header || this.state.errorMessage.content) ? true : false}
-      />
+      >
+        <Popup.Header>{this.state.errorMessage.header}</Popup.Header>
+        <Popup.Content>
+          {(() => {
+            if (this.state.errorMessage.content instanceof Array) {
+              return <List items={this.state.errorMessage.content} />
+            } else {
+              return this.state.errorMessage.content;
+            }
+          })()}
+        </Popup.Content>
+      </Popup>
     );
   }
 
