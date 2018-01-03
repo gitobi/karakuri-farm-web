@@ -134,7 +134,6 @@ class DevicesWateringSchedules extends React.Component {
           columns={columns}
           loading={this.props.progress}
           defaultSorted={[{id: 'name', desc: false}]}
-          ref='table'
         />
 
       </div>
