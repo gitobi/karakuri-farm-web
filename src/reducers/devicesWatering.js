@@ -204,10 +204,10 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
       // 変更点のみ保持するタイプ
       return state.withMutations(map => { map
-          .setIn(['schedules', updateIndex, action.column], action.value)
-          .setIn(['changed', action.id, action.column], action.value)
-          .setIn(['schedules', updateIndex, '_errors', action.column], action.error)
-          .setIn(['changed', action.id, '_errors', action.column], action.error)
+        .setIn(['schedules', updateIndex, action.column], action.value)
+        .setIn(['changed', action.id, action.column], action.value)
+        .setIn(['schedules', updateIndex, '_errors', action.column], action.error)
+        .setIn(['changed', action.id, '_errors', action.column], action.error)
         ;
       });
 
