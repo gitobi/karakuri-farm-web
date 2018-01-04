@@ -45,7 +45,7 @@ class DevicesWateringSchedules extends React.Component {
 
   load() {
     // ロードボタンクリック時の処理
-    this.props.actions.loadDevicesWateringSchedules(this.props.selectedDevicesWateringId);
+    this.props.actions.loadDevicesWateringSchedules(this.props.device.id);
   }
 
   save() {
@@ -57,7 +57,7 @@ class DevicesWateringSchedules extends React.Component {
 
   add() {
     // スケジュール追加ボタンクリック時の処理
-    this.props.actions.addDevicesWateringSchedule();
+    this.props.actions.addDevicesWateringSchedule(this.props.device.id);
   }
 
   remove(event, data, row, args) {
@@ -143,7 +143,7 @@ class DevicesWateringSchedules extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
+    device: state.devicesWatering.get('device').toJS(),
     devicesWateringSchedules: state.devicesWatering.get('schedules').toJS(),
     devicesWateringSchedulesChanged: state.devicesWatering.get('changed').toJS(),
     progress: state.devicesWatering.get('progress'),

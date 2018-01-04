@@ -5,31 +5,19 @@ import DevicesPyranometerTab from '../components/DevicesPyranometerTab';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions/devicesPyranometer';
+import * as Actions from '../actions/device';
 
 class DevicesPyranometers extends Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: 'DevicesPyranometers'});
     this.onChangeDevice = this.onChangeDevice.bind(this);
-    this.load = this.load.bind(this);
-  }
-
-  componentWillMount() {
-    // マウント時にデバイス情報をロードする
-    this.logger.info('conponentWillMount', "props", this.props);
-    this.load();
-  }
-
-  load() {
-    // デバイス情報をロード
-    this.props.actions.loadDevicesPyranometers();
   }
 
   onChangeDevice(id) {
     // デバイスを選択状態にする
     // TODO 保存がされてない場合は変更時に警告する
-    this.props.actions.selectDevicesPyranometer(id, this.props.selectedDevicesPyranometerId);
+    this.props.actions.selectDevice(id, this.props.devices, this.props.deviceId);
   }
 
   render() {
@@ -49,8 +37,8 @@ class DevicesPyranometers extends Component {
           </Grid.Column>
           <Grid.Column stretched width={13}>
             <DevicesPyranometerTab
-              deviceId = {this.props.selectedDevicesPyranometerId}
-              device = {this.props.selectedDevicesPyranometer}
+              deviceId = {this.props.deviceId}
+              device = {this.props.device}
               />
           </Grid.Column>
         </Grid>
@@ -60,10 +48,12 @@ class DevicesPyranometers extends Component {
 }
 
 function mapStateToProps(state) {
+  // console.log('state qqq: ', state.device.toJS());
   return  {
-    names: state.devicesPyranometer.get('names').toJS(),
-    selectedDevicesPyranometerId: state.devicesPyranometer.get('selectedId'),
-    selectedDevicesPyranometer: state.devicesPyranometer.get('selected').toJS(),
+    names: state.device.getIn(['typeNames', 'pyranometer']) ? state.device.getIn(['typeNames', 'pyranometer']).toJS() : [],
+    deviceId: state.device.get('selectedId'),
+    device: state.device.get('selected').toJS(),
+    devices: state.device.get('devices').toJS(),
   };
 }
 

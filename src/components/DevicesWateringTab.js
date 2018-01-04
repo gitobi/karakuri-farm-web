@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger'
-import DevicesSummary from './DevicesSummary'
+import DevicesSummary from '../containers/DevicesSummary'
 import DevicesWateringSchedules from '../containers/DevicesWateringSchedules'
 import DevicesWateringOperationalRecords from '../containers/DevicesWateringOperationalRecords'
 import DevicesSystemLogs from '../containers/DevicesSystemLogs'

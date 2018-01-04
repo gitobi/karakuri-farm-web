@@ -3,6 +3,7 @@ import '../components/App.css';
 import { Segment } from 'semantic-ui-react';
 import Logger from '../js/Logger';
 import Menubar from '../containers/MenuBar';
+import AppStore from '../containers/AppStore';
 
 class AppLayout extends Component {
   constructor(props) {
@@ -20,13 +21,17 @@ class AppLayout extends Component {
   }
 
   handleMenubarItemClick(e, item) {
-    // this.logger.info('handleMenubarItemClick', e, item);
-    this.setState({ activeMenubarItem: item });
+    this.logger.info('handleMenubarItemClick', e, item);
+    this.logger.info('refs', this.refs);
+    this.logger.info('refs', this.refs.getWrappedInstance());
+    // this.refs.ppp.aaa(item);
+    // this.setState({ activeMenubarItem: item });
   }
 
   render() {
     return (
       <Segment>
+        <AppStore ref="app_store" />
         <Menubar
           visible={this.state.visible}
           handleMenubarItemClick={this.handleMenubarItemClick}

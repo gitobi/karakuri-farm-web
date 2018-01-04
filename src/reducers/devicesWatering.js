@@ -6,11 +6,8 @@ import GtbUtils from '../js/GtbUtils'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
 const initialDevicesWatering = Map({
-  'names': List([]),
-  'devices': List([]),
+  'device': Map({}),
   'schedules': List([]),
-  'selectedId': '',
-  'selected': Map({}),
   'changed': Map({}),
   'operationalRecords': List([]),
   'progress': false,
@@ -21,63 +18,8 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
   // _logger.info('action :', action);
 
   switch (action.type) {
-    case DevicesWatering.LOAD_REQUEST:
-      // デバイス情報の取得開始
-      return state.set('progress', true);
-
-    case DevicesWatering.LOAD_SUCCESS:
-      // デバイス情報の取得完了
-      let names = action.list.map((value) => {
-          return {
-            key: value["id"],
-            id: value["id"],
-            name: value["name"],
-            active: false,
-          };
-        });
-      let devices = action.list.map((value) => {
-          return {
-            id: value["id"],
-            device_type: value["device_type"],
-            name: value["name"],
-            software_version: value["software_version"],
-            model_number: value["model_number"],
-            heartbeated_at: GtbUtils.dateString(new Date(value["heartbeated_at"])),
-            inserted_at: GtbUtils.dateString(new Date(value["inserted_at"])),
-            updated_at: GtbUtils.dateString(new Date(value["updated_at"])),
-          };
-        });
-
-      return state.withMutations(map => { map
-        .set('names', fromJS(names))
-        .set('devices', fromJS(devices))
-        .set('schedules', List([]))
-        .set('changed', Map({}))
-        .set('selectedId', '')
-        .set('selected', Map({}))
-        .set('progress', false)
-        ;
-      });
-
-    case DevicesWatering.LOAD_FAILURE:
-      // デバイス情報の取得失敗
-      return state.set('progress', false);
-
     case DevicesWatering.SELECT:
-      // デバイスの選択
-
-      // 指定された要素を選択状態にする
-      // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
-
-      return state.withMutations(map => { map
-        .set('selectedId', action.id)
-        .update('names', list => list.map(
-            // 選択されたidであればtrue、それ以外はfalseに更新する
-            object => object.set('active', object.get('id') === action.id)
-          )
-        )
-        .set('selected', map.get('devices').find(object => object.get('id') === action.id))
-      });
+      return state.set('device', fromJS(action.device));
 
     case DevicesWatering.LOAD_SCHEDULES_REQUEST:
       // スケジュール情報の取得開始
@@ -171,7 +113,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       // 行を作成して追加
       var row = Map({
         id: tmpId,
-        device_id: state.get('selectedId'),
+        device_id: action.params.deviceId,
         _state: 'create',
       })
 

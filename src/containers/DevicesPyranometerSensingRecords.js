@@ -55,7 +55,6 @@ class DevicesPyranometerSensingRecords extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    selectedDevicesPyranometerId: state.devicesPyranometer.get('selectedId'),
     devicesPyranometerSensingRecords: state.devicesPyranometer.get('sensingRecords').toJS(),
     progress: state.devicesPyranometer.get('progress'),
   };

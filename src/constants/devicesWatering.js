@@ -2,9 +2,6 @@ const app = "@KF"
 const module = "DEVICES_WATERING"
 const prefix = `${app}/${module}/`
 export const DevicesWatering = {
-  LOAD_REQUEST: prefix + 'LOAD_REQUEST',
-  LOAD_SUCCESS: prefix + 'LOAD_SUCCESS',
-  LOAD_FAILURE: prefix + 'LOAD_FAILURE',
   SELECT: prefix + 'SELECT',
   LOAD_SCHEDULES_REQUEST: prefix + 'LOAD_SCHEDULES_REQUEST',
   LOAD_SCHEDULES_SUCCESS: prefix + 'LOAD_SCHEDULES_SUCCESS',
