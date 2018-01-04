@@ -51,30 +51,24 @@ export function selectApp(app) {
   }
 }
 
-export function selectDevice(deviceId, devices, lastDeviceId) {
+export function selectDevice(deviceId, devices) {
   return function(dispatch) {
-    return new Promise((re) => {
+    return new Promise(() => {
+      // デバイスを選択し情報の再読込
+      // TODO このハンドリングは別の場所で行うべきかもしれない
+      // TODO 現状、デバイスIDが変更される度にBastetから取得することになるが、タンクすべきかもしれない
       let device = GtbUtils.find(devices, 'id', deviceId);
-      // console.log('select: device', device);
-      if (deviceId === lastDeviceId) {
-        dispatch({ type: Device.SELECT, id: deviceId, device: device, lastId: lastDeviceId });
-
-      } else {
-        // デバイスIDが変更された場合は再読込も行う
-        // TODO このハンドリングは別の場所で行うべきかもしれない
-        // TODO 現状、デバイスIDが変更される度にBastetから取得することになるが、タンクすべきかもしれない
-        dispatch({ type: Device.SELECT, id: deviceId, device: device, lastId: lastDeviceId });
-        switch (device.device_type) {
-          case 'watering':
-            dispatch(loadWateringInformations(device));
-            break;
-          case 'pyranometer':
-            dispatch(loadPyranometerInformations(device));
-            break;
-          default:
-            console.error('error: unknown device_type', device.device_type);
-            break;
-        }
+      dispatch({ type: Device.SELECT, id: deviceId });
+      switch (device.device_type) {
+        case 'watering':
+          dispatch(loadWateringInformations(device));
+          break;
+        case 'pyranometer':
+          dispatch(loadPyranometerInformations(device));
+          break;
+        default:
+          console.error('error: unknown device_type', device.device_type);
+          break;
       }
     });
   }

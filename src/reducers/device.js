@@ -91,17 +91,19 @@ const device = (state = initialDevice, action) => {
 
       // 指定された要素を選択状態にする
       // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
+
+      let device = GtbUtils.find(state.get('devices').toJS(), 'id', action.id);
       return state.withMutations(map => { map
         .set('selectedDeviceId', action.id)
-        .set('selectedDevice', fromJS(action.device))
-        .setIn(['typeSelectedDeviceId', action.device.device_type], action.id)
-        .setIn(['typeSelectedDevice', action.device.device_type], fromJS(action.device))
+        .set('selectedDevice', fromJS(device))
+        .setIn(['typeSelectedDeviceId', device.device_type], action.id)
+        .setIn(['typeSelectedDevice', device.device_type], fromJS(device))
         .update('names', list => list.map(
             // 選択されたidであればtrue、それ以外はfalseに更新する
             object => object.set('active', object.get('id') === action.id)
           )
         )
-        .updateIn(['typeNames', action.device.device_type], list => list.map(
+        .updateIn(['typeNames', device.device_type], list => list.map(
             // 選択されたidであればtrue、それ以外はfalseに更新する
             object => object.set('active', object.get('id') === action.id)
           )

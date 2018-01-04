@@ -14,9 +14,11 @@ class DevicesSetting extends Component {
   }
 
   onChangeDevice(id) {
-    // デバイスを選択状態にする
     // TODO 保存がされてない場合は変更時に警告する
-    this.props.actions.selectDevice(id, this.props.devices, this.props.deviceId);
+    if (id !== this.props.deviceId) {
+      // デバイスをが変更された場合
+      this.props.actions.selectDevice(id, this.props.devices);
+    }
   }
 
   render() {

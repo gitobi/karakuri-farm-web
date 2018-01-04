@@ -11,7 +11,6 @@ class AppStore extends Component {
     super(props);
     this.logger = new Logger({prefix: 'AppStore'});
     this.load = this.load.bind(this);
-    this.selectDevice = this.selectDevice.bind(this);
   }
 
   componentWillMount() {
@@ -43,20 +42,6 @@ class AppStore extends Component {
       });
   }
 
-  selectDevice(deviceId, force) {
-    this.props.actions.selectDevice(
-      deviceId,
-      this.props.devices,
-      force ? '' : this.props.selectedDeviceId
-    ).then(
-      result => {
-        // this.logger.log('selectDevice success:', result);
-      },
-      error => {
-        this.logger.error('selectDevice error:', error);
-      });
-  }
-
   render() {
     return (
       <div className='_appStore'/>
@@ -67,8 +52,6 @@ class AppStore extends Component {
 function mapStateToProps(state) {
   return  {
     typeSelectedDevice: state.device.get('typeSelectedDevice').toJS(),
-    selectedDeviceId: state.device.get('selectedDeviceId'),
-    devices: state.device.get('devices').toJS(),
     selectedApp: state.device.get('selectedApp'),
   };
 }
