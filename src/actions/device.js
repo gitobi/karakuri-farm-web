@@ -4,6 +4,11 @@ import {loadPyranometerInformations} from './devicesPyranometer';
 import GtbUtils from '../js/GtbUtils'
 import Bastet from '../js/Bastet'
 
+/**
+ * deviceをloadする
+ * @param  {Object} args [description]
+ * @return {[type]}      [description]
+ */
 export function loadDevices(args = {}) {
   // TODO argsにはOrganizationIdなどを予定
   return function(dispatch) {
@@ -20,6 +25,13 @@ export function loadDevices(args = {}) {
   }
 };
 
+/**
+ * 現在各appで選択状態になっているdeviceの詳細情報をloadする
+ * load後に呼び出されることを想定
+ * @param  {[type]} app          [description]
+ * @param  {[type]} typeSelected [description]
+ * @return {[type]}              [description]
+ */
 export function initialLoadDeviceInformations(app, typeSelected) {
   return function(dispatch) {
     let promises = [];
@@ -44,13 +56,23 @@ export function initialLoadDeviceInformations(app, typeSelected) {
   }
 }
 
+/**
+ * appを選択する
+ * @param  {[type]} app [description]
+ * @return {[type]}     [description]
+ */
 export function selectApp(app) {
-  // Appの切り替え
   return function(dispatch) {
     dispatch({ type: Device.APP, app: app });
   }
 }
 
+/**
+ * deviceを選択する
+ * @param  {[type]} deviceId [description]
+ * @param  {[type]} devices  [description]
+ * @return {[type]}          [description]
+ */
 export function selectDevice(deviceId, devices) {
   return function(dispatch) {
     return new Promise(() => {

@@ -19,7 +19,6 @@ import DevicesPyranometers from './DevicesPyranometers';
 class AppRoute extends Component {
   constructor(props) {
     super(props);
-    this.state = {app: ''};
     this.logger = new Logger({prefix: 'AppRoute'});
   }
 
