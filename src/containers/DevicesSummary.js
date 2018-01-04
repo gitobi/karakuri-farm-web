@@ -53,7 +53,7 @@ class DevicesSummary extends Component {
 
 function mapStateToProps(state) {
   return  {
-    device: state.device.get('selected').toJS(),
+    device: state.device.get('selectedDevice').toJS(),
   };
 }
 

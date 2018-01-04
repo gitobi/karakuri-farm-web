@@ -21,11 +21,8 @@ class AppLayout extends Component {
   }
 
   handleMenubarItemClick(e, item) {
-    this.logger.info('handleMenubarItemClick', e, item);
-    this.logger.info('refs', this.refs);
-    this.logger.info('refs', this.refs.getWrappedInstance());
-    // this.refs.ppp.aaa(item);
-    // this.setState({ activeMenubarItem: item });
+    // this.logger.info('handleMenubarItemClick', e, item);
+    this.setState({ activeMenubarItem: item });
   }
 
   render() {

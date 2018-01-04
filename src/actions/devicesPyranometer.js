@@ -4,7 +4,7 @@ import Bastet from '../js/Bastet'
 export function loadPyranometerInformations(device) {
   return function(dispatch) {
     dispatch({ type: DevicesPyranometer.SELECT, device: device });
-    dispatch(loadDevicesPyranometerSensingRecords(device.id));
+    return dispatch(loadDevicesPyranometerSensingRecords(device.id));
   }
 };
 

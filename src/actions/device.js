@@ -14,11 +14,35 @@ export function loadDevices(args = {}) {
         dispatch({ type: Device.LOAD_SUCCESS, list: result });
       },
       error => {
-        dispatch({ type: Device.LOAD_FAILURE, list: error })
+        dispatch({ type: Device.LOAD_FAILURE, list: error });
       }
     );
   }
 };
+
+export function initialLoadDeviceInformations(app, typeSelected) {
+  return function(dispatch) {
+    let promises = [];
+    Object.keys(typeSelected).forEach((key) => {
+      let device = typeSelected[key];
+      switch (device.device_type) {
+        case 'watering':
+          promises.push(dispatch(loadWateringInformations(device)));
+          break;
+        case 'pyranometer':
+          promises.push(dispatch(loadPyranometerInformations(device)));
+          break;
+        default:
+          console.error('error: unknown device_type', device.device_type);
+          break;
+      }
+    });
+    return Promise.all(promises).then(
+      dispatch({ type: Device.APP, app: app })
+      )
+    ;
+  }
+}
 
 export function selectApp(app) {
   // Appの切り替え
@@ -28,30 +52,30 @@ export function selectApp(app) {
 }
 
 export function selectDevice(deviceId, devices, lastDeviceId) {
-  let device = GtbUtils.find(devices, 'id', deviceId);
-  // console.log('select: device', device);
-  if (deviceId === lastDeviceId) {
-    return function(dispatch) {
-      dispatch({ type: Device.SELECT, id: deviceId, device: device, lastId: lastDeviceId });
-    }
+  return function(dispatch) {
+    return new Promise((re) => {
+      let device = GtbUtils.find(devices, 'id', deviceId);
+      // console.log('select: device', device);
+      if (deviceId === lastDeviceId) {
+        dispatch({ type: Device.SELECT, id: deviceId, device: device, lastId: lastDeviceId });
 
-  } else {
-    // デバイスIDが変更された場合は再読込も行う
-    // TODO このハンドリングは別の場所で行うべきかもしれない
-    // TODO 現状、デバイスIDが変更される度にBastetから取得することになるが、タンクすべきかもしれない
-    return function(dispatch) {
-      dispatch({ type: Device.SELECT, id: deviceId, device: device, lastId: lastDeviceId });
-      switch (device.device_type) {
-        case 'watering':
-          dispatch(loadWateringInformations(device));
-          break;
-        case 'pyranometer':
-          dispatch(loadPyranometerInformations(device));
-          break;
-        default:
-          console.error('error: unknown device_type', device.device_type);
-          break;
+      } else {
+        // デバイスIDが変更された場合は再読込も行う
+        // TODO このハンドリングは別の場所で行うべきかもしれない
+        // TODO 現状、デバイスIDが変更される度にBastetから取得することになるが、タンクすべきかもしれない
+        dispatch({ type: Device.SELECT, id: deviceId, device: device, lastId: lastDeviceId });
+        switch (device.device_type) {
+          case 'watering':
+            dispatch(loadWateringInformations(device));
+            break;
+          case 'pyranometer':
+            dispatch(loadPyranometerInformations(device));
+            break;
+          default:
+            console.error('error: unknown device_type', device.device_type);
+            break;
+        }
       }
-    }
+    });
   }
 };

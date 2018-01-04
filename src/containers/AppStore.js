@@ -11,30 +11,50 @@ class AppStore extends Component {
     super(props);
     this.logger = new Logger({prefix: 'AppStore'});
     this.load = this.load.bind(this);
-    this.selectApp = this.selectApp.bind(this);
     this.selectDevice = this.selectDevice.bind(this);
   }
 
   componentWillMount() {
     // マウント時にデバイス情報をロードする
-    this.logger.info('conponentWillMount', "props", this.props);
+    // this.logger.info('conponentWillMount', "props", this.props);
     this.load();
   }
 
   load() {
     // デバイス情報をロード
-    this.props.actions.loadDevices();
+    this.props.actions.loadDevices().then(
+      result => {
+        // 初期選択デバイスの情報読み込み
+        // this.logger.log('load success:', this.props);
+        return this.props.actions.initialLoadDeviceInformations(
+          this.props.selectedApp,
+          this.props.typeSelectedDevice
+        )
+      },
+      error => {
+        this.logger.error('load error:', error);
+    }).then(
+      result => {
+        // 初期選択デバイスの情報読み込み完了
+        // this.logger.log('load info complete:', this.props);
+      },
+      error => {
+        this.logger.error('load info error:', error);
+      });
   }
 
-  selectApp(name) {
-    console.log('aaa', name);
-    // this.logger.info('ref select App:', name);
-    // this.props.actions.selectApp(name);
-  }
-
-  selectDevice(deviceId) {
-    this.props.actions.selectDevice(deviceId, this.props.devices, this.props.deviceId);
-    // this.props.actions.selectDevice(deviceId);
+  selectDevice(deviceId, force) {
+    this.props.actions.selectDevice(
+      deviceId,
+      this.props.devices,
+      force ? '' : this.props.selectedDeviceId
+    ).then(
+      result => {
+        // this.logger.log('selectDevice success:', result);
+      },
+      error => {
+        this.logger.error('selectDevice error:', error);
+      });
   }
 
   render() {
@@ -46,6 +66,10 @@ class AppStore extends Component {
 
 function mapStateToProps(state) {
   return  {
+    typeSelectedDevice: state.device.get('typeSelectedDevice').toJS(),
+    selectedDeviceId: state.device.get('selectedDeviceId'),
+    devices: state.device.get('devices').toJS(),
+    selectedApp: state.device.get('selectedApp'),
   };
 }
 
@@ -56,6 +80,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-  null,
-  { withRef: true }
 )(AppStore);

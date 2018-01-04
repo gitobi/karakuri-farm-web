@@ -8,13 +8,14 @@ import GtbUtils from '../js/GtbUtils'
 const initialDevice = Map({
   'names': List([]),
   'devices': List([]),
-  'selectedId': '',
-  'selected': Map({}),
+  'selectedApp': '',
+  'selectedDeviceId': '',
+  'selectedDevice': Map({}),
 
   'typeNames': fromJS({watering: [], pyranometer: [],}),
   'typeDevices': fromJS({watering: [], pyranometer: [],}),
-  'typeSelectedId': fromJS({watering: '', pyranometer: '',}),
-  'typeSelected': fromJS({watering: {}, pyranometer: {},}),
+  'typeSelectedDeviceId': fromJS({watering: '', pyranometer: '',}),
+  'typeSelectedDevice': fromJS({watering: {}, pyranometer: {},}),
 
   'progress': false,
 });
@@ -53,21 +54,21 @@ const device = (state = initialDevice, action) => {
       let typeNames = toTypeNames(devices);
 
       // それぞれの先頭要素を選択状態にする
-      let selectedId = selectFirst(names);
-      let typeSelectedId = selectsFirst(typeNames);
+      let selectedDeviceId = selectFirst(names);
+      let typeSelectedDeviceId = selectsFirst(typeNames);
 
-      let selected = get(selectedId, devices);
-      let typeSelected = gets(typeSelectedId, devices);
+      let selectedDevice = get(selectedDeviceId, devices);
+      let typeSelectedDevice = gets(typeSelectedDeviceId, devices);
 
       return state.withMutations(map => { map
         .set('names', fromJS(names))
         .set('devices', fromJS(devices))
-        .set('selectedId', selectedId)
-        .set('selected', fromJS(selected))
+        .set('selectedDeviceId', selectedDeviceId)
+        .set('selectedDevice', fromJS(selectedDevice))
         .set('typeNames', fromJS({watering: [], pyranometer: [],}).mergeDeep(fromJS(typeNames)))
         .set('typeDevices', fromJS({watering: [], pyranometer: [],}).mergeDeep(fromJS(typeDevices)))
-        .set('typeSelectedId', fromJS({watering: '', pyranometer: '',}).mergeDeep(fromJS(typeSelectedId)))
-        .set('typeSelected', fromJS({watering: {}, pyranometer: {},}).mergeDeep(fromJS(typeSelected)))
+        .set('typeSelectedDeviceId', fromJS({watering: '', pyranometer: '',}).mergeDeep(fromJS(typeSelectedDeviceId)))
+        .set('typeSelectedDevice', fromJS({watering: {}, pyranometer: {},}).mergeDeep(fromJS(typeSelectedDevice)))
         .set('progress', false)
         ;
       });
@@ -80,8 +81,9 @@ const device = (state = initialDevice, action) => {
       // APPの選択
       // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
       return state.withMutations(map => { map
-        .set('selectedId', state.getIn(['typeSelectedId', action.app]))
-        .set('selected', state.getIn(['typeSelected', action.app]))
+        .set('selectedApp', action.app)
+        .set('selectedDeviceId', state.getIn(['typeSelectedDeviceId', action.app]))
+        .set('selectedDevice', state.getIn(['typeSelectedDevice', action.app]))
       });
 
     case Device.SELECT:
@@ -89,12 +91,11 @@ const device = (state = initialDevice, action) => {
 
       // 指定された要素を選択状態にする
       // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
-
       return state.withMutations(map => { map
-        .set('selectedId', action.id)
-        .set('selected', fromJS(action.device))
-        .setIn(['typeSelectedId', action.device.device_type], action.id)
-        .setIn(['typeSelected', action.device.device_type], action.device)
+        .set('selectedDeviceId', action.id)
+        .set('selectedDevice', fromJS(action.device))
+        .setIn(['typeSelectedDeviceId', action.device.device_type], action.id)
+        .setIn(['typeSelectedDevice', action.device.device_type], fromJS(action.device))
         .update('names', list => list.map(
             // 選択されたidであればtrue、それ以外はfalseに更新する
             object => object.set('active', object.get('id') === action.id)
@@ -177,10 +178,10 @@ const get = (id, devices) => {
   return GtbUtils.find(devices, 'id', id);
 }
 
-const gets = (typeSelectedId, names) => {
+const gets = (typeSelectedDeviceId, names) => {
   let hash = {};
-  Object.keys(typeSelectedId).forEach((key) => {
-    let id = typeSelectedId[key];
+  Object.keys(typeSelectedDeviceId).forEach((key) => {
+    let id = typeSelectedDeviceId[key];
     hash[key] = get(id, names);
   });
   return hash;

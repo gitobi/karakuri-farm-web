@@ -113,7 +113,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       // 行を作成して追加
       var row = Map({
         id: tmpId,
-        device_id: action.params.deviceId,
+        device_id: action.deviceId,
         _state: 'create',
       })
 

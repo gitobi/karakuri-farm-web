@@ -6,8 +6,10 @@ import Bastet from '../js/Bastet'
 export function loadWateringInformations(device) {
   return function(dispatch) {
     dispatch({ type: DevicesWatering.SELECT, device: device });
-    dispatch(loadDevicesWateringSchedules(device.id));
-    dispatch(loadDevicesWateringOperationalRecords(device.id));
+    var promises = [];
+    promises.push(dispatch(loadDevicesWateringSchedules(device.id)));
+    promises.push(dispatch(loadDevicesWateringOperationalRecords(device.id)));
+    return Promise.all(promises);
   }
 };
 
