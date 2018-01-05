@@ -110,6 +110,18 @@ const device = (state = initialDevice, action) => {
         )
       });
 
+    case Device.UPDATE:
+      // スケジュールを変更
+      var updateIndex = GtbUtils.findIndex(state.get('devices').toJS(), 'id', action.id);
+
+      // 変更点のみ保持するタイプ
+      return state.withMutations(map => { map
+        .setIn(['selectedDevice', action.column], action.value)
+        .setIn(['selectedDevice', '_errors', action.column], action.error)
+        .setIn(['devices', updateIndex, action.column], action.value)
+        ;
+      });
+
     default:
       return state;
   }

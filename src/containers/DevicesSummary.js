@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Feed } from 'semantic-ui-react';
 import Logger from '../js/Logger'
+
+import Field from '../components/part/Field';
+import Input from '../components/part/Input';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -11,23 +13,16 @@ class DevicesSummary extends Component {
     super(props);
 
     this.logger = new Logger({prefix: 'DevicesSummary'});
-    this.createFeed = this.createFeed.bind(this);
+    // this.createFeed = this.createFeed.bind(this);
+    this.update = this.update.bind(this);
   }
 
-  createFeed(label, text) {
-    return(
-      <Feed>
-        <Feed.Event>
-          <Feed.Content>
-            <Feed.Date>
-              {label}
-            </Feed.Date>
-            <Feed.Summary>
-              {text || '---'}
-            </Feed.Summary>
-          </Feed.Content>
-        </Feed.Event>
-      </Feed>
+  update(column, value, error) {
+    this.props.actions.update(
+      this.props.device.id,
+      column,
+      value,
+      error,
       );
   }
 
@@ -37,14 +32,16 @@ class DevicesSummary extends Component {
     return (
       <div>
         <div>
-          {this.createFeed('id', this.props.device.id)}
-          {this.createFeed('device_type', this.props.device.device_type)}
-          {this.createFeed('name', this.props.device.name)}
-          {this.createFeed('software_version', this.props.device.software_version)}
-          {this.createFeed('model_number', this.props.device.model_number)}
-          {this.createFeed('heartbeated_at', this.props.device.heartbeated_at)}
-          {this.createFeed('inserted_at', this.props.device.inserted_at)}
-          {this.createFeed('updated_at', this.props.device.updated_at)}
+          <Field label='id' text={this.props.device.id} />
+          <Field label='device_type' text={this.props.device.device_type} />
+          <Field label='name'>
+            <Input.Hash size='large' fluid hash={this.props.device} column='name' callback={this.update}/>
+          </Field>
+          <Field label='software_version' text={this.props.device.software_version} />
+          <Field label='model_number' text={this.props.device.model_number} />
+          <Field label='heartbeated_at' text={this.props.device.heartbeated_at} />
+          <Field label='inserted_at' text={this.props.device.inserted_at} />
+          <Field label='updated_at' text={this.props.device.updated_at} />
         </div>
       </div>
     );

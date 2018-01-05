@@ -7,4 +7,5 @@ export const Device = {
   LOAD_FAILURE: prefix + 'LOAD_FAILURE',
   APP: prefix + 'APP',
   SELECT: prefix + 'SELECT',
+  UPDATE: prefix + 'UPDATE',
 }

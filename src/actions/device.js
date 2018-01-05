@@ -95,3 +95,13 @@ export function selectDevice(deviceId, devices) {
     });
   }
 };
+
+export function update(id, column, value, error) {
+  return {
+    type: Device.UPDATE,
+    id: id,
+    column: column,
+    value: value,
+    error: error,
+  };
+};
