@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from 'semantic-ui-react';
 import Logger from '../js/Logger'
 
 import Field from '../components/part/Field';
@@ -13,8 +14,8 @@ class DevicesSummary extends Component {
     super(props);
 
     this.logger = new Logger({prefix: 'DevicesSummary'});
-    // this.createFeed = this.createFeed.bind(this);
     this.update = this.update.bind(this);
+    this.save = this.save.bind(this);
   }
 
   update(column, value, error) {
@@ -26,16 +27,29 @@ class DevicesSummary extends Component {
       );
   }
 
+  isDisableSaveButton() {
+    // 変更されたデータがあるか判定
+    return (0 === Object.keys(this.props.changed).length);
+  }
+
+  save(event, data) {
+    // this.logger.log('onClick', event, data);
+    this.props.actions.save(this.props.changed);
+  }
+
   render() {
-    // TODO nameを変更できるようにする
     // this.logger.log(this.props)
     return (
       <div>
+        <div className='item ui header'>
+          <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
+        </div>
+
         <div>
           <Field label='id' text={this.props.device.id} />
           <Field label='device_type' text={this.props.device.device_type} />
           <Field label='name'>
-            <Input.Hash size='large' fluid hash={this.props.device} column='name' callback={this.update}/>
+            <Input.Hash size='large' fluid hash={this.props.device} column='name' callback={this.update} />
           </Field>
           <Field label='software_version' text={this.props.device.software_version} />
           <Field label='model_number' text={this.props.device.model_number} />
@@ -51,6 +65,8 @@ class DevicesSummary extends Component {
 function mapStateToProps(state) {
   return  {
     device: state.device.get('selectedDevice').toJS(),
+    changed: state.device.get('changed').toJS(),
+    progress: state.device.get('progress'),
   };
 }
 

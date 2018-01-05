@@ -17,6 +17,7 @@ const initialDevice = Map({
   'typeSelectedDeviceId': fromJS({watering: '', pyranometer: '',}),
   'typeSelectedDevice': fromJS({watering: {}, pyranometer: {},}),
 
+  'changed': Map({}),
   'progress': false,
 });
 
@@ -69,6 +70,7 @@ const device = (state = initialDevice, action) => {
         .set('typeDevices', fromJS({watering: [], pyranometer: [],}).mergeDeep(fromJS(typeDevices)))
         .set('typeSelectedDeviceId', fromJS({watering: '', pyranometer: '',}).mergeDeep(fromJS(typeSelectedDeviceId)))
         .set('typeSelectedDevice', fromJS({watering: {}, pyranometer: {},}).mergeDeep(fromJS(typeSelectedDevice)))
+        .set('changed', Map({}))
         .set('progress', false)
         ;
       });
@@ -112,15 +114,44 @@ const device = (state = initialDevice, action) => {
 
     case Device.UPDATE:
       // スケジュールを変更
-      var updateIndex = GtbUtils.findIndex(state.get('devices').toJS(), 'id', action.id);
+      // TODO 保存して全部再読込するのが面倒だからとりあえず全部更新する
+      let updateDevice = GtbUtils.find(state.get('devices').toJS(), 'id', action.id);
+      let updateNamesIndex = GtbUtils.findIndex(state.get('names').toJS(), 'id', action.id);
+      let updateDevicesIndex = GtbUtils.findIndex(state.get('devices').toJS(), 'id', action.id);
+      let updateTypeNamesIndex = GtbUtils.findIndex(state.getIn(['typeNames', updateDevice.device_type]).toJS(), 'id', action.id);
+      let updateTypeDevicesIndex = GtbUtils.findIndex(state.getIn(['typeDevices', updateDevice.device_type]).toJS(), 'id', action.id);
 
-      // 変更点のみ保持するタイプ
       return state.withMutations(map => { map
         .setIn(['selectedDevice', action.column], action.value)
         .setIn(['selectedDevice', '_errors', action.column], action.error)
-        .setIn(['devices', updateIndex, action.column], action.value)
+        .setIn(['changed', action.id, action.column], action.value)
+        .setIn(['changed', action.id, '_errors', action.column], action.error)
+        // TODO 保存した後に全部再読込するのが面倒だからとりあえず全部更新する
+        .setIn(['names', updateNamesIndex, action.column], action.value)
+        .setIn(['devices', updateDevicesIndex, action.column], action.value)
+        .setIn(['typeNames', updateDevice.device_type, updateTypeNamesIndex, action.column], action.value)
+        .setIn(['typeDevices', updateDevice.device_type, updateTypeDevicesIndex, action.column], action.value)
+        .setIn(['typeSelectedDevice', updateDevice.device_type, action.column], action.value)
         ;
       });
+
+    case Device.SAVE_REQUEST:
+      return state.set('progress', true);
+
+    case Device.SAVE_SUCCESS:
+      return state.set('progress', false);
+
+    case Device.SAVE_FAILURE:
+      return state.set('progress', false);
+
+    case Device.PUT_REQUEST:
+      return state;
+
+    case Device.PUT_SUCCESS:
+      return state.deleteIn(['changed', action.params.id]);
+
+    case Device.PUT_FAILURE:
+      return state;
 
     default:
       return state;
