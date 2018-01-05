@@ -65,10 +65,11 @@ function checkValid(changed) {
   let valid = true;
   Object.keys(changed).forEach((key) => {
     let change = changed[key];
-    if (change._errors) {
-      Object.keys(change._errors).forEach((column) => {
-        // console.log('check...', change._errors[column], null === change._errors[column]);
-        valid &= (null === change._errors[column]);
+    let errors = change._errors;
+    if (errors) {
+      Object.keys(errors).forEach((column) => {
+        let error = errors[column];
+        valid &= (null === error || undefined === error);
       });
     }
   });
@@ -79,7 +80,8 @@ export function saveDevicesWateringSchedules(schedules, changed) {
   return function(dispatch) {
 
     if (!checkValid(changed)) {
-      // TODO エラーメッセージ
+      // TODO エラーが存在するためBastetへの更新を行わない場合の画面表示メッセージ
+      console.log('check error', changed);
       return false;
     }
 
