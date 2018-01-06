@@ -25,10 +25,10 @@ class AppStore extends Component {
       result => {
         // 初期選択デバイスの情報読み込み
         // this.logger.log('load success:', this.props);
-        return this.props.actions.initialLoadDeviceInformations(
-          this.props.selectedApp,
-          this.props.typeSelectedDevice
-        )
+        // return this.props.actions.initialLoadDeviceInformations(
+        //   this.props.selectedApp,
+        //   this.props.typeSelectedDevice
+        // )
       },
       error => {
         this.logger.error('load error:', error);
@@ -51,8 +51,8 @@ class AppStore extends Component {
 
 function mapStateToProps(state) {
   return  {
-    typeSelectedDevice: state.device.get('typeSelectedDevice').toJS(),
-    selectedApp: state.device.get('selectedApp'),
+    // typeSelectedDevice: state.device.get('typeSelectedDevice').toJS(),
+    // selectedApp: state.device.get('selectedApp'),
   };
 }
 

@@ -12,8 +12,22 @@ class DevicesWateringOperationalRecords extends React.Component {
     this.logger = new Logger({prefix: 'DevicesWateringOperationalRecords'});
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+  componentDidMount() {
+    // 初期表示時
+    this.load();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.item.id !== nextProps.item.id) {
+      // デバイス変更時
+      this.load(nextProps.item.id);
+    }
+  }
+
+  load(id = this.props.item.id) {
+    if (id) {
+      this.props.actions.loadDevicesWateringOperationalRecords(id);
+    }
   }
 
   render() {
@@ -48,7 +62,7 @@ class DevicesWateringOperationalRecords extends React.Component {
     return (
       <div className="ui container">
         <EditableTable
-          data={this.props.devicesWateringOperationalRecords}
+          data={this.props.records}
           columns={columns}
           loading={this.props.progress}
           filterable={true}
@@ -63,7 +77,7 @@ class DevicesWateringOperationalRecords extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    devicesWateringOperationalRecords: state.devicesWatering.get('operationalRecords').toJS(),
+    records: state.devicesWatering.get('operationalRecords').toJS(),
     progress: state.devicesWatering.get('progress'),
   };
 }

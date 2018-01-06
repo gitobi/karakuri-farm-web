@@ -12,8 +12,22 @@ class DevicesPyranometerSensingRecords extends React.Component {
     this.logger = new Logger({prefix: 'DevicesPyranometerSensingRecords'});
   }
 
+  componentDidMount() {
+    // 初期表示時
+    this.load();
+  }
+
   componentWillReceiveProps(nextProps, nextState) {
-    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
+    if (this.props.item.id !== nextProps.item.id) {
+      // デバイス変更時
+      this.load(nextProps.item.id);
+    }
+  }
+
+  load(id = this.props.item.id) {
+    if (id) {
+      this.props.actions.loadDevicesPyranometerSensingRecords(id);
+    }
   }
 
   render() {
@@ -40,7 +54,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
     return (
       <div className="ui container">
         <EditableTable
-          data={this.props.devicesPyranometerSensingRecords}
+          data={this.props.records}
           columns={columns}
           loading={this.props.progress}
           filterable={true}
@@ -55,7 +69,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    devicesPyranometerSensingRecords: state.devicesPyranometer.get('sensingRecords').toJS(),
+    records: state.devicesPyranometer.get('sensingRecords').toJS(),
     progress: state.devicesPyranometer.get('progress'),
   };
 }

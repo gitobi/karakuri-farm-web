@@ -4,38 +4,39 @@ import Logger from '../js/Logger';
 import DeviceSetting from './DeviceSetting';
 import DevicesWateringTab from '../components/DevicesWateringTab';
 
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions/device';
 
+const app = 'watering';
 
 class DevicesWaterings extends Component {
   constructor(props) {
     super(props);
-    this.state = {app: 'watering'};
+    this.state = {
+      app: app,
+    };
     this.logger = new Logger({prefix: 'DevicesWaterings'});
-  }
-
-  componentWillMount() {
-    // this.logger.info('conponentWillMount', "props", this.props);
-    this.props.actions.selectApp(this.state.app);
   }
 
   render() {
     return (
       <DeviceSetting
         type={this.state.app}
+        items={this.props.devices}
+        itemMap={this.props.devicesMap}
         component={DevicesWateringTab}
         />
     );
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(Actions, dispatch) };
+function mapStateToProps(state) {
+  return  {
+    devices: state.device.getIn(['devicesList', app]).toJS(),
+    devicesMap: state.device.getIn(['devicesMap', app]).toJS(),
+  };
 }
 
 export default connect(
+  mapStateToProps,
   null,
-  mapDispatchToProps,
 )(DevicesWaterings);

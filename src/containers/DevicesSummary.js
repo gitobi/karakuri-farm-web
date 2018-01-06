@@ -20,7 +20,7 @@ class DevicesSummary extends Component {
 
   update(column, value, error) {
     this.props.actions.update(
-      this.props.device.id,
+      this.props.item.id,
       column,
       value,
       error,
@@ -46,16 +46,16 @@ class DevicesSummary extends Component {
         </div>
 
         <div>
-          <Field label='id' text={this.props.device.id} />
-          <Field label='device_type' text={this.props.device.device_type} />
+          <Field label='id' text={this.props.item.id} />
+          <Field label='device_type' text={this.props.item.device_type} />
           <Field label='name'>
-            <Input.Hash size='large' fluid hash={this.props.device} column='name' callback={this.update} />
+            <Input.Hash size='large' fluid hash={this.props.item} column='name' callback={this.update} />
           </Field>
-          <Field label='software_version' text={this.props.device.software_version} />
-          <Field label='model_number' text={this.props.device.model_number} />
-          <Field label='heartbeated_at' text={this.props.device.heartbeated_at} />
-          <Field label='inserted_at' text={this.props.device.inserted_at} />
-          <Field label='updated_at' text={this.props.device.updated_at} />
+          <Field label='software_version' text={this.props.item.software_version} />
+          <Field label='model_number' text={this.props.item.model_number} />
+          <Field label='heartbeated_at' text={this.props.item.heartbeated_at} />
+          <Field label='inserted_at' text={this.props.item.inserted_at} />
+          <Field label='updated_at' text={this.props.item.updated_at} />
         </div>
       </div>
     );
@@ -64,7 +64,6 @@ class DevicesSummary extends Component {
 
 function mapStateToProps(state) {
   return  {
-    device: state.device.get('selectedDevice').toJS(),
     changed: state.device.get('changed').toJS(),
     progress: state.device.get('progress'),
   };

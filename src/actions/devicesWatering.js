@@ -3,16 +3,6 @@ import {DevicesWatering} from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
 import Bastet from '../js/Bastet'
 
-export function loadWateringInformations(device) {
-  return function(dispatch) {
-    dispatch({ type: DevicesWatering.SELECT, device: device });
-    var promises = [];
-    promises.push(dispatch(loadDevicesWateringSchedules(device.id)));
-    promises.push(dispatch(loadDevicesWateringOperationalRecords(device.id)));
-    return Promise.all(promises);
-  }
-};
-
 export function loadDevicesWateringSchedules(deviceId) {
   return function(dispatch) {
     dispatch({ type: DevicesWatering.LOAD_SCHEDULES_REQUEST });
