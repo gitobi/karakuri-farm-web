@@ -37,8 +37,6 @@ const toTypeDevices = (devices) => {
   return hash;
 }
 
-const machineTypes = ['radiational_watering'];
-
 const initialDevice = Map({
   'devices': List([]),
   'devicesList': fromJS(deviceTypeArray),

@@ -15,7 +15,6 @@ import Dashboard from '../components/Dashboard';
 import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
-import MachineRadiationalWaterings from './MachineRadiationalWaterings';
 
 class AppRoute extends Component {
   constructor(props) {
@@ -48,7 +47,6 @@ class AppRoute extends Component {
             <Route exact path={`${match.url}/`} component={Dashboard} />
             <Route path={`${match.url}/devices_waterings`} component={DevicesWaterings} />
             <Route path={`${match.url}/devices_pyranometer`} component={DevicesPyranometers} />
-            <Route path={`${match.url}/machine_radiational_waterings`} component={MachineRadiationalWaterings} />
             <Route path={`${match.url}/alert`} component={BlankComponent} />
             <Route path={`${match.url}/devices`} component={BlankComponent} />
             <Route path={`${match.url}/stats`} component={BlankComponent} />
