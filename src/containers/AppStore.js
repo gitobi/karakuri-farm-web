@@ -23,23 +23,12 @@ class AppStore extends Component {
     // デバイス情報をロード
     this.props.actions.loadDevices().then(
       result => {
-        // 初期選択デバイスの情報読み込み
+        // 必要であれば、その他の初期設定
         // this.logger.log('load success:', this.props);
-        // return this.props.actions.initialLoadDeviceInformations(
-        //   this.props.selectedApp,
-        //   this.props.typeSelectedDevice
-        // )
       },
       error => {
         this.logger.error('load error:', error);
-    }).then(
-      result => {
-        // 初期選択デバイスの情報読み込み完了
-        // this.logger.log('load info complete:', this.props);
-      },
-      error => {
-        this.logger.error('load info error:', error);
-      });
+    });
   }
 
   render() {
@@ -49,18 +38,11 @@ class AppStore extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return  {
-    // typeSelectedDevice: state.device.get('typeSelectedDevice').toJS(),
-    // selectedApp: state.device.get('selectedApp'),
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(Actions, dispatch) };
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(AppStore);
