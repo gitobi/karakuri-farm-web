@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { Feed } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 import Logger from '../js/Logger'
+
+import Field from '../components/part/Field';
+import Input from '../components/part/Input';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -11,40 +14,48 @@ class DevicesSummary extends Component {
     super(props);
 
     this.logger = new Logger({prefix: 'DevicesSummary'});
-    this.createFeed = this.createFeed.bind(this);
+    this.update = this.update.bind(this);
+    this.save = this.save.bind(this);
   }
 
-  createFeed(label, text) {
-    return(
-      <Feed>
-        <Feed.Event>
-          <Feed.Content>
-            <Feed.Date>
-              {label}
-            </Feed.Date>
-            <Feed.Summary>
-              {text || '---'}
-            </Feed.Summary>
-          </Feed.Content>
-        </Feed.Event>
-      </Feed>
+  update(column, value, error) {
+    this.props.actions.update(
+      this.props.device.id,
+      column,
+      value,
+      error,
       );
   }
 
+  isDisableSaveButton() {
+    // 変更されたデータがあるか判定
+    return (0 === Object.keys(this.props.changed).length);
+  }
+
+  save(event, data) {
+    // this.logger.log('onClick', event, data);
+    this.props.actions.save(this.props.changed);
+  }
+
   render() {
-    // TODO nameを変更できるようにする
     // this.logger.log(this.props)
     return (
       <div>
+        <div className='item ui header'>
+          <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
+        </div>
+
         <div>
-          {this.createFeed('id', this.props.device.id)}
-          {this.createFeed('device_type', this.props.device.device_type)}
-          {this.createFeed('name', this.props.device.name)}
-          {this.createFeed('software_version', this.props.device.software_version)}
-          {this.createFeed('model_number', this.props.device.model_number)}
-          {this.createFeed('heartbeated_at', this.props.device.heartbeated_at)}
-          {this.createFeed('inserted_at', this.props.device.inserted_at)}
-          {this.createFeed('updated_at', this.props.device.updated_at)}
+          <Field label='id' text={this.props.device.id} />
+          <Field label='device_type' text={this.props.device.device_type} />
+          <Field label='name'>
+            <Input.Hash size='large' fluid hash={this.props.device} column='name' callback={this.update} />
+          </Field>
+          <Field label='software_version' text={this.props.device.software_version} />
+          <Field label='model_number' text={this.props.device.model_number} />
+          <Field label='heartbeated_at' text={this.props.device.heartbeated_at} />
+          <Field label='inserted_at' text={this.props.device.inserted_at} />
+          <Field label='updated_at' text={this.props.device.updated_at} />
         </div>
       </div>
     );
@@ -54,6 +65,8 @@ class DevicesSummary extends Component {
 function mapStateToProps(state) {
   return  {
     device: state.device.get('selectedDevice').toJS(),
+    changed: state.device.get('changed').toJS(),
+    progress: state.device.get('progress'),
   };
 }
 

@@ -1,7 +1,7 @@
 export default class Formatter {
 
   constructor() {
-    this.placeholder = "-";
+    this.placeholder = "";
     this.error = null;
     this.completionPatterns = [];
     this.patterns = [];
