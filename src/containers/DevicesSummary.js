@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Feed } from 'semantic-ui-react';
 import Logger from '../js/Logger'
 
-export default class DevicesSummary extends Component {
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as Actions from '../actions/device';
+
+class DevicesSummary extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-    };
 
     this.logger = new Logger({prefix: 'DevicesSummary'});
     this.createFeed = this.createFeed.bind(this);
@@ -45,8 +46,22 @@ export default class DevicesSummary extends Component {
           {this.createFeed('inserted_at', this.props.device.inserted_at)}
           {this.createFeed('updated_at', this.props.device.updated_at)}
         </div>
-
       </div>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return  {
+    device: state.device.get('selectedDevice').toJS(),
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(Actions, dispatch) };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DevicesSummary);

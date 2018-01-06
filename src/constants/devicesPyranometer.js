@@ -2,9 +2,6 @@ const app = "@KF"
 const module = "DEVICES_PYRANOMETER"
 const prefix = `${app}/${module}/`
 export const DevicesPyranometer = {
-  LOAD_REQUEST: prefix + 'LOAD_REQUEST',
-  LOAD_SUCCESS: prefix + 'LOAD_SUCCESS',
-  LOAD_FAILURE: prefix + 'LOAD_FAILURE',
   SELECT: prefix + 'SELECT',
   LOAD_SENSING_RECORDS_REQUEST: prefix + 'LOAD_SENSING_RECORDS_REQUEST',
   LOAD_SENSING_RECORDS_SUCCESS: prefix + 'LOAD_SENSING_RECORDS_SUCCESS',

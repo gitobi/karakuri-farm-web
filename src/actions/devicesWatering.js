@@ -3,45 +3,13 @@ import {DevicesWatering} from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
 import Bastet from '../js/Bastet'
 
-export function loadDevicesWaterings() {
+export function loadWateringInformations(device) {
   return function(dispatch) {
-    dispatch({ type: DevicesWatering.LOAD_REQUEST });
-
-    let bastet = new Bastet();
-    return bastet.getDevicesWaterings().then(
-      result => {
-        dispatch({ type: DevicesWatering.LOAD_SUCCESS, list: result });
-
-        if (0 !== result.length) {
-          // データが存在する場合は先頭要素を選択状態とする
-          dispatch(selectDevicesWatering(result[0].id));
-        }
-      },
-      error => {
-        // DEBUG エラー時にダミーデータを使用する場合
-        // これは将来的に削除されるか、もっとスマートな形で実装される
-        dispatch({ type: DevicesWatering.LOAD_SUCCESS, list: _load()})
-        // dispatch({ type: DevicesWatering.LOAD_FAILURE, list: error })
-      }
-    );
-  }
-};
-
-export function selectDevicesWatering(deviceId, lastDeviceId) {
-  if (deviceId === lastDeviceId) {
-    return function(dispatch) {
-      dispatch({ type: DevicesWatering.SELECT, id: deviceId });
-    }
-
-  } else {
-    // デバイスIDが変更された場合はスケジュール/実績の再読込も行う
-    // TODO このハンドリングは別の場所で行うべきかもしれない
-    // TODO 現状、デバイスIDが変更される度にスケジュール情報をBastetから取得することになるが、タンクすべきかもしれない
-    return function(dispatch) {
-      dispatch({ type: DevicesWatering.SELECT, id: deviceId });
-      dispatch(loadDevicesWateringSchedules(deviceId));
-      dispatch(loadDevicesWateringOperationalRecords(deviceId));
-    }
+    dispatch({ type: DevicesWatering.SELECT, device: device });
+    var promises = [];
+    promises.push(dispatch(loadDevicesWateringSchedules(device.id)));
+    promises.push(dispatch(loadDevicesWateringOperationalRecords(device.id)));
+    return Promise.all(promises);
   }
 };
 
@@ -52,10 +20,7 @@ export function loadDevicesWateringSchedules(deviceId) {
     return bastet.getWateringsSchedules(deviceId).then(
       result => dispatch({ type: DevicesWatering.LOAD_SCHEDULES_SUCCESS, schedules: result.data.schedules }),
       error => {
-        // DEBUG エラー時にダミーデータを使用する場合
-        // これは将来的に削除されるか、もっとスマートな形で実装される
-        dispatch({ type: DevicesWatering.LOAD_SCHEDULES_SUCCESS, schedules: _loadSchedules()})
-        // dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
+        dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
       }
     );
   }
@@ -151,8 +116,11 @@ export function saveDevicesWateringSchedules(schedules, changed) {
   }
 };
 
-export function addDevicesWateringSchedule() {
-  return { type: DevicesWatering.ADD_SCHEDULE };
+export function addDevicesWateringSchedule(deviceId) {
+  return {
+    type: DevicesWatering.ADD_SCHEDULE,
+    deviceId: deviceId,
+  };
 };
 
 export function removeDevicesWateringSchedule(id) {
@@ -179,10 +147,7 @@ export function loadDevicesWateringOperationalRecords(deviceId) {
     return bastet.getWateringsOperationalRecords(deviceId).then(
       result => dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: result.data }),
       error => {
-        // DEBUG エラー時にダミーデータを使用する場合
-        // これは将来的に削除されるか、もっとスマートな形で実装される
-        dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: _loadOperationalRecords()})
-        // dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
+        dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
       }
     );
   }
@@ -226,32 +191,3 @@ const apiDevicesWateringSchedule = (
   );
 }
 
-/**
- * FOR DEBUG
- */
-const _load = () => {
-  return [
-    { key: "1", id: 1, name: "device 1",},
-    { key: "2", id: 2, name: "device 2",},
-  ];
-}
-
-/**
- * FOR DEBUG
- */
-const _loadSchedules = (deviceId) => {
-  return [
-    { id: deviceId + "1", name: deviceId + "schedules 1", start_at: "07:00:00", stop_at: "07:00:0" + deviceId, amount: "100", },
-    { id: deviceId + "2", name: deviceId + "schedules 2", start_at: "08:00:00", stop_at: "08:00:0" + deviceId, amount: "200", },
-  ];
-}
-
-/**
- * FOR DEBUG
- */
-const _loadOperationalRecords = (deviceId) => {
-  return [
-    { id: deviceId + "1", started_at: "07:01:00", ended_at: "07:01:0" + deviceId, amount: "100", is_manual: true , },
-    { id: deviceId + "2", started_at: "08:01:00", ended_at: "08:01:0" + deviceId, amount: "200", is_manual: false, },
-  ];
-}

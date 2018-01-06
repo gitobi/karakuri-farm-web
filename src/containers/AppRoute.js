@@ -24,7 +24,7 @@ class AppRoute extends Component {
 
   render() {
     const PrivateRoute = ({ component: Component, ...rest }) => {
-      // this.logger.log('PrivateRoute', Component, rest);
+      // this.logger.log('PrivateRoute', rest, this.props, this.state);
       return (
         <Route {...rest} render={props => (
           this.props.isAuthenticated ? (
@@ -40,7 +40,7 @@ class AppRoute extends Component {
     }
 
     const AppLayoutRoute = ({match}, ...rest) => {
-      // this.logger.log('AppLayoutRoute', match, rest);
+      // this.logger.log('AppLayoutRoute', match, rest, this.props, this.state);
       return (
         <AppLayout match={match} rest={rest}>
           <Switch>

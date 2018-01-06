@@ -63,7 +63,6 @@ class DevicesWateringOperationalRecords extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    selectedDevicesWateringId: state.devicesWatering.get('selectedId'),
     devicesWateringOperationalRecords: state.devicesWatering.get('operationalRecords').toJS(),
     progress: state.devicesWatering.get('progress'),
   };

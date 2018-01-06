@@ -3,6 +3,7 @@ import '../components/App.css';
 import { Segment } from 'semantic-ui-react';
 import Logger from '../js/Logger';
 import Menubar from '../containers/MenuBar';
+import AppStore from '../containers/AppStore';
 
 class AppLayout extends Component {
   constructor(props) {
@@ -27,6 +28,7 @@ class AppLayout extends Component {
   render() {
     return (
       <Segment>
+        <AppStore ref="app_store" />
         <Menubar
           visible={this.state.visible}
           handleMenubarItemClick={this.handleMenubarItemClick}
