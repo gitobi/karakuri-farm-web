@@ -8,12 +8,12 @@ import DecimalFormatter from '../js/formatter/DecimalFormatter'
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions/devicesWatering';
+import * as Actions from '../actions/machinesRadiationalWatering';
 
-class DevicesWateringSchedules extends React.Component {
+class MachinesRadiationalWateringConfigurations extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesWateringSchedules'});
+    this.logger = new Logger({prefix: 'MachinesRadiationalWateringConfigurations'});
 
     this.update = this.update.bind(this);
     this.load = this.load.bind(this);
@@ -39,7 +39,7 @@ class DevicesWateringSchedules extends React.Component {
 
   load(id = this.props.item.id) {
     if (id) {
-      this.props.actions.loadDevicesWateringSchedules(id);
+      this.props.actions.loadRadiationalWateringConfigurations(id);
     }
   }
 
@@ -68,7 +68,7 @@ class DevicesWateringSchedules extends React.Component {
 
   save() {
     // セーブボタンクリック時の処理
-    this.props.actions.saveDevicesWateringSchedules(
+    this.props.actions.saveMachinesRadiationalWateringConfigurations(
       this.props.records,
       this.props.changed);
   }
@@ -161,9 +161,9 @@ class DevicesWateringSchedules extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    records: state.devicesWatering.get('schedules').toJS(),
-    changed: state.devicesWatering.get('changed').toJS(),
-    progress: state.devicesWatering.get('progress'),
+    records: state.machinesRadiationalWatering.get('schedules').toJS(),
+    changed: state.machinesRadiationalWatering.get('changed').toJS(),
+    progress: state.machinesRadiationalWatering.get('progress'),
   };
 }
 
@@ -174,4 +174,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DevicesWateringSchedules);
+)(MachinesRadiationalWateringConfigurations);
