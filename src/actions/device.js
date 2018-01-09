@@ -24,6 +24,7 @@ export function loadDevices(args = {}) {
 };
 
 export function update(id, column, value, error) {
+  console.log('update debug:', id, column, value, error);
   return {
     type: Device.UPDATE,
     id: id,
@@ -34,6 +35,8 @@ export function update(id, column, value, error) {
 };
 
 export function save(changed) {
+  // TODO machineに対するupdate
+
   return function(dispatch) {
 
     if (!ActionUtils.checkValid(changed)) {

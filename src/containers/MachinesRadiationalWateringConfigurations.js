@@ -112,24 +112,19 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
         accessor: 'name',
         customCell: { type: 'input', formatter: new Formatter(), callback: this.update }
       }, {
-        Header: 'Start at',
-        accessor: 'start_at',
+        Header: 'Interval',
+        accessor: 'interval',
         width: 100,
         customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
-      // }, {
-      //   Header: 'Stop at',
-      //   accessor: 'stop_at',
-      //   width: 100,
-      //   customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
+      }, {
+        Header: 'Slope',
+        accessor: 'slope',
+        width: 100,
+        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
       }, {
         Header: 'Duration',
         accessor: 'duration',
         width: 80,
-        customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
-      }, {
-        Header: 'Amount',
-        accessor: 'amount',
-        width: 100,
         customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
       }, {
         Header: '-',

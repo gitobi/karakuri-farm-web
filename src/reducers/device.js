@@ -75,8 +75,8 @@ const device = (state = initialDevice, action) => {
             case 'pyranometer':
               break;
             case 'radiationalWatering':
+              map.watering_id = value["watering_id"];
               map.pyranometer_id = value["pyranometer_id"];
-              map.pyranometer_id = value["watering_id"];
               break;
             default:
               break;
@@ -106,7 +106,7 @@ const device = (state = initialDevice, action) => {
       // TODO 保存して全部再読込するのが面倒だからとりあえず全部更新する
       let updateDevice = GtbUtils.find(state.get('devices').toJS(), 'id', action.id);
       let updateDevicesIndex = GtbUtils.findIndex(state.get('devices').toJS(), 'id', action.id);
-      let updateDevicesListIndex = GtbUtils.findIndex(state.getIn(['devicesList', updateDevice.device_type]).toJS(), 'id', action.id);
+      let updateDevicesListIndex = GtbUtils.findIndex(state.getIn(['devicesList', updateDevice._type]).toJS(), 'id', action.id);
 
       return state.withMutations(map => { map
         .setIn(['changed', action.id, action.column], action.value)
