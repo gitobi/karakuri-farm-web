@@ -78,25 +78,25 @@ export default class DeviceSettingTab extends Component {
 
   render() {
 
-    if ((0 !== this.props.tabs.length && this.props.match.params.id) && (
-      !this.props.match.params.tab ||
-      !GtbUtils.find(this.props.tabs, 'key', this.props.match.params.tab)
-      )) {
-      // idが指定され、かつ、タブリストが存在する状態で、
-      // 以下の場合は先頭要素を選択してリダイレクトする
-      // - urlにタブが指定されてない場合
-      // - urlに指定されたタブが、リストに存在しない
-      // urlにtabが指定されてない場合は初期タブを選択してリダイレクトする
-      let pathname = `${this.props.basePath}/${this.props.match.params.id}/${this.props.initialTabKey}`;
-      this.logger.log("redirect", pathname, this.props);
-      // return (
-      //   <div> {pathname + " - " + this.props.basePath} </div>
-      // );
-      return (
-        <Redirect to={pathname} from={this.props.basePath} />
-      );
+    // if ((0 !== this.props.tabs.length && this.props.match.params.id) && (
+    //   !this.props.match.params.tab ||
+    //   !GtbUtils.find(this.props.tabs, 'key', this.props.match.params.tab)
+    //   )) {
+    //   // idが指定され、かつ、タブリストが存在する状態で、
+    //   // 以下の場合は先頭要素を選択してリダイレクトする
+    //   // - urlにタブが指定されてない場合
+    //   // - urlに指定されたタブが、リストに存在しない
+    //   // urlにtabが指定されてない場合は初期タブを選択してリダイレクトする
+    //   let pathname = `${this.props.basePath}/${this.props.match.params.id}/${this.props.initialTabKey}`;
+    //   this.logger.log("redirect", pathname, this.props);
+    //   // return (
+    //   //   <div> {pathname + " - " + this.props.basePath} </div>
+    //   // );
+    //   return (
+    //     <Redirect to={pathname} from={this.props.basePath} />
+    //   );
 
-    } else {
+    // } else {
       return (
         <div>
           <div className="ui top attached tabular menu">
@@ -114,6 +114,6 @@ export default class DeviceSettingTab extends Component {
             })}
         </div>
       );
-    }
+    // }
   }
 }

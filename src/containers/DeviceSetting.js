@@ -59,7 +59,7 @@ export default class DeviceSetting extends Component {
   }
 
   menuItem(item, match, label) {
-    let linkTo = `${this.props.basePath}/${item.id}`;
+    let linkTo = `${this.props.basePath}/${item.id}/setting_basic`;
     // this.logger.log("linkTo", this.props.basePath, item.id, linkTo,);
     let labelContent = '';
     if (label) {
@@ -70,6 +70,7 @@ export default class DeviceSetting extends Component {
 
     return (
       <Menu.Item
+        exact={false}
         key={item.id}
         as={NavLink}
         to={linkTo}
@@ -92,20 +93,20 @@ export default class DeviceSetting extends Component {
     })
     // this.logger.log("render", this.props.itemMap, this.props.itemMap[this.props.match.params.id]);
 
-    if (0 !== this.props.items.length && (
-      !this.props.match.params.id ||
-      !this.props.itemMap[this.props.match.params.id]
-      )) {
-      // メニューリストが存在する状態で、以下の場合は先頭要素を選択してリダイレクトする
-      // - urlにidが指定されてない場合
-      // - urlに指定されたidが、リストに存在しない
-      let pathname = `${this.props.basePath}/${this.props.items[0].id}`;
-      this.logger.log("redirect", pathname, this.props);
-      return (
-        <Redirect to={pathname} from={this.props.basePath} />
-      );
+    // if (0 !== this.props.items.length && (
+    //   !this.props.match.params.id ||
+    //   !this.props.itemMap[this.props.match.params.id]
+    //   )) {
+    //   // メニューリストが存在する状態で、以下の場合は先頭要素を選択してリダイレクトする
+    //   // - urlにidが指定されてない場合
+    //   // - urlに指定されたidが、リストに存在しない
+    //   let pathname = `${this.props.basePath}/${this.props.items[0].id}`;
+    //   this.logger.log("redirect", pathname, this.props);
+    //   return (
+    //     <Redirect to={pathname} from={this.props.basePath} />
+    //   );
 
-    } else {
+    // } else {
 
       const item = this.props.itemMap[this.props.match.params.id]
         ? this.props.itemMap[this.props.match.params.id]
@@ -135,7 +136,7 @@ export default class DeviceSetting extends Component {
           </Grid>
         </div>
       );
-    }
+    // }
     // return (
     //   <div>
     //     <Grid columns={2}>
