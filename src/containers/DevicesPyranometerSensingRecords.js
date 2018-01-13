@@ -9,7 +9,8 @@ import * as Actions from '../actions/devicesPyranometer';
 class DevicesPyranometerSensingRecords extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesPyranometerSensingRecords'});
+    this.logger = new Logger({prefix: this.constructor.name});
+    this.onFetchData = this.onFetchData.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +28,14 @@ class DevicesPyranometerSensingRecords extends React.Component {
   load(id = this.props.item.id) {
     if (id) {
       this.props.actions.loadDevicesPyranometerSensingRecords(id);
+    }
+  }
+
+  onFetchData(params) {
+    this.logger.log('onFetchData:', params);
+    let id = this.props.item.id;
+    if (id) {
+      this.props.actions.loadDevicesPyranometerSensingRecordsPage(id, params);
     }
   }
 
@@ -59,6 +68,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
           loading={this.props.progress}
           filterable={true}
           sortable={true}
+          onFetchData={this.onFetchData}
           defaultSorted={[{id: 'sensed_at', desc: true}]}
         />
 

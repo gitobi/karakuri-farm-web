@@ -14,3 +14,16 @@ export function loadDevicesPyranometerSensingRecords(deviceId) {
   }
 };
 
+export function loadDevicesPyranometerSensingRecordsPage(deviceId, params) {
+  return function(dispatch) {
+    dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_REQUEST });
+    let bastet = new Bastet();
+    return bastet.getPyranometersSensingRecordsPage(deviceId, params).then(
+      result => dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_SUCCESS, sensingRecords: result.data }),
+      error => {
+        dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_FAILURE, schedules: error })
+      }
+    );
+  }
+};
+

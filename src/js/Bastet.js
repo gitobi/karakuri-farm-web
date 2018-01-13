@@ -4,7 +4,7 @@ import request from 'superagent'
 export default class Bastet {
 
   constructor() {
-    this.logger = new Logger({prefix: 'Bastet'});
+    this.logger = new Logger({prefix: this.constructor.name});
     this.host = process.env.REACT_APP_BASTET_HOST_URL;
   }
 
@@ -143,6 +143,13 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
+  getPyranometersSensingRecordsPage(pyranometersId, params) {
+    var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
+    let hash = this.nestedObjectToQueryObject(params);
+    this.logger.log('getPyranometersSensingRecordsPage:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
+  }
+
   getDevicesSystemLogs(deviceId) {
     var url = this.host + '/devices/' + deviceId + '/system_logs';
     return this.callApi(this.get, url);
@@ -234,5 +241,73 @@ export default class Bastet {
           reject(err);
         });
       });
+  }
+
+  // superagentがネストパラメータに対応していないため、整形する
+  // [ex]
+  //  [params]
+  //    {
+  //      a: '1',
+  //      b: {
+  //        innerA: '2',
+  //        innerB: '3'
+  //      }
+  //    }
+  //
+  //  [return]
+  //    {
+  //      a: '1',
+  //      'b[innerA]': '2',
+  //      'b[innerB]': '3',
+  //    }
+  nestedObjectToQueryObject(params) {
+    let hash = {};
+    Object.keys(params).forEach((key) =>  {
+      let value = params[key];
+      let returndHash = this.toQueryStringHash(key, value);
+      Object.keys(returndHash).forEach((returndHashKey) =>  {
+        hash[returndHashKey] = returndHash[returndHashKey];
+      });
+    });
+    return hash;
+  }
+
+  // ネストされたパラメータを再帰的に展開していく
+  // [ex]
+  //  オブジェクトの場合
+  //  [params]
+  //    key = 'a[1]'
+  //    value = {id: A, value: B}
+  //  [return]
+  //    {'a[1][id]': A, 'a[1][value]': B}
+  //
+  //  Arrayの場合
+  //  [params]
+  //    key = 'a[1]'
+  //    value = [A, B]
+  //  [return]
+  //    {'a[1][0]': A, 'a[1][1]': B}
+  toQueryStringHash(key, value) {
+    let hash = {};
+    if (this.isArray(value)) {
+      value.forEach((element, index) => {
+        Object.assign(hash, this.toQueryStringHash(`${key}[${index}]`, element));
+      });
+    } else if (this.isObject(value)) {
+      Object.keys(value).forEach((valueKey) =>  {
+        let element = value[valueKey];
+        Object.assign(hash, this.toQueryStringHash(`${key}[${valueKey}]`, element));
+      });
+    } else {
+      hash[key] = value;
+    }
+    // this.logger.log('tqsh return:', key, value, '=>', hash);
+    return hash;
+  }
+  isArray(o) {
+    return (o instanceof Array);
+  }
+  isObject(o) {
+    return (o instanceof Object && !(o instanceof Array)) ? true : false;
   }
 }

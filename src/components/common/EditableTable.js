@@ -11,7 +11,7 @@ export default class EditableTable extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'EditableTable'});
+    this.logger = new Logger({prefix: this.constructor.name});
 
     this.cellOnChange = this.cellOnChange.bind(this);
     this.cellOnBlur = this.cellOnBlur.bind(this);
@@ -27,6 +27,8 @@ export default class EditableTable extends React.Component {
     this.createButtonCell = this.createButtonCell.bind(this);
     this.createCheckboxCell = this.createCheckboxCell.bind(this);
     this.createNormalCell = this.createNormalCell.bind(this);
+
+    this.onFetchData = this.onFetchData.bind(this);
 
     this.state = {
       // columns: props.columns,
@@ -351,6 +353,18 @@ export default class EditableTable extends React.Component {
     this.setState({errorCells: errorCells});
   }
 
+  onFetchData(state, instance) {
+    if (this.props.onFetchData) {
+      let params = {
+        pageSize: state.pageSize,
+        page: state.page,
+        sorted: state.sorted,
+        filtered: state.filtered,
+      }
+      this.props.onFetchData(params);
+    }
+  }
+
   /**
    * TODO テーブル描画 必要に応じて外部から設定できるように修正していく
    */
@@ -383,6 +397,7 @@ export default class EditableTable extends React.Component {
               return -1 === String(row[id]).indexOf(filter.value) ? false : true;
             }
           }}
+          onFetchData={this.onFetchData}
           sortable={this.props.sortable}
           defaultSorted={this.props.defaultSorted
               ? this.props.defaultSorted
