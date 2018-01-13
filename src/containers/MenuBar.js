@@ -14,7 +14,7 @@ import Logger from '../js/Logger';
 class Menubar extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({ prefix: 'MenuBar' });
+    this.logger = new Logger({ prefix: this.constructor.name});
     this.menuItem = this.menuItem.bind(this);
     this.handleLogoutClick = this.handleLogoutClick.bind(this);
   }
@@ -63,7 +63,7 @@ class Menubar extends Component {
         <Menu.Item>
           <Menu.Header>デバイス設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('device_waterings', '/app/devices_waterings', 'Joro')}
+            {this.menuItem('device_waterings', '/app/devices_waterings/', 'Joro')}
             {this.menuItem('device_pyranometer', '/app/devices_pyranometer', 'Himawari')}
           </Menu.Menu>
         </Menu.Item>

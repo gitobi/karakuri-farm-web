@@ -8,7 +8,7 @@ import AppStore from '../containers/AppStore';
 class AppLayout extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({ prefix: 'AppLayout' });
+    this.logger = new Logger({prefix: this.constructor.name});
     this.state = {
       activeMenubarItem: { name: 'dashboard' },
       visible: true,

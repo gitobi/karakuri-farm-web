@@ -13,7 +13,7 @@ import * as Actions from '../actions/devicesWatering';
 class DevicesWateringSchedules extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesWateringSchedules'});
+    this.logger = new Logger({prefix: this.constructor.name});
 
     this.update = this.update.bind(this);
     this.load = this.load.bind(this);
@@ -38,7 +38,9 @@ class DevicesWateringSchedules extends React.Component {
   }
 
   load(id = this.props.item.id) {
+    this.logger.log("load", id, this.props.item_a);
     if (id) {
+      this.logger.log("load", id, this.props.item_a);
       this.props.actions.loadDevicesWateringSchedules(id);
     }
   }

@@ -9,28 +9,35 @@ import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 export default class DevicesWateringTab extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesWateringTab'});
+    this.logger = new Logger({prefix: this.constructor.name});
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    // this.logger.log("componentWillReceiveProps", this.props, '=>', nextProps);
   }
 
   render() {
     return (
       <DeviceSettingTab
+        basePath={this.props.basePath}
+        location={this.props.location}
+        match={this.props.match}
         item={this.props.item}
-        activeTabKey='operationalRecords'
+        initialTabKey='operational_records'
         tabs={[{
-          key: "settingBasic",
+          key: "setting_basic",
           title: "基本設定",
           component: DevicesSummary,
         }, {
-          key: "settingSchedules",
+          key: "setting_schedules",
           title: "スケジュール",
           component: DevicesWateringSchedules,
         }, {
-          key: "operationalRecords",
+          key: "operational_records",
           title: "灌水実績",
           component: DevicesWateringOperationalRecords,
         }, {
-          key: "systemLogs",
+          key: "system_logs",
           title: "ログ",
           component: DevicesSystemLogs,
         }]}

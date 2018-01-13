@@ -1,110 +1,162 @@
 import React, { Component } from 'react';
-import { Grid, Menu } from 'semantic-ui-react';
+import { Grid, Menu, Label } from 'semantic-ui-react';
 import Logger from '../js/Logger';
 import GtbUtils from '../js/GtbUtils';
+import { NavLink, Redirect } from 'react-router-dom';
 
 export default class DeviceSetting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      names: [],
       item: {id: null},
     };
-    this.logger = new Logger({prefix: 'DeviceSetting'});
-    this.change = this.change.bind(this);
+    this.logger = new Logger({prefix: this.constructor.name});
     this.select = this.select.bind(this);
+    this.menuItem = this.menuItem.bind(this);
+
+    // this.logger.log("constructor", this.props);
   }
 
   componentWillMount() {
-    this.init(this.props.items);
+    // this.logger.log("componentWillMount", this.props);
+    this.select(this.state.item, this.props.items);
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    this.init(nextProps.items);
+  componentWillReceiveProps(nextProps) {
+    // this.logger.log("componentWillReceiveProps", this.props, "=>", nextProps);
+    this.select(this.state.item, nextProps.items);
   }
 
-  init(items) {
-    // namesを作成して選択
-    let names = this.toNames(items);
-    this.select(this.state.item.id, names, items);
-  }
-
-  change(event, data, a) {
-    // TODO 保存がされてない場合は変更時に警告する
-    // this.logger.log('change:', event, data);
-    let item = this.props.items[data.index];
-    if (item.id !== this.state.item.id) {
-      // 変更された場合
-      this.select(item.id);
-    }
-  }
-
-  toNames(items) {
-    return items.map(this.toName);
-  }
-
-  toName(element) {
-    return {
-      key: element["id"],
-      name: element["name"],
-    };
-  }
-
-  select(key, names = this.state.names, items = this.props.items) {
-    if (0 === names.length) {
-      // namesがない場合は選択を無効にする
+  select(item, items = this.props.items) {
+    // this.logger.log('select', item, items);
+    if (0 === items.length) {
+      // this.logger.log('select:a');
+      // itemsがない、itemがない場合は選択を無効にする
       this.setState({
         item: {id: null},
       });
       return;
     }
 
-    if (null === key) {
-      // 何も選択されていない場合は先頭要素を選択する
-      key = names[0].key;
+    // 何も選択されていない場合は先頭要素を選択する
+    if (null === this.state.item.id) {
+      this.setState({
+        item: items[0],
+      });
     }
 
-    names = names.map(v => {
-      if (v.key === key) {
-        v.active = true;
-      } else {
-        delete v.active;
-      }
-      return v;
-    });
+    if (item.id === this.state.item.id) {
+      // this.logger.log('select:b');
+      // 変更がない場合は設定しない
+      return;
+    }
 
-    let item = GtbUtils.find(items, 'id', key) || {id: null};
-
-    // this.logger.log('selected:', names, key, items, item);
+    // this.logger.log('select:c', item);
     this.setState({
-      names: names,
       item: item,
     });
+    // this.logger.log('select:c');
+  }
+
+  menuItem(item, match, label) {
+    let linkTo = `${this.props.basePath}/${item.id}`;
+    // this.logger.log("linkTo", this.props.basePath, item.id, linkTo,);
+    let labelContent = '';
+    if (label) {
+      labelContent = <Label color="teal">{label}</Label>;
+    }
+
+    // this.logger.log("render", this.state.item.id, '<=>', item.id, this.state.item.id === item.id);
+
+    return (
+      <Menu.Item
+        key={item.id}
+        as={NavLink}
+        to={linkTo}
+        name={item.name}
+        onClick={(event, data) => {
+          this.logger.log("call select", item);
+          this.select(item)
+        }}
+      >
+        {labelContent}
+        {item.name}
+      </Menu.Item>
+    );
   }
 
   render() {
     // this.logger.log('render:', this.props, this.state);
-    return (
-      <div>
-        <Grid columns={2}>
-          <Grid.Column width={3}>
-            <Menu
-              fluid
-              vertical
-              secondary
-              pointing
-              items={this.state.names}
-              onItemClick={this.change}
-              />
+    const menuItems = this.props.items.map (item => {
+      return this.menuItem(item, this.props.match);
+    })
+    // this.logger.log("render", this.props.itemMap, this.props.itemMap[this.props.match.params.id]);
 
-          </Grid.Column>
-          <Grid.Column stretched width={13}>
-            {<this.props.component
-              item = {this.state.item}
-            />}
-          </Grid.Column>
-        </Grid>
-      </div>
-    );
+    if (0 !== this.props.items.length && (
+      !this.props.match.params.id ||
+      !this.props.itemMap[this.props.match.params.id]
+      )) {
+      // メニューリストが存在する状態で、以下の場合は先頭要素を選択してリダイレクトする
+      // - urlにidが指定されてない場合
+      // - urlに指定されたidが、リストに存在しない
+      let pathname = `${this.props.basePath}/${this.props.items[0].id}`;
+      this.logger.log("redirect", pathname, this.props);
+      return (
+        <Redirect to={pathname} from={this.props.basePath} />
+      );
+
+    } else {
+
+      const item = this.props.itemMap[this.props.match.params.id]
+        ? this.props.itemMap[this.props.match.params.id]
+        : {id: null}
+
+      return (
+        <div>
+          <Grid columns={2}>
+            <Grid.Column width={3}>
+              <Menu
+                fluid
+                vertical
+                secondary
+                pointing
+              >
+                {menuItems}
+              </Menu>
+            </Grid.Column>
+            <Grid.Column stretched width={13}>
+              {<this.props.component
+                basePath={this.props.basePath + (item.id ? "/" + item.id : "")}
+                location={this.props.location}
+                match={this.props.match}
+                item={item}
+              />}
+            </Grid.Column>
+          </Grid>
+        </div>
+      );
+    }
+    // return (
+    //   <div>
+    //     <Grid columns={2}>
+    //       <Grid.Column width={3}>
+    //         <Menu
+    //           fluid
+    //           vertical
+    //           secondary
+    //           pointing
+    //           items={this.state.names}
+    //           onItemClick={this.change}
+    //           />
+
+    //       </Grid.Column>
+    //       <Grid.Column stretched width={13}>
+    //         {<this.props.component
+    //           item = {this.state.item}
+    //         />}
+    //       </Grid.Column>
+    //     </Grid>
+    //   </div>
+    // );
   }
 }

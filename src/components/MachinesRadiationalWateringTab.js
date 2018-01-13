@@ -9,20 +9,23 @@ import MachinesSystemLogs from '../containers/MachinesSystemLogs'
 export default class MachinesRadiationalWateringTab extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'MachinesRadiationalWateringTab'});
+    this.logger = new Logger({prefix: this.constructor.name});
   }
 
   render() {
     return (
       <DeviceSettingTab
+        basePath={this.props.basePath}
+        location={this.props.location}
+        match={this.props.match}
         item={this.props.item}
-        activeTabKey='settingBasic'
+        initialTabKey='setting_basic'
         tabs={[{
-          key: "settingBasic",
+          key: "setting_basic",
           title: "基本設定",
           component: MachinesSummary,
         }, {
-          key: "settingSchedules",
+          key: "setting_schedules",
           title: "スケジュール",
           component: MachinesRadiationalWateringConfigurations,
         }, {
@@ -30,7 +33,7 @@ export default class MachinesRadiationalWateringTab extends Component {
         //   title: "灌水実績",
         //   component: MachinesRadiationalWateringOperationalRecords,
         // }, {
-          key: "systemLogs",
+          key: "system_logs",
           title: "ログ",
           component: MachinesSystemLogs,
         }]}

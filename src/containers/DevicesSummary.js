@@ -39,26 +39,32 @@ class DevicesSummary extends Component {
 
   render() {
     // this.logger.log(this.props)
-    return (
-      <div>
-        <div className='item ui header'>
-          <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
-        </div>
-
+    if (!this.props.item) {
+      return (
+        <div></div>
+        );
+    } else {
+      return (
         <div>
-          <Field label='id' text={this.props.item.id} />
-          <Field label='device_type' text={this.props.item.device_type} />
-          <Field label='name'>
-            <Input.Hash size='large' fluid hash={this.props.item} column='name' callback={this.update} />
-          </Field>
-          <Field label='software_version' text={this.props.item.software_version} />
-          <Field label='model_number' text={this.props.item.model_number} />
-          <Field label='heartbeated_at' text={this.props.item.heartbeated_at} />
-          <Field label='inserted_at' text={this.props.item.inserted_at} />
-          <Field label='updated_at' text={this.props.item.updated_at} />
+          <div className='item ui header'>
+            <Button as='a' onClick={this.save} loading={this.props.progress} disabled={this.props.progress || this.isDisableSaveButton()}>Save</Button>
+          </div>
+
+          <div>
+            <Field label='id' text={this.props.item.id} />
+            <Field label='device_type' text={this.props.item.device_type} />
+            <Field label='name'>
+              <Input.Hash size='large' fluid hash={this.props.item} column='name' callback={this.update} />
+            </Field>
+            <Field label='software_version' text={this.props.item.software_version} />
+            <Field label='model_number' text={this.props.item.model_number} />
+            <Field label='heartbeated_at' text={this.props.item.heartbeated_at} />
+            <Field label='inserted_at' text={this.props.item.inserted_at} />
+            <Field label='updated_at' text={this.props.item.updated_at} />
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
 

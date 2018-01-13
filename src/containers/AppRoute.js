@@ -12,6 +12,7 @@ import Signup from '../components/home/Signup';
 import Confirm from '../components/home/Confirm';
 import Login from '../components/home/Login';
 import Dashboard from '../components/Dashboard';
+import DebugComponent from '../components/DebugComponent';
 import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
@@ -20,7 +21,7 @@ import MachinesRadiationalWaterings from './MachinesRadiationalWaterings';
 class AppRoute extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'AppRoute'});
+    this.logger = new Logger({prefix: this.constructor.name});
   }
 
   render() {
@@ -46,15 +47,41 @@ class AppRoute extends Component {
         <AppLayout match={match} rest={rest}>
           <Switch>
             <Route exact path={`${match.url}/`} component={Dashboard} />
-            <Route path={`${match.url}/devices_waterings`} component={DevicesWaterings} />
-            <Route path={`${match.url}/devices_pyranometer`} component={DevicesPyranometers} />
-            <Route path={`${match.url}/machine_radiational_waterings`} component={MachinesRadiationalWaterings} />
-            <Route path={`${match.url}/alert`} component={BlankComponent} />
-            <Route path={`${match.url}/devices`} component={BlankComponent} />
+            <RouteWrapper path={`${match.url}/devices_waterings/:id?/:tab?`} component={DevicesWaterings} componentProps={{basePath: `${match.url}/devices_waterings`,}} />
+            <RouteWrapper path={`${match.url}/devices_pyranometer/:id?/:tab?`} component={DevicesPyranometers} componentProps={{basePath: `${match.url}/devices_pyranometer`,}} />
+            <RouteWrapper path={`${match.url}/machine_radiational_waterings/:id?/:tab?`} component={MachinesRadiationalWaterings} componentProps={{basePath: `${match.url}/machine_radiational_waterings`,}} />
+            <RouteWrapper path={`${match.url}/alert`}
+              component={DebugComponent}
+              componentProps={{
+                basePath: `${match.url}/alert`,
+                tempa: "a",
+              }}
+            />
+            <Route path={`${match.url}/devices`} component={DebugComponent} />
             <Route path={`${match.url}/stats`} component={BlankComponent} />
             <Redirect to={`${match.url}`} />
           </Switch>
         </AppLayout>
+      );
+    }
+
+    const RouteWrapper = ({
+      path: path,
+      exact: exact,
+      component: Component,
+      componentProps: componentProps,
+    }, ...rest) => {
+      return (
+        <Route exact={exact} path={path} render={(props) => {
+          return (
+            <Component {...componentProps} {...props} />
+          );
+          // return (
+          //   <div>
+          //     basePath componentProps a
+          //   </div>
+          //   );
+        }} />
       );
     }
 
