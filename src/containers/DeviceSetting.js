@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Grid, Menu } from 'semantic-ui-react';
+import { NavLink } from 'react-router-dom';
+import { Grid, Menu, Label } from 'semantic-ui-react';
 import Logger from '../js/Logger';
 import GtbUtils from '../js/GtbUtils';
 
@@ -10,7 +11,7 @@ export default class DeviceSetting extends Component {
       names: [],
       item: {id: null},
     };
-    this.logger = new Logger({prefix: 'DeviceSetting'});
+    this.logger = new Logger({prefix: this.constructor.name});
     this.change = this.change.bind(this);
     this.select = this.select.bind(this);
   }
@@ -20,6 +21,7 @@ export default class DeviceSetting extends Component {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
+    this.logger.log("componentWillReceiveProps", nextProps);
     this.init(nextProps.items);
   }
 
@@ -82,8 +84,46 @@ export default class DeviceSetting extends Component {
     });
   }
 
+  menuItem(item, match, label) {
+    // let linkTo = `${this.props.basePath}/${item.id}/setting_basic`;
+    let linkTo = "a";
+    // this.logger.log("linkTo", this.props.basePath, item.id, linkTo,);
+    let labelContent = '';
+    if (label) {
+      labelContent = <Label color="teal">{label}</Label>;
+    }
+
+    // this.logger.log("render", this.state.item.id, '<=>', item.id, this.state.item.id === item.id);
+
+    return (
+      <Menu.Item
+        exact={false}
+        key={item.id}
+        as={NavLink}
+        to={linkTo}
+        name={item.name}
+        onClick={(event, data) => {
+          this.logger.log("call select", item);
+          this.select(item)
+        }}
+      >
+        {labelContent}
+        {item.name}
+      </Menu.Item>
+    );
+  }
+
   render() {
     // this.logger.log('render:', this.props, this.state);
+
+    const menuItems = this.props.items.map (item => {
+      return this.menuItem(item, this.props.match);
+    })
+
+    // const item = this.props.itemMap[this.props.match.params.id]
+    //   ? this.props.itemMap[this.props.match.params.id]
+    //   : {id: null}
+
     return (
       <div>
         <Grid columns={2}>
@@ -93,18 +133,39 @@ export default class DeviceSetting extends Component {
               vertical
               secondary
               pointing
-              items={this.state.names}
-              onItemClick={this.change}
-              />
+            >
+              {menuItems}
+            </Menu>
 
           </Grid.Column>
           <Grid.Column stretched width={13}>
-            {<this.props.component
-              item = {this.state.item}
-            />}
           </Grid.Column>
         </Grid>
       </div>
     );
+
+    // return (
+    //   <div>
+    //     <Grid columns={2}>
+    //       <Grid.Column width={3}>
+    //         <Menu
+    //           fluid
+    //           vertical
+    //           secondary
+    //           pointing
+    //         >
+    //           {menuItems}
+    //         </Menu>
+
+    //       </Grid.Column>
+    //       <Grid.Column stretched width={13}>
+    //         {<this.props.component
+    //           item = {this.state.item}
+    //         />}
+    //       </Grid.Column>
+    //     </Grid>
+    //   </div>
+    // );
+
   }
 }

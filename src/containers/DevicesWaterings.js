@@ -14,16 +14,25 @@ class DevicesWaterings extends Component {
     this.state = {
       app: app,
     };
-    this.logger = new Logger({prefix: 'DevicesWaterings'});
+    this.logger = new Logger({prefix: this.constructor.name});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.logger.log("componentWillReceiveProps", nextProps);
   }
 
   render() {
+    const {
+      devices: items,
+      devicesMap: itemMap,
+      ...rest
+    } = this.props;
     return (
       <DeviceSetting
         type={this.state.app}
         items={this.props.devices}
         itemMap={this.props.devicesMap}
-        component={DevicesWateringTab}
+        {...rest}
         />
     );
   }
