@@ -14,7 +14,7 @@ import Logger from '../js/Logger';
 class Menubar extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({ prefix: 'MenuBar' });
+    this.logger = new Logger({prefix: this.constructor.name});
     this.menuItem = this.menuItem.bind(this);
     this.handleLogoutClick = this.handleLogoutClick.bind(this);
   }

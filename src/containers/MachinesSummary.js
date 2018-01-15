@@ -8,7 +8,7 @@ import Dropdown from '../components/part/Dropdown';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../actions/device';
+import * as Actions from '../actions/machine';
 
 class MachinesSummary extends Component {
   constructor(props) {
@@ -91,8 +91,8 @@ function mapStateToProps(state) {
   return  {
     waterings: state.device.getIn(['devicesList', 'watering']).toJS(),
     pyranometers: state.device.getIn(['devicesList', 'pyranometer']).toJS(),
-    changed: state.device.get('changed').toJS(),
-    progress: state.device.get('progress'),
+    changed: state.machine.get('changed').toJS(),
+    progress: state.machine.get('progress'),
   };
 }
 

@@ -13,7 +13,6 @@ export default class Bastet {
     const promises = [
       this.getDevicesWaterings(),
       this.getDevicesPyranometers(),
-      this.getMachinesRadiationalWaterings(),
     ];
 
     // 結合
@@ -46,6 +45,23 @@ export default class Bastet {
           value["_type"] = value.device_type;
           return value;
         });
+      });
+  }
+
+  getMachines(id=null) {
+    // 一括で取るapiがないため、別々にとって結合する
+    const promises = [
+      this.getMachinesRadiationalWaterings(),
+    ];
+
+    // 結合
+    return Promise.all(promises)
+      .then((results) => {
+        var list = [];
+        results.forEach((element, index, array) => {
+          list = list.concat(element);
+        });
+        return list;
       });
   }
 

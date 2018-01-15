@@ -5,7 +5,7 @@ import GtbUtils from '../js/GtbUtils'
 // import Logger from '../js/Logger'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
-const deviceTypes = ['watering', 'pyranometer', 'radiationalWatering']
+const deviceTypes = ['watering', 'pyranometer']
 
 const deviceTypeArray = (() => {
   // {a: [], b: [], ...}
