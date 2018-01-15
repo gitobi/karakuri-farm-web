@@ -14,15 +14,15 @@ class MachinesRadiationalWaterings extends Component {
     this.state = {
       app: app,
     };
-    this.logger = new Logger({prefix: 'MachinesRadiationalWaterings'});
+    this.logger = new Logger({prefix: this.constructor.name});
   }
 
   render() {
     return (
       <DeviceSetting
         type={this.state.app}
-        items={this.props.devices}
-        itemMap={this.props.devicesMap}
+        items={this.props.machines}
+        itemMap={this.props.machinesMap}
         component={MachinesRadiationalWateringTab}
         />
     );
@@ -31,8 +31,8 @@ class MachinesRadiationalWaterings extends Component {
 
 function mapStateToProps(state) {
   return  {
-    devices: state.device.getIn(['devicesList', app]).toJS(),
-    devicesMap: state.device.getIn(['devicesMap', app]).toJS(),
+    machines: state.machine.getIn(['machinesList', app]).toJS(),
+    machinesMap: state.machine.getIn(['machinesMap', app]).toJS(),
   };
 }
 
