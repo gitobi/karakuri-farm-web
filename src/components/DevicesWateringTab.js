@@ -15,9 +15,8 @@ export default class DevicesWateringTab extends Component {
   render() {
     return (
       <DeviceSettingTab
-        deviceId={this.props.deviceId}
-        device={this.props.device}
-        activeTabKey='settingBasic'
+        item={this.props.item}
+        activeTabKey='operationalRecords'
         tabs={[{
           key: "settingBasic",
           title: "基本設定",

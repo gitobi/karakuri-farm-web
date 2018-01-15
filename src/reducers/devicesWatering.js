@@ -6,7 +6,6 @@ import GtbUtils from '../js/GtbUtils'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
 const initialDevicesWatering = Map({
-  'device': Map({}),
   'schedules': List([]),
   'changed': Map({}),
   'operationalRecords': List([]),
@@ -18,9 +17,6 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
   // _logger.info('action :', action);
 
   switch (action.type) {
-    case DevicesWatering.SELECT:
-      return state.set('device', fromJS(action.device));
-
     case DevicesWatering.LOAD_SCHEDULES_REQUEST:
       // スケジュール情報の取得開始
       return state.set('progress', true);

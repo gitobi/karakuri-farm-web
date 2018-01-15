@@ -6,7 +6,6 @@ import GtbUtils from '../js/GtbUtils'
 // const _logger = new Logger({prefix: 'devicesPyranometer'});
 
 const initialDevicesPyranometer = Map({
-  'device': Map({}),
   'sensingRecords': List([]),
   'progress': false,
 });
@@ -16,9 +15,6 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
   // _logger.info('action :', action);
 
   switch (action.type) {
-    case DevicesPyranometer.SELECT:
-      return state.set('device', fromJS(action.device));
-
     case DevicesPyranometer.LOAD_SENSING_RECORDS_REQUEST:
       // 実績の取得開始
       return state.set('progress', true);

@@ -12,12 +12,21 @@ class DevicesSystemLogs extends React.Component {
     this.logger = new Logger({prefix: 'DevicesSystemLogs'});
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    // デバイス変更時に取得する
-    // this.logger.log('componentWillReceiveProps', 'nextProps', nextProps);
-    if (nextProps.deviceId !== "" &&
-      this.props.deviceId !== nextProps.deviceId) {
-      nextProps.actions.loadDevicesSystemLogs(nextProps.deviceId);
+  componentDidMount() {
+    // 初期表示時
+    this.load();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.item.id !== nextProps.item.id) {
+      // デバイス変更時
+      this.load(nextProps.item.id);
+    }
+  }
+
+  load(id = this.props.item.id) {
+    if (id) {
+      this.props.actions.loadDevicesSystemLogs(id);
     }
   }
 
@@ -65,7 +74,7 @@ class DevicesSystemLogs extends React.Component {
     return (
       <div className="ui container">
         <EditableTable
-          data={this.props.devicesSystemLogs}
+          data={this.props.records}
           columns={columns}
           loading={this.props.progress}
           filterable={true}
@@ -80,7 +89,7 @@ class DevicesSystemLogs extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    devicesSystemLogs: state.devicesSystemLog.get('list').toJS(),
+    records: state.devicesSystemLog.get('list').toJS(),
     progress: state.devicesSystemLog.get('progress'),
   };
 }

@@ -5,18 +5,42 @@ import GtbUtils from '../js/GtbUtils'
 // import Logger from '../js/Logger'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
+const deviceTypes = ['watering', 'pyranometer']
+
+const deviceTypeArray = (() => {
+  // {a: [], b: [], ...}
+  let hash = {};
+  deviceTypes.forEach(v => hash[v] = []);
+  return hash;
+})();
+
+const deviceTypeMap = (() => {
+  // {a: {}, b: {}, ...}
+  let hash = {};
+  deviceTypes.forEach(v => hash[v] = {});
+  return hash;
+})();
+
+const toTypeDevicesMap = (devices) => {
+  let hash = deviceTypeMap;
+  for (let device of devices) {
+    hash[device.device_type][device.id] = device;
+  }
+  return hash;
+}
+
+const toTypeDevices = (devices) => {
+  let hash = deviceTypeArray;
+  for (let device of devices) {
+    hash[device.device_type].push(device);
+  }
+  return hash;
+}
+
 const initialDevice = Map({
-  'names': List([]),
   'devices': List([]),
-  'selectedApp': '',
-  'selectedDeviceId': '',
-  'selectedDevice': Map({}),
-
-  'typeNames': fromJS({watering: [], pyranometer: [],}),
-  'typeDevices': fromJS({watering: [], pyranometer: [],}),
-  'typeSelectedDeviceId': fromJS({watering: '', pyranometer: '',}),
-  'typeSelectedDevice': fromJS({watering: {}, pyranometer: {},}),
-
+  'devicesList': fromJS(deviceTypeArray),
+  'devicesMap': fromJS(deviceTypeMap),
   'changed': Map({}),
   'progress': false,
 });
@@ -49,27 +73,13 @@ const device = (state = initialDevice, action) => {
           return map;
         });
 
-      let typeDevices = toTypeDevices(devices);
-
-      let names = toNames(devices);
-      let typeNames = toTypeNames(devices);
-
-      // それぞれの先頭要素を選択状態にする
-      let selectedDeviceId = selectFirst(names);
-      let typeSelectedDeviceId = selectsFirst(typeNames);
-
-      let selectedDevice = get(selectedDeviceId, devices);
-      let typeSelectedDevice = gets(typeSelectedDeviceId, devices);
+      let devicesList = toTypeDevices(devices);
+      let devicesMap = toTypeDevicesMap(devices);
 
       return state.withMutations(map => { map
-        .set('names', fromJS(names))
         .set('devices', fromJS(devices))
-        .set('selectedDeviceId', selectedDeviceId)
-        .set('selectedDevice', fromJS(selectedDevice))
-        .set('typeNames', fromJS({watering: [], pyranometer: [],}).mergeDeep(fromJS(typeNames)))
-        .set('typeDevices', fromJS({watering: [], pyranometer: [],}).mergeDeep(fromJS(typeDevices)))
-        .set('typeSelectedDeviceId', fromJS({watering: '', pyranometer: '',}).mergeDeep(fromJS(typeSelectedDeviceId)))
-        .set('typeSelectedDevice', fromJS({watering: {}, pyranometer: {},}).mergeDeep(fromJS(typeSelectedDevice)))
+        .set('devicesList', fromJS(devicesList))
+        .set('devicesMap', fromJS(devicesMap))
         .set('changed', Map({}))
         .set('progress', false)
         ;
@@ -79,59 +89,20 @@ const device = (state = initialDevice, action) => {
       // デバイス情報の取得失敗
       return state.set('progress', false);
 
-    case Device.APP:
-      // APPの選択
-      // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
-      return state.withMutations(map => { map
-        .set('selectedApp', action.app)
-        .set('selectedDeviceId', state.getIn(['typeSelectedDeviceId', action.app]))
-        .set('selectedDevice', state.getIn(['typeSelectedDevice', action.app]))
-      });
-
-    case Device.SELECT:
-      // デバイスの選択
-
-      // 指定された要素を選択状態にする
-      // TODO viewのために仕方なく必要な処理であるため、ここでやるべきではないかも
-
-      let device = GtbUtils.find(state.get('devices').toJS(), 'id', action.id);
-      return state.withMutations(map => { map
-        .set('selectedDeviceId', action.id)
-        .set('selectedDevice', fromJS(device))
-        .setIn(['typeSelectedDeviceId', device.device_type], action.id)
-        .setIn(['typeSelectedDevice', device.device_type], fromJS(device))
-        .update('names', list => list.map(
-            // 選択されたidであればtrue、それ以外はfalseに更新する
-            object => object.set('active', object.get('id') === action.id)
-          )
-        )
-        .updateIn(['typeNames', device.device_type], list => list.map(
-            // 選択されたidであればtrue、それ以外はfalseに更新する
-            object => object.set('active', object.get('id') === action.id)
-          )
-        )
-      });
-
     case Device.UPDATE:
       // スケジュールを変更
       // TODO 保存して全部再読込するのが面倒だからとりあえず全部更新する
       let updateDevice = GtbUtils.find(state.get('devices').toJS(), 'id', action.id);
-      let updateNamesIndex = GtbUtils.findIndex(state.get('names').toJS(), 'id', action.id);
       let updateDevicesIndex = GtbUtils.findIndex(state.get('devices').toJS(), 'id', action.id);
-      let updateTypeNamesIndex = GtbUtils.findIndex(state.getIn(['typeNames', updateDevice.device_type]).toJS(), 'id', action.id);
-      let updateTypeDevicesIndex = GtbUtils.findIndex(state.getIn(['typeDevices', updateDevice.device_type]).toJS(), 'id', action.id);
+      let updateDevicesListIndex = GtbUtils.findIndex(state.getIn(['devicesList', updateDevice.device_type]).toJS(), 'id', action.id);
 
       return state.withMutations(map => { map
-        .setIn(['selectedDevice', action.column], action.value)
-        .setIn(['selectedDevice', '_errors', action.column], action.error)
         .setIn(['changed', action.id, action.column], action.value)
         .setIn(['changed', action.id, '_errors', action.column], action.error)
         // TODO 保存した後に全部再読込するのが面倒だからとりあえず全部更新する
-        .setIn(['names', updateNamesIndex, action.column], action.value)
         .setIn(['devices', updateDevicesIndex, action.column], action.value)
-        .setIn(['typeNames', updateDevice.device_type, updateTypeNamesIndex, action.column], action.value)
-        .setIn(['typeDevices', updateDevice.device_type, updateTypeDevicesIndex, action.column], action.value)
-        .setIn(['typeSelectedDevice', updateDevice.device_type, action.column], action.value)
+        .setIn(['devicesList', updateDevice.device_type, updateDevicesListIndex, action.column], action.value)
+        .setIn(['devicesMap', updateDevice.device_type, action.id, action.column], action.value)
         ;
       });
 
@@ -156,80 +127,6 @@ const device = (state = initialDevice, action) => {
     default:
       return state;
   }
-}
-
-const toTypeDevices = (devices) => {
-  let hash = {}
-  for (let device of devices) {
-    if (!(device.device_type in hash)) {
-      hash[device.device_type] = [];
-    }
-    hash[device.device_type].push(device);
-  }
-  return hash;
-}
-
-const toName = (device) => {
-  return {
-    key: device["id"],
-    id: device["id"],
-    name: device["name"],
-    active: false,
-  };
-}
-
-const toNames = (devices) => {
-  return devices.map((device) => {
-    return toName(device);
-  });
-}
-
-const toTypeNames = (devices) => {
-  let hash = {}
-  for (let device of devices) {
-    if (!(device.device_type in hash)) {
-      hash[device.device_type] = [];
-    }
-    hash[device.device_type].push(toName(device));
-  }
-  return hash;
-}
-
-const selectsFirst = (typeNames) => {
-  let hash = {};
-  Object.keys(typeNames).forEach((key) => {
-    hash[key] = selectFirst(typeNames[key]);
-  });
-  return hash;
-}
-
-const selectFirst = (names) => {
-  if (1 <= names.length) {
-    let id = names[0].id;
-    select(id, names);
-    return id;
-  } else {
-    return '';
-  }
-}
-
-const select = (id, names) => {
-  for(let name of names) {
-    name.active = name.id === id;
-  }
-}
-
-const get = (id, devices) => {
-  return GtbUtils.find(devices, 'id', id);
-}
-
-const gets = (typeSelectedDeviceId, names) => {
-  let hash = {};
-  Object.keys(typeSelectedDeviceId).forEach((key) => {
-    let id = typeSelectedDeviceId[key];
-    hash[key] = get(id, names);
-  });
-  return hash;
 }
 
 export default device;

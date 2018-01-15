@@ -57,8 +57,7 @@ export default class DeviceSettingTab extends Component {
           return this.createTabContent(
             tab.key,
             <tab.component
-              deviceId={this.props.deviceId}
-              device={this.props.device}
+              item={this.props.item}
               />
             );
           })}

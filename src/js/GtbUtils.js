@@ -29,6 +29,23 @@ export default class GtbUtils {
     });
   }
 
+  static clear(array) {
+    array.splice(0, array.length);
+  }
+
+  static copy(src, dst) {
+    if (null === dst) {
+      dst = [];
+    }
+    this.clear(dst)
+    Object.assign(dst , src);
+    return dst;
+  }
+
+  static equivalent(src, dst) {
+    return JSON.stringify(src) === JSON.stringify(dst);
+  }
+
   /// 一時ID系
   static tmpIdDigits = '4';
   static tmpIdSuffix = 'a';
