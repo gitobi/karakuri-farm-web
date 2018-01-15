@@ -1,6 +1,10 @@
 import React from 'react'
+import {Container} from 'semantic-ui-react';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import Logger from '../js/Logger'
+
+import Field from '../components/part/Field';
+import Dropdown from '../components/part/Dropdown';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,6 +14,10 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
+
+    this.toDropdownOption = this.toDropdownOption.bind(this);
+    this.select = this.select.bind(this);
+    this.state = {selectedDay: null};
   }
 
   componentDidMount() {
@@ -17,7 +25,7 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
     this.load();
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.item.id !== nextProps.item.id) {
       // デバイス変更時
       this.load(nextProps.item.id);
@@ -30,65 +38,64 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
     }
   }
 
+  toDropdownOption(element) {
+    return {
+      value: element,
+      text: element,
+    }
+  }
+
+  select(value) {
+    // this.logger.log("select",
+    //   this.props.recordsParDay[this.state.selectedDay],
+    //   '=>', this.props.recordsParDay[value]);
+    this.setState({selectedDay: value});
+  }
+
   render() {
-
-    // テーブルのカラムレイアウト
-    const columns = [{
-        Header: 'ID',
-        accessor: 'id',
-        width: 120,
-      }, {
-        Header: 'Sensed at',
-        accessor: 'sensed_at',
-        width: 180,
-      }, {
-        Header: 'Measurement',
-        accessor: 'measurement',
-        width: 120,
-      }, {
-        Header: 'Samplings_count',
-        accessor: 'samplings_count',
-        width: 120,
-    }];
-
     return (
-      <div className="ui container">
-        <div>
-          <LineChart width={600} height={300} data={this.props.records}
-                margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-            <XAxis dataKey="sensed_at"/>
-            {/*<YAxis yAxisId="left" />*/}
-            {/*<YAxis yAxisId="right" orientation="right" />*/}
-            <CartesianGrid strokeDasharray="3 3"/>
-            <Tooltip/>
-            <Legend />
-            <Line type="monotone" dataKey="measurement" stroke="#8884d8" />
-            {/*<Line yAxisId="left" type="monotone" dataKey="measurement" stroke="#8884d8" />*/}
-            {/*<Line yAxisId="right" type="monotone" dataKey="samplings_count" stroke="#82ca9d" />*/}
-          </LineChart>
-        </div>
-      </div>
+      <Container>
+        <Field label='date'>
+          <Dropdown
+            selection
+            itemToOption={this.toDropdownOption}
+            items={Object.keys(this.props.recordsParDay)}
+            value={this.state.selectedDay}
+            callback={(value) => { this.select(value)}}
+          />
+        </Field>
+
+        <LineChart
+          width={800}
+          height={480}
+          data={this.props.recordsParDay[this.state.selectedDay]
+            ? this.props.recordsParDay[this.state.selectedDay]
+            : []
+          }
+          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+
+          <XAxis dataKey="sensed_at_time"
+            label={{value: 'sensed_at', position: 'insideBottom'}} />
+          <YAxis yAxisId="left"
+            label={{value: 'measurement', angle: -90, position: 'insideLeft'}} />
+          <YAxis yAxisId="right" orientation="right"
+            label={{value: 'samplings_count', angle: -90, position: 'insideRight'}} />
+          <CartesianGrid strokeDasharray="3 3"/>
+          <Tooltip/>
+          <Legend />
+          {/*<Line type="monotone" dataKey="measurement" stroke="#8884d8" />*/}
+          <Line yAxisId="left" type="monotone" dataKey="measurement" stroke="#8884d8" />
+          <Line yAxisId="right" type="monotone" dataKey="samplings_count" stroke="#82ca9d" />
+        </LineChart>
+      </Container>
     );
-
-    // return (
-    //   <div className="ui container">
-    //     <EditableTable
-    //       data={this.props.records}
-    //       columns={columns}
-    //       loading={this.props.progress}
-    //       filterable={true}
-    //       sortable={true}
-    //       defaultSorted={[{id: 'sensed_at', desc: true}]}
-    //     />
-
-    //   </div>
-    // );
   }
 }
 
 function mapStateToProps(state) {
   return  {
     records: state.devicesPyranometer.get('sensingRecords').toJS(),
+    recordsParDay: state.devicesPyranometer.get('sensingRecordsParDay').toJS(),
     progress: state.devicesPyranometer.get('progress'),
   };
 }
