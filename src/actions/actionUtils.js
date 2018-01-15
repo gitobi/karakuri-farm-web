@@ -47,7 +47,7 @@ export function ApiRequest(
         type: actionTypeFailure,
         error: error,
       });
-      new Promise.reject(error);
+      return Promise.reject(error);
     }
   );
 }

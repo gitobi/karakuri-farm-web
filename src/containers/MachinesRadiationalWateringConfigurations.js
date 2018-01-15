@@ -13,7 +13,7 @@ import * as Actions from '../actions/machinesRadiationalWatering';
 class MachinesRadiationalWateringConfigurations extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'MachinesRadiationalWateringConfigurations'});
+    this.logger = new Logger({prefix: this.constructor.name});
 
     this.update = this.update.bind(this);
     this.load = this.load.bind(this);
@@ -39,7 +39,7 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
 
   load(id = this.props.item.id) {
     if (id) {
-      this.props.actions.loadRadiationalWateringConfigurations(id);
+      this.props.actions.loadConfigurations(id);
     }
   }
 
@@ -58,7 +58,7 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
     //   'props', this.props,
     //   );
 
-    this.props.actions.updateDevicesWateringSchedule(
+    this.props.actions.updateConfigurations(
       changed.rowId,
       changed.columnId,
       changed.value,
@@ -68,24 +68,24 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
 
   save() {
     // セーブボタンクリック時の処理
-    this.props.actions.saveMachinesRadiationalWateringConfigurations(
+    this.props.actions.saveConfigurations(
       this.props.records,
       this.props.changed);
   }
 
   add() {
     // スケジュール追加ボタンクリック時の処理
-    this.props.actions.addDevicesWateringSchedule(this.props.item.id);
+    this.props.actions.addConfigurations(this.props.item.id);
   }
 
   remove(event, data, row, args) {
     // スケジュール削除ボタンクリック時の処理
-    this.props.actions.removeDevicesWateringSchedule(row.row.id);
+    this.props.actions.removeConfigurations(row.row.id);
   }
 
   enable(event, data, row, args) {
     // 有効無効チェックボックスクリック時の処理
-    this.props.actions.updateDevicesWateringSchedule(row.row.id, row.column.id, data.checked);
+    this.props.actions.updateConfigurations(row.row.id, row.column.id, data.checked);
     this.setState({saveButtonDisabled: false});
   }
 
@@ -106,7 +106,7 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
         Header: 'On/Off',
         accessor: 'enable',
         width: 64,
-        customCell: { type: 'checkbox', callback: this.enable }
+        customCell: { type: 'radio', callback: this.enable }
       }, {
         Header: 'Name',
         accessor: 'name',
@@ -156,7 +156,7 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    records: state.machinesRadiationalWatering.get('schedules').toJS(),
+    records: state.machinesRadiationalWatering.get('configurations').toJS(),
     changed: state.machinesRadiationalWatering.get('changed').toJS(),
     progress: state.machinesRadiationalWatering.get('progress'),
   };
