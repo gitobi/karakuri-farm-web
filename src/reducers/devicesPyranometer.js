@@ -25,8 +25,8 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
           return {
             id: value["id"],
             sensed_at: GtbUtils.dateString(new Date(value["sensed_at"])),
-            measurement: value["measurement"],
-            samplings_count: value["samplings_count"],
+            measurement: value["measurement"] * 1,
+            samplings_count: value["samplings_count"] * 1,
           };
         });
 
