@@ -2,8 +2,8 @@ import { List, Map, fromJS } from 'immutable';
 import { MachinesRadiationalWatering } from '../constants/machinesRadiationalWatering';
 import GtbUtils from '../js/GtbUtils'
 
-import Logger from '../js/Logger'
-const _logger = new Logger({prefix: this.constructor.name});
+// import Logger from '../js/Logger'
+// const _logger = new Logger({prefix: 'machinesRadiationalWatering'});
 
 const initialMachinesRadiationalWatering = Map({
   'configurations': List([]),
@@ -22,7 +22,7 @@ const machinesRadiationalWatering = (state = initialMachinesRadiationalWatering,
 
     case MachinesRadiationalWatering.LOAD_CONFIGURATIONS_SUCCESS:
       // スケジュール情報の取得完了
-      _logger.info("success:", action);
+      // _logger.info("success:", action);
       return state.withMutations(map => { map
         .set('configurations', fromJS(action.list).sort((a, b) => {
           if( a < b ) return -1;
