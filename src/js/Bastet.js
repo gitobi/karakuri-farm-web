@@ -13,6 +13,7 @@ export default class Bastet {
     const promises = [
       this.getDevicesWaterings(),
       this.getDevicesPyranometers(),
+      this.getMachinesRadiationalWaterings(),
     ];
 
     // 結合
@@ -31,9 +32,7 @@ export default class Bastet {
     return this.callApi(this.get, url)
       .then((data) => {
         return data.data.map((value, index, array) => {
-          var type = "waterings";
-          value["type"] = type;
-          value["key"] = type + value["id"];
+          value["_type"] = value.device_type;
           return value;
         });
       });
@@ -44,11 +43,68 @@ export default class Bastet {
     return this.callApi(this.get, url)
       .then((data) => {
         return data.data.map((value, index, array) => {
-          var type = "pyranometers";
-          value["type"] = type;
-          value["key"] = type + value["id"];
+          value["_type"] = value.device_type;
           return value;
         });
+      });
+  }
+
+  getMachinesRadiationalWaterings(id=null) {
+    // TODO urlを変える
+    var url = this.host + '/devices/pyranometers/';
+    // var url = this.host + '/machines/radiational_waterings/';
+    return this.callApi(this.get, url)
+      .then((data) => {
+        return [{
+          'id': "fa6ba60e-da70-4fd3-a2b3-0d617704c958",
+          'name': "rw1",
+          '_type': "radiationalWatering",
+          'watering_id': "b8f993b2-a417-401b-8de9-be52ff4ce8db",
+          'pyranometer_id': "e969203f-c7c2-48f9-a1d0-2d7d9c591d50",
+          'heartbeated_at': "2017-12-30T00:14:32.623528",
+          'inserted_at': "2017-12-30T00:12:32.623528",
+          'updated_at': "2017-12-30T00:13:32.548988",
+        }, {
+          'name': "rw2",
+          'id': "48873a1c-60da-4a9f-af52-de35af124126",
+          '_type': "radiationalWatering",
+          'watering_id': "f0d99dc6-ba36-4ffb-85a9-6b2ffb1c72f5",
+          'pyranometer_id': "1a03ca8c-929e-459e-9740-f9debfc990c9",
+          'heartbeated_at': "2017-12-30T00:24:32.623528",
+          'inserted_at': "2017-12-30T00:22:32.623528",
+          'updated_at': "2017-12-30T00:23:32.548988",
+        }];
+      });
+  }
+
+
+  getRadiationalWateringsConfigurations(id=null) {
+    // TODO urlを変える
+    var url = this.host + '/devices/pyranometers/';
+    // var url = this.host + '/machines/radiational_waterings/configurations/';
+    return this.callApi(this.get, url)
+      .then((data) => {
+        return {data: [{
+          'id': "59d6969a-2d0d-4637-afbd-7cd7e333a074",
+          'name': "rw1-1",
+          'radiational_watering_id': "fa6ba60e-da70-4fd3-a2b3-0d617704c958",
+          'interval': "2400",
+          'slope': "4000",
+          'duration': "360",
+          'enable': true,
+          'inserted_at': "2017-12-30T00:12:32.623528",
+          'updated_at': "2017-12-30T00:13:32.548988",
+        }, {
+          'id': "4fc8726a-3ee6-42fb-9332-b841928c10a2",
+          'name': "rw1-2",
+          'radiational_watering_id': "fa6ba60e-da70-4fd3-a2b3-0d617704c958",
+          'interval': "2401",
+          'slope': "4001",
+          'duration': "361",
+          'enable': false,
+          'inserted_at': "2017-12-30T00:22:32.623528",
+          'updated_at': "2017-12-30T00:23:32.548988",
+        }]};
       });
   }
 
@@ -102,9 +158,11 @@ export default class Bastet {
         return(data.body);
 
       }).catch((err) => {
-        this.logger.error('url', url);
-        this.logger.error('query', query);
-        this.logger.error('error', err);
+        if (err.status !== 404) {
+          this.logger.error('url', url);
+          this.logger.error('query', query);
+          this.logger.error('error', err);
+        }
         throw new Error(err);
       });
   }

@@ -68,6 +68,13 @@ class Menubar extends Component {
           </Menu.Menu>
         </Menu.Item>
 
+        <Menu.Item>
+          <Menu.Header>カラクリ設定</Menu.Header>
+          <Menu.Menu>
+            {this.menuItem('machine_radiational_waterings', '/app/machine_radiational_waterings', '日射比例潅水')}
+          </Menu.Menu>
+        </Menu.Item>
+
         {this.menuItem('alert', '/app/alert', 'アラート', 1)}
         {this.menuItem('devices', '/app/devices', 'デバイス一覧', 6)}
         {this.menuItem('stats', '/app/stats', '統計', 1)}

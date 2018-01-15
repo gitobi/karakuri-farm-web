@@ -5,7 +5,7 @@ import GtbUtils from '../js/GtbUtils'
 // import Logger from '../js/Logger'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
-const deviceTypes = ['watering', 'pyranometer']
+const deviceTypes = ['watering', 'pyranometer', 'radiationalWatering']
 
 const deviceTypeArray = (() => {
   // {a: [], b: [], ...}
@@ -24,7 +24,7 @@ const deviceTypeMap = (() => {
 const toTypeDevicesMap = (devices) => {
   let hash = deviceTypeMap;
   for (let device of devices) {
-    hash[device.device_type][device.id] = device;
+    hash[device._type][device.id] = device;
   }
   return hash;
 }
@@ -32,7 +32,7 @@ const toTypeDevicesMap = (devices) => {
 const toTypeDevices = (devices) => {
   let hash = deviceTypeArray;
   for (let device of devices) {
-    hash[device.device_type].push(device);
+    hash[device._type].push(device);
   }
   return hash;
 }
@@ -66,10 +66,22 @@ const device = (state = initialDevice, action) => {
             heartbeated_at: GtbUtils.dateString(new Date(value["heartbeated_at"])),
             inserted_at: GtbUtils.dateString(new Date(value["inserted_at"])),
             updated_at: GtbUtils.dateString(new Date(value["updated_at"])),
+            '_type': value["_type"]
           };
-          if ('order_amount' in value) {
-            map.order_amount = value["order_amount"]
+          switch (map._type) {
+            case 'watering':
+              map.order_amount = value["order_amount"];
+              break;
+            case 'pyranometer':
+              break;
+            case 'radiationalWatering':
+              map.watering_id = value["watering_id"];
+              map.pyranometer_id = value["pyranometer_id"];
+              break;
+            default:
+              break;
           }
+
           return map;
         });
 
@@ -94,15 +106,15 @@ const device = (state = initialDevice, action) => {
       // TODO 保存して全部再読込するのが面倒だからとりあえず全部更新する
       let updateDevice = GtbUtils.find(state.get('devices').toJS(), 'id', action.id);
       let updateDevicesIndex = GtbUtils.findIndex(state.get('devices').toJS(), 'id', action.id);
-      let updateDevicesListIndex = GtbUtils.findIndex(state.getIn(['devicesList', updateDevice.device_type]).toJS(), 'id', action.id);
+      let updateDevicesListIndex = GtbUtils.findIndex(state.getIn(['devicesList', updateDevice._type]).toJS(), 'id', action.id);
 
       return state.withMutations(map => { map
         .setIn(['changed', action.id, action.column], action.value)
         .setIn(['changed', action.id, '_errors', action.column], action.error)
         // TODO 保存した後に全部再読込するのが面倒だからとりあえず全部更新する
         .setIn(['devices', updateDevicesIndex, action.column], action.value)
-        .setIn(['devicesList', updateDevice.device_type, updateDevicesListIndex, action.column], action.value)
-        .setIn(['devicesMap', updateDevice.device_type, action.id, action.column], action.value)
+        .setIn(['devicesList', updateDevice._type, updateDevicesListIndex, action.column], action.value)
+        .setIn(['devicesMap', updateDevice._type, action.id, action.column], action.value)
         ;
       });
 
