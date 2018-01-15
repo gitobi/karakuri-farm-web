@@ -134,8 +134,13 @@ export default class Bastet {
     return this.callApi(this.post, url, {schedule: data});
   }
 
-  updateDevice(deviceId, data) {
-    var url = this.host + '/devices/' + deviceId;
+  updateDevice(id, data) {
+    var url = this.host + '/devices/' + id;
+    return this.callApi(this.put, url, data);
+  }
+
+  updateMachine(id, data) {
+    var url = this.host + '/machines/' + id;
     return this.callApi(this.put, url, data);
   }
 
