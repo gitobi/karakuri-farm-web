@@ -13,7 +13,6 @@ export default class Bastet {
     const promises = [
       this.getDevicesWaterings(),
       this.getDevicesPyranometers(),
-      this.getMachinesRadiationalWaterings(),
     ];
 
     // 結合
@@ -49,6 +48,23 @@ export default class Bastet {
       });
   }
 
+  getMachines(id=null) {
+    // 一括で取るapiがないため、別々にとって結合する
+    const promises = [
+      this.getMachinesRadiationalWaterings(),
+    ];
+
+    // 結合
+    return Promise.all(promises)
+      .then((results) => {
+        var list = [];
+        results.forEach((element, index, array) => {
+          list = list.concat(element);
+        });
+        return list;
+      });
+  }
+
   getMachinesRadiationalWaterings(id=null) {
     // TODO urlを変える
     var url = this.host + '/devices/pyranometers/';
@@ -77,11 +93,44 @@ export default class Bastet {
       });
   }
 
+  updateDevice(id, data) {
+    var url = this.host + '/devices/' + id;
+    return this.callApi(this.put, url, data);
+  }
 
-  getRadiationalWateringsConfigurations(id=null) {
+  updateMachine(id, data) {
+    var url = this.host + '/machines/' + id;
+    return this.callApi(this.put, url, data);
+  }
+
+  /////
+
+  getWateringsSchedules(deviceId) {
+    var url = this.host + '/devices/waterings/' + deviceId + '/schedules';
+    return this.callApi(this.get, url);
+  }
+
+  createWateringsSchedule(deviceId, data) {
+    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/';
+    return this.callApi(this.post, url, {schedule: data});
+  }
+
+  updateWateringsSchedule(deviceId, data) {
+    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/' + data.id;
+    return this.callApi(this.put, url, {schedule: data});
+  }
+
+  deleteWateringsSchedule(deviceId, data) {
+    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/' + data.id;
+    return this.callApi(this.delete, url);
+  }
+
+  /////
+
+  getRadiationalWateringsConfigurations(machineId) {
     // TODO urlを変える
     var url = this.host + '/devices/pyranometers/';
-    // var url = this.host + '/machines/radiational_waterings/configurations/';
+    // var url = this.host + '/machines/radiational_waterings/' + machineId + '/configurations/';
     return this.callApi(this.get, url)
       .then((data) => {
         return {data: [{
@@ -108,30 +157,22 @@ export default class Bastet {
       });
   }
 
-  getWateringsSchedules(wateringsId) {
-    var url = this.host + '/devices/waterings/' + wateringsId + '/schedules';
-    return this.callApi(this.get, url);
+  createRadiationalWateringsConfigurations(machineId, data) {
+    var url = this.host + '/machines/radiational_waterings/' + machineId + '/configurations/';
+    return this.callApi(this.post, url, {radiationalWaterings: data});
   }
 
-  createWateringsSchedule(deviceId, data) {
-    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/';
-    return this.callApi(this.post, url, {schedule: data});
+  updateRadiationalWateringsConfigurations(machineId, data) {
+    var url = this.host + '/machines/radiational_waterings/' + machineId + '/configurations/' + data.id;
+    return this.callApi(this.put, url, {radiationalWaterings: data});
   }
 
-  updateDevice(deviceId, data) {
-    var url = this.host + '/devices/' + deviceId;
-    return this.callApi(this.put, url, data);
-  }
-
-  updateWateringsSchedule(deviceId, data) {
-    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/' + data.id;
-    return this.callApi(this.put, url, {schedule: data});
-  }
-
-  deleteWateringsSchedule(deviceId, data) {
-    var url = this.host + '/devices/waterings/' + deviceId + '/schedules/' + data.id;
+  deleteRadiationalWateringsConfigurations(machineId, data) {
+    var url = this.host + '/machines/radiational_waterings/' + machineId + '/configurations/' + data.id;
     return this.callApi(this.delete, url);
   }
+
+  /////
 
   getWateringsOperationalRecords(wateringsId) {
     var url = this.host + '/devices/waterings/' + wateringsId + '/operational_records';

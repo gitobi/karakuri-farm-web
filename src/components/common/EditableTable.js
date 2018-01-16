@@ -26,6 +26,7 @@ export default class EditableTable extends React.Component {
     this.createInputCell = this.createInputCell.bind(this);
     this.createButtonCell = this.createButtonCell.bind(this);
     this.createCheckboxCell = this.createCheckboxCell.bind(this);
+    this.createRadioCell = this.createRadioCell.bind(this);
     this.createNormalCell = this.createNormalCell.bind(this);
 
     this.onFetchData = this.onFetchData.bind(this);
@@ -87,6 +88,9 @@ export default class EditableTable extends React.Component {
             break;
           case 'checkbox':
             column.Cell = this.createCheckboxCell(element.customCell);
+            break;
+          case 'radio':
+            column.Cell = this.createRadioCell(element.customCell);
             break;
           default:
             column.Cell = this.createNormalCell(element.customCell);
@@ -265,6 +269,60 @@ export default class EditableTable extends React.Component {
               onChange={((event, data) => {
                 if (callback) {
                   callback(event, data, row, args);
+                }
+              })}
+            />
+          </span>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * ラジオセルを作成する
+   * @param  {label: String, callback: ((event, data, row, args) => {})} args
+   * @return {((row) => {})}
+   */
+  createRadioCell(args) {
+    let label = args.label;
+    let callback = args.callback;
+
+    return ((row) => {
+      return (
+        <div
+           style={{
+            display: 'table',
+            verticalAlign: 'middle',
+            textAlign: 'center',
+            width: "100%",
+            height: '100%',
+          }}
+        >
+          <span
+            style={{
+              verticalAlign: 'middle',
+              display: 'table-cell',
+            }}
+          >
+            <Checkbox
+              as='span'
+              toggle
+              label={label ? label : null}
+              checked={row.value}
+              onChange={((event, data) => {
+                if (callback) {
+                  this.props.data.forEach((datum) => {
+                    let tmpRow = {
+                      row: {id: datum.id},
+                      column: {id: row.column.id},
+                    };
+                    let tmpData = {
+                      checked: data.checked
+                        ? row.row.id === datum.id
+                        : data.checked,
+                    };
+                    callback(event, tmpData, tmpRow, args);
+                  });
                 }
               })}
             />
