@@ -1,5 +1,8 @@
 import React from 'react'
 import {Container} from 'semantic-ui-react';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import 'react-datepicker/dist/react-datepicker.css';
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import Logger from '../js/Logger'
 
@@ -64,6 +67,21 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
             callback={(value) => { this.select(value)}}
           />
         </Field>
+
+        <Field>
+          <DatePicker
+            inline
+            monthsShown={2}
+            dateFormat="YYYY/MM/DD"
+            todayButton={"today"}
+            selected={this.state.selectedDay
+              ? moment(this.state.selectedDay, "YYYY-MM-DD")
+              : moment(Object.keys(this.props.recordsParDay)[Object.keys(this.props.recordsParDay).length - 1], "YYYY-MM-DD")}
+            onChange={moment => {this.select(moment.format('YYYY-MM-DD'))}}
+            includeDates={Object.keys(this.props.recordsParDay).map(value => moment(value, "YYYY-MM-DD"))}
+          />
+        </Field>
+
 
         <LineChart
           width={800}
