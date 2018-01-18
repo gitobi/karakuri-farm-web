@@ -2,6 +2,8 @@ import React from 'react'
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
 
+import DecimalFormatter from '../js/formatter/DecimalFormatter'
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/devicesPyranometer';
@@ -10,6 +12,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
+    this.filter = this.filter.bind(this);
     this.onFetchData = this.onFetchData.bind(this);
   }
 
@@ -31,10 +34,16 @@ class DevicesPyranometerSensingRecords extends React.Component {
     }
   }
 
+  filter(value) {
+    this.logger.log('filter:', value);
+  }
+
   onFetchData(params) {
-    this.logger.log('onFetchData:', params);
+    // this.logger.log('onFetchData:', params);
     let id = this.props.item.id;
     if (id) {
+       // %{"0" => %{"id" => "measurement", "value" => "5"}}
+      // params.filtered.push({id: "device_id", value: id});
       this.props.actions.loadDevicesPyranometerSensingRecordsPage(id, params);
     }
   }
@@ -50,10 +59,12 @@ class DevicesPyranometerSensingRecords extends React.Component {
         Header: 'Sensed at',
         accessor: 'sensed_at',
         width: 180,
+        customFilter: { type: 'date', callback: this.filter },
       }, {
         Header: 'Measurement',
         accessor: 'measurement',
         width: 120,
+        customFilter: { type: 'range', formatter: new DecimalFormatter(), callback: this.filter },
       }, {
         Header: 'Samplings_count',
         accessor: 'samplings_count',

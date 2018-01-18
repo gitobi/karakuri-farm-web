@@ -74,4 +74,34 @@ export default class GtbUtils {
     }
     return tmpId;
   }
+
+  static objectSort(obj) {
+    if (null === obj || undefined === obj) {
+      return obj;
+    }
+
+    // まずキーのみをソートする
+    let keys = Object.keys(obj).sort();
+
+    // 返却する空のオブジェクトを作る
+    let map = {};
+    // ソート済みのキー順に返却用のオブジェクトに値を格納する
+    keys.forEach((key) => {
+        let val = obj[key];
+        // 中身がオブジェクトの場合は再帰呼び出しを行う
+        if(typeof val === "object"){
+            val = this.objectSort(val);
+        }
+        map[key] = val;
+    });
+    return map;
+  }
+
+  static compare(obj1, obj2) {
+    let j1 = JSON.stringify(this.objectSort(obj1));
+    let j2 = JSON.stringify(this.objectSort(obj2));
+    console.log("compare:", j1, j2);
+    return (j1 === j2);
+  }
+
 }

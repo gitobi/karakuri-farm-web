@@ -1,8 +1,17 @@
+import { Map } from 'immutable';
+import Diff from 'immutablediff';
+import Patch from 'immutablepatch';
 import React from 'react'
 import { Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import Logger from '../../js/Logger'
+import GtbUtils from '../../js/GtbUtils'
+
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
+import './EditableTable.css'
 
 export default class EditableTable extends React.Component {
 
@@ -13,6 +22,8 @@ export default class EditableTable extends React.Component {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
 
+    this.filterOnChange = this.filterOnChange.bind(this);
+
     this.cellOnChange = this.cellOnChange.bind(this);
     this.cellOnBlur = this.cellOnBlur.bind(this);
 
@@ -22,6 +33,9 @@ export default class EditableTable extends React.Component {
     this.setCellError = this.setCellError.bind(this);
     this.clearCellError = this.clearCellError.bind(this);
 
+    this.isFilterError = this.isFilterError.bind(this);
+    this.isFilterErrors = this.isFilterErrors.bind(this);
+
     this.createColumns = this.createColumns.bind(this);
     this.createInputCell = this.createInputCell.bind(this);
     this.createButtonCell = this.createButtonCell.bind(this);
@@ -29,13 +43,21 @@ export default class EditableTable extends React.Component {
     this.createRadioCell = this.createRadioCell.bind(this);
     this.createNormalCell = this.createNormalCell.bind(this);
 
+    this.createRangeFilter = this.createRangeFilter.bind(this);
+    this.createDateFilter = this.createDateFilter.bind(this);
+    this.createNoFetchFilter = this.createNoFetchFilter.bind(this);
+
+    this.createFetchFilterMethod = this.createFetchFilterMethod.bind(this);
+    this.createClientFilterMethod = this.createClientFilterMethod.bind(this);
+
     this.onFetchData = this.onFetchData.bind(this);
 
     this.state = {
       // columns: props.columns,
-      columns: this.createColumns(props.columns),
+      columns: this.createColumns(props.columns, props.filterable),
       errorMessage: {header: null, content: null},
       errorCells: {},
+      lastFiltered: {},
     };
   }
 
@@ -64,7 +86,7 @@ export default class EditableTable extends React.Component {
   /**
    * ReactTableのColumnsに準拠するオブジェクトを作成する。
    */
-  createColumns(params) {
+  createColumns(params, filterable) {
     // this.logger.log('createColumns bef', params);
     let columns = [];
     params.forEach((element, index, array) => {
@@ -100,10 +122,49 @@ export default class EditableTable extends React.Component {
         column.Cell = this.createNormalCell(element.customCell);
       }
 
+      if (element.customFilter) {
+        switch (element.customFilter.type) {
+          case 'date':
+            column.Filter = this.createDateFilter(element.customFilter);
+            column.filterMethod = this.createFetchFilterMethod();
+            column.db_column_type = "date";
+            column.needFetch = true;
+            break;
+          case 'range':
+            column.Filter = this.createRangeFilter(element.customFilter);
+            column.filterMethod = this.createFetchFilterMethod();
+            column.db_column_type = "numeric";
+            column.needFetch = true;
+            break;
+          case 'no-fetch':
+            column.Filter = this.createNoFetchFilter(element.customFilter);
+            column.filterMethod = this.createClientFilterMethod();
+            column.needFetch = false;
+            break;
+          default:
+            break;
+        }
+      } else {
+        if(filterable) {
+          column.Filter = this.createNoFetchFilter({});
+          column.filterMethod = this.createClientFilterMethod();
+          column.needFetch = false;
+        }
+      }
+
       columns.push(column);
     });
     // this.logger.log('createColumns aft', columns);
     return columns;
+  }
+
+  filterOnChange(filterId, originalValue, newValue, formatter) {
+    let row = {
+      value: originalValue,
+      row: {id: "_filter"},
+      column: {id: filterId},
+    }
+    return this.cellOnChange({}, {}, row, {}, newValue, formatter);
   }
 
   /**
@@ -126,6 +187,7 @@ export default class EditableTable extends React.Component {
       columnId: row.column.id,
       newValue: value,
       originalValue: row.value,
+      value: value,
     };
 
     if (formatter) {
@@ -176,7 +238,6 @@ export default class EditableTable extends React.Component {
 
     return changed;
   }
-
 
   /**
    * 入力セルを作成する
@@ -358,6 +419,188 @@ export default class EditableTable extends React.Component {
     })
   }
 
+  createFetchFilterMethod() {
+    return (filter, row) => {return true};
+  }
+
+  createClientFilterMethod() {
+    return (filter, row, column) => {
+      const id = filter.pivotId || filter.id
+      if (row[id] === undefined) {
+        return true;
+      }
+      try {
+        const regexp = new RegExp(filter.value);
+        return String(row[id]).match(regexp);
+      } catch(e) {
+        return -1 === String(row[id]).indexOf(filter.value) ? false : true;
+      }
+    }
+  }
+
+  /**
+   * 日付フィルタを作成する
+   */
+  createDateFilter(args) {
+    // var formatter = args.formatter;
+    // var callback = args.callback;
+    return (({filter, onChange, column}) => {
+      return <List
+        verticalAlign={"top"}
+        style={{width: '100%'}}
+        >
+
+        <List.Item
+          className="ui input mini"
+          style={{
+            width: '100%',
+            display: 'block'
+          }}
+        >
+          <DatePicker
+            isClearable={true}
+            peekNextMonth
+            showMonthDropdown
+            showYearDropdown
+            showTimeSelect
+            timeFormat="HH:mm"
+            dateFormat="L HH:mm"
+            placeholderText={"min ~"}
+            todayButton={"today"}
+            selectsStart
+            selected={filter && filter.value.min ? filter.value.min.local() : null}
+            startDate={filter && filter.value.min ? filter.value.min : null}
+            endDate={filter && filter.value.max ? filter.value.max : null}
+            onChange={(moment) => {
+              // console.log("onchange moment:", moment);
+              let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
+              fv.min = moment ? moment : undefined;
+              onChange(fv);
+            }}
+          />
+        </List.Item>
+        <List.Item
+          className="ui input mini"
+          style={{
+            width: '100%',
+            display: 'block'
+          }}
+        >
+          <DatePicker
+            isClearable={true}
+            peekNextMonth
+            showMonthDropdown
+            showYearDropdown
+            showTimeSelect
+            timeFormat="HH:mm"
+            dateFormat="L HH:mm"
+            placeholderText={"~ max"}
+            todayButton={"today"}
+            selectsEnd
+            selected={filter && filter.value.max ? filter.value.max.local() : null}
+            startDate={filter && filter.value.min ? filter.value.min : null}
+            endDate={filter && filter.value.max ? filter.value.max : null}
+            onChange={(moment) => {
+              let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
+              fv.max = moment ? moment : undefined;
+              onChange(fv);
+            }}
+          />
+        </List.Item>
+      </List>
+    });
+  }
+
+  /**
+   * レンジフィルタを作成する
+   */
+  createRangeFilter(args) {
+    var formatter = args.formatter;
+    // var callback = args.callback;
+    return (({filter, onChange, column}) => {
+      // console.log('createRangeFilter on method call!', filter);
+      return <List
+        verticalAlign={"top"}
+        style={{width: '100%'}}
+        >
+        <List.Item>
+          <Input
+            style={{
+              display: 'block',
+              width: '100%'
+            }}
+            size='mini'
+            placeholder={'min ~'}
+            value={filter && filter.value.min ? filter.value.min : ''}
+            error={this.isFilterError(column.id + "min")}
+            onChange={((event, data) => {
+              // console.log('onChange!', data, filter, column);
+              let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
+              let changed = this.filterOnChange(
+                column.id + "min",
+                fv.min,
+                data.value ? data.value : undefined,
+                formatter);
+              // console.log('formatted!', changed);
+              fv.min = changed.value;
+              onChange(fv);
+            })}
+            onBlur={((event, data) => {
+            })}
+          />
+        </List.Item>
+        <List.Item>
+          <Input
+            style={{
+              display: 'block',
+              width: '100%'
+            }}
+            size='mini'
+            placeholder={'~ max'}
+            value={filter && filter.value.max ? filter.value.max : ''}
+            error={this.isFilterError(column.id + "max")}
+            onChange={((event, data) => {
+              // console.log('onChange!', data);
+              let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
+              let changed = this.filterOnChange(
+                column.id + "max",
+                fv.max,
+                data.value ? data.value : undefined,
+                formatter);
+              // console.log('formatted!', changed);
+              fv.max = changed.value;
+              onChange(fv);
+            })}
+            onBlur={((event, data) => {
+            })}
+          />
+        </List.Item>
+        </List>
+    });
+
+  }
+
+  /**
+   * DBフェッチを行わないクライアント完結のフィルタを作成する
+   */
+  createNoFetchFilter(args={}) {
+    // var formatter = args.formatter;
+    // var callback = args.callback;
+    return (({filter, onChange, column}) => {
+      return <Input
+        style={{
+          display: 'block',
+          width: '100%'
+        }}
+        size='mini'
+        value={filter && filter.value ? filter.value : ''}
+        onChange={((event, data) => {
+          onChange(data.value ? data.value : undefined);
+        })}
+      />
+    });
+  }
+
   /**
    * エラーメッセージを設定する
    * @param {[type]} header  [description]
@@ -388,6 +631,32 @@ export default class EditableTable extends React.Component {
   }
 
   /**
+   * 対象フィルタでエラーが発生しているかを確認する
+   * @param  {[type]}  row [description]
+   * @return {Boolean}     [description]
+   */
+  isFilterError(filterId) {
+    // this.logger.log("errorFilter:", "_filter" + filterId, this.state.errorCells, this.state.errorCells["_filter" + filterId]);
+    return this.state.errorCells["_filter" + filterId] ? true : false;
+  }
+
+  /**
+   * フィルタのいずれかでエラーが発生しているかを確認する
+   * @param  {[type]}  row [description]
+   * @return {Boolean}     [description]
+   */
+  isFilterErrors() {
+    // this.logger.log("call on isFilterErrors", this.state.errorCells);
+    return Object.keys(this.state.errorCells).some((key) => {
+      if (key.startsWith("_filter")) {
+        // this.logger.log("hit on isFilterErrors", key, this.state.errorCells[key], this.state.errorCells[key] ? true : false);
+        return this.state.errorCells[key] ? true : false;
+      }
+      return false;
+    });
+  }
+
+  /**
    * 対象セルにエラーを設定する
    * @param {[type]} row   [description]
    * @param {[type]} error [description]
@@ -396,6 +665,7 @@ export default class EditableTable extends React.Component {
     // this.logger.log('setCellError', row, error);
     let errorCells = this.state.errorCells;
     errorCells[row.row.id + row.column.id] = error ? true : false;
+    // this.logger.log("errorCells:", errorCells);
     this.setState({errorCells: errorCells});
   }
 
@@ -412,14 +682,60 @@ export default class EditableTable extends React.Component {
   }
 
   onFetchData(state, instance) {
-    if (this.props.onFetchData) {
-      let params = {
-        pageSize: state.pageSize,
-        page: state.page,
-        sorted: state.sorted,
-        filtered: state.filtered,
+    // this.logger.log("onFetchData", state.filtered);
+
+    // フィルタにエラーがある場合はフェッチを行わない
+    if (this.isFilterErrors()) {
+      // this.logger.log("filter error!");
+      return;
+    }
+
+    //変更されたfilterの確認
+    // let lastFiltered = this.state.lastFiltered;
+    let needFetch = false;
+    let beforeFiltered = Map(this.state.lastFiltered);
+    let afterFiltered = Map({});
+    state.filtered.forEach((filter) => { afterFiltered = afterFiltered.set(filter.id, filter) });
+    // TODO ネストされたオブジェクトの値が変更されていることまでしか検知出来ないが
+    // どのカラムが変更されたかは判断できるため、とりあえずこれで行く
+    let diffPatch = Diff(beforeFiltered, afterFiltered);
+    let diffObject = Patch(Map({}), diffPatch).toJS();
+    // this.logger.log("onFetchData diff", diffPatch.toJS());
+    Object.keys(diffObject).forEach((columnId) => {
+      let column = GtbUtils.find(state.columns, "accessor", columnId);
+      // this.logger.log("onCompare! => needFetch", column.needFetch);
+      needFetch |= column.needFetch;
+    });
+    // 前回フィルタを更新
+    this.setState({lastFiltered: afterFiltered.toJS()});
+
+    if (needFetch) {
+      ///// dbフェッチ
+      // 必要なパラメータだけを作成する
+      let filtered = state.filtered.filter((filter) => {
+        return filter
+          && filter.value
+          && Object.keys(filter.value).some((key) => {return undefined !== filter.value[key]});
+      }).map((filter) => {
+        let copy = Object.assign({}, filter);
+        let column = GtbUtils.find(state.columns, "accessor", copy.id);
+        copy.needFetch = column.needFetch;
+        return copy;
+      }).filter((filter) => {
+        return filter.needFetch;
+      });
+      // this.logger.log("=> onFetchData", state.filtered);
+
+      if (this.props.onFetchData) {
+        let params = {
+          pageSize: state.pageSize,
+          page: state.page,
+          sorted: state.sorted,
+          filtered: filtered,
+        }
+        // this.logger.log("call onFetchData", params);
+        this.props.onFetchData(params);
       }
-      this.props.onFetchData(params);
     }
   }
 
@@ -443,23 +759,13 @@ export default class EditableTable extends React.Component {
             ? this.props.filterable
             : false
           }
-          defaultFilterMethod={(filter, row, column) => {
-            const id = filter.pivotId || filter.id
-            if (row[id] === undefined) {
-              return true;
-            }
-            try {
-              const regexp = new RegExp(filter.value);
-              return String(row[id]).match(regexp);
-            } catch(e) {
-              return -1 === String(row[id]).indexOf(filter.value) ? false : true;
-            }
-          }}
           onFetchData={this.onFetchData}
           sortable={this.props.sortable}
           defaultSorted={this.props.defaultSorted
               ? this.props.defaultSorted
               : [{id: 'id', desc: false}]}
+
+          getTheadFilterThProps={() => { return { style: { position: "inherit", overflow: "inherit" } } }}
         />
       </div>
     );

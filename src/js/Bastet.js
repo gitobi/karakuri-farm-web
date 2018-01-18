@@ -1,5 +1,6 @@
 import Logger from './Logger'
 import request from 'superagent'
+import moment from 'moment';
 
 export default class Bastet {
 
@@ -187,7 +188,7 @@ export default class Bastet {
   getPyranometersSensingRecordsPage(pyranometersId, params) {
     var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
     let hash = this.nestedObjectToQueryObject(params);
-    this.logger.log('getPyranometersSensingRecordsPage:', params, '=>', hash);
+    // this.logger.log('getPyranometersSensingRecordsPage:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
@@ -330,15 +331,20 @@ export default class Bastet {
   //    {'a[1][0]': A, 'a[1][1]': B}
   toQueryStringHash(key, value) {
     let hash = {};
-    if (this.isArray(value)) {
+    if (moment.isMoment(value)) {
+      hash[key] = value.utc().format();
+
+    } else if (this.isArray(value)) {
       value.forEach((element, index) => {
         Object.assign(hash, this.toQueryStringHash(`${key}[${index}]`, element));
       });
+
     } else if (this.isObject(value)) {
       Object.keys(value).forEach((valueKey) =>  {
         let element = value[valueKey];
         Object.assign(hash, this.toQueryStringHash(`${key}[${valueKey}]`, element));
       });
+
     } else {
       hash[key] = value;
     }

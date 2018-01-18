@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import moment from 'moment';
+
 import Logger from '../js/Logger';
 
 import { bindActionCreators } from 'redux';
@@ -12,6 +14,21 @@ class AppStore extends Component {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
     this.load = this.load.bind(this);
+
+    moment.locale("ja", {
+      weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
+      weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"],
+      weekdaysMin: ["日", "月", "火", "水", "木", "金", "土"],
+      months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+      longDateFormat : {
+          LT: "h:mm A",
+          LTS: "h:mm:ss A",
+          L: "YYYY/MM/DD",
+          LL: "YYYY MMMM Do",
+          LLL: "YYYY MMMM Do LT",
+          LLLL: "YYYY MMMM Do, dddd LT",
+      }
+    });
   }
 
   componentWillMount() {
