@@ -184,14 +184,14 @@ export default class Bastet {
     var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
     params.limit = 10080
     let hash = this.nestedObjectToQueryObject(params);
-    // this.logger.log('getPyranometersSensingRecords:', params, '=>', hash);
+    this.logger.log('getPyranometersSensingRecords:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
   getPyranometersStats(pyranometersId, params={}) {
     var url = this.host + '/devices/pyranometers/' + pyranometersId + '/stats';
     let hash = this.nestedObjectToQueryObject(params);
-    // this.logger.log('getPyranometersStats:', params, '=>', hash);
+    this.logger.log('getPyranometersStats:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 

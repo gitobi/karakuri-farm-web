@@ -3,7 +3,7 @@ import Logger from '../js/Logger'
 import DeviceSettingTab from './DeviceSettingTab'
 import DevicesSummary from '../containers/DevicesSummary'
 import DevicesPyranometerSensingRecords from '../containers/DevicesPyranometerSensingRecords'
-// import DevicesPyranometerSensingRecordsGraph from '../containers/DevicesPyranometerSensingRecordsGraph'
+import DevicesPyranometerStats from '../containers/DevicesPyranometerStats'
 import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 
 import { bindActionCreators } from 'redux';
@@ -13,7 +13,10 @@ import * as Actions from '../actions/devicesPyranometer';
 class DevicesPyranometerTab extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesPyranometerTab'});
+    this.logger = new Logger({prefix: this.constructor.name});
+    this.state = {
+      statsUnit: "day",
+    };
   }
 
   componentDidMount() {
@@ -31,6 +34,7 @@ class DevicesPyranometerTab extends Component {
   load(id = this.props.item.id) {
     if (id) {
       this.props.actions.loadDevicesPyranometerWorkingDays(id);
+      this.props.actions.loadDevicesPyranometerStats(id, this.state.statsUnit);
     }
   }
 
@@ -48,10 +52,10 @@ class DevicesPyranometerTab extends Component {
           key: "sensingRecords",
           title: "計測実績",
           component: DevicesPyranometerSensingRecords,
-        // }, {
-        //   key: "sensingRecordsGraph",
-        //   title: "グラフ",
-        //   component: DevicesPyranometerSensingRecordsGraph,
+        }, {
+          key: "stats",
+          title: "統計",
+          component: DevicesPyranometerStats,
         }, {
           key: "systemLogs",
           title: "ログ",

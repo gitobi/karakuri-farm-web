@@ -28,3 +28,19 @@ export function loadDevicesPyranometerSensingRecords(deviceId, params) {
   }
 };
 
+export function loadDevicesPyranometerStats(deviceId, unit) {
+  return function(dispatch) {
+    dispatch({ type: DevicesPyranometer.LOAD_STATS_REQUEST });
+    let params = {date_trunc: unit}
+    let bastet = new Bastet();
+    return bastet.getPyranometersStats(deviceId, params).then(
+      result => {
+        console.log("action loaded:", result);
+        dispatch({ type: DevicesPyranometer.LOAD_STATS_SUCCESS, stats: result.data, unit: unit })
+      },
+      error => {
+        dispatch({ type: DevicesPyranometer.LOAD_STATS_FAILURE, error: error })
+      }
+    );
+  }
+};
