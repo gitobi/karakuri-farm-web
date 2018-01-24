@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger';
 
-import DeviceSetting from './DeviceSetting';
+import DeviceSetting from '../components/DeviceSetting';
 import DevicesWateringTab from '../components/DevicesWateringTab';
 
 import { connect } from 'react-redux';

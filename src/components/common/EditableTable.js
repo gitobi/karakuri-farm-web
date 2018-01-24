@@ -1,14 +1,19 @@
+import React from 'react'
+import {Segment, Container, Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
+
 import { Map } from 'immutable';
 import Diff from 'immutablediff';
 import Patch from 'immutablepatch';
-import React from 'react'
-import { Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
+
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
+
 import Logger from '../../js/Logger'
 import GtbUtils from '../../js/GtbUtils'
+import Header from '../../components/part/Header'
 
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import './EditableTable.css'
@@ -21,6 +26,9 @@ export default class EditableTable extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
+
+    this.setFilterValue = this.setFilterValue.bind(this);
+    this.getFilterValue = this.getFilterValue.bind(this);
 
     this.filterOnChange = this.filterOnChange.bind(this);
 
@@ -57,7 +65,9 @@ export default class EditableTable extends React.Component {
       columns: this.createColumns(props.columns, props.filterable),
       errorMessage: {header: null, content: null},
       errorCells: {},
+      filtered: {},
       lastFiltered: {},
+
     };
   }
 
@@ -419,6 +429,20 @@ export default class EditableTable extends React.Component {
     })
   }
 
+  getFilterValue(id, key) {
+    let filtered = Map(this.state.filtered);
+    let value = filtered.getIn([id, key]);
+    this.logger.log("getFilterValue", id, key, "=>", value);
+    return value;
+  }
+
+  setFilterValue(id, key, value) {
+    let filtered = Map(this.state.filtered);
+    filtered = filtered.setIn([id, key], value);
+    this.setState({filtered: filtered.toJS()});
+    this.logger.log("setFilterValue", id, key, value, "=>", filtered.toJS());
+  }
+
   createFetchFilterMethod() {
     return (filter, row) => {return true};
   }
@@ -442,8 +466,12 @@ export default class EditableTable extends React.Component {
    * 日付フィルタを作成する
    */
   createDateFilter(args) {
-    // var formatter = args.formatter;
-    // var callback = args.callback;
+    // let formatter = args.formatter;
+    // let callback = args.callback;
+    let includeDates = args.includeDates;
+    let initialValue = args.initialValue;
+    console.log('createDateFilter on method call!', includeDates, initialValue);
+
     return (({filter, onChange, column}) => {
       return <List
         verticalAlign={"top"}
@@ -468,14 +496,17 @@ export default class EditableTable extends React.Component {
             placeholderText={"min ~"}
             todayButton={"today"}
             selectsStart
-            selected={filter && filter.value.min ? filter.value.min.local() : null}
-            startDate={filter && filter.value.min ? filter.value.min : null}
-            endDate={filter && filter.value.max ? filter.value.max : null}
+            selected={this.getFilterValue(column.id, "min") ? this.getFilterValue(column.id, "min").local() : null}
+            startDate={this.getFilterValue(column.id, "min") ? this.getFilterValue(column.id, "min") : null}
+            endDate={this.getFilterValue(column.id, "max") ? this.getFilterValue(column.id, "max") : null}
+            includeDates={includeDates ? includeDates.map(value => moment(value, "YYYY-MM-DD")) : null}
             onChange={(moment) => {
               // console.log("onchange moment:", moment);
-              let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
-              fv.min = moment ? moment : undefined;
-              onChange(fv);
+
+              this.setFiltereValue(column.id, "min", moment);
+              // let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
+              // fv.min = moment ? moment : undefined;
+              // onChange(fv);
             }}
           />
         </List.Item>
@@ -497,13 +528,16 @@ export default class EditableTable extends React.Component {
             placeholderText={"~ max"}
             todayButton={"today"}
             selectsEnd
-            selected={filter && filter.value.max ? filter.value.max.local() : null}
-            startDate={filter && filter.value.min ? filter.value.min : null}
-            endDate={filter && filter.value.max ? filter.value.max : null}
+            selected={this.getFilterValue(column.id, "max") ? this.getFilterValue(column.id, "max").local() :null}
+            startDate={this.getFilterValue(column.id, "min") ? this.getFilterValue(column.id, "min") : null}
+            endDate={this.getFilterValue(column.id, "max") ? this.getFilterValue(column.id, "max") : null}
+            includeDates={includeDates ? includeDates.map(value => moment(value, "YYYY-MM-DD")) : null}
             onChange={(moment) => {
-              let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
-              fv.max = moment ? moment : undefined;
-              onChange(fv);
+              this.setFiltereValue(column.id, "max", moment);
+
+              // let fv = filter && filter.value ? filter.value : {min: undefined, max: undefined};
+              // fv.max = moment ? moment : undefined;
+              // onChange(fv);
             }}
           />
         </List.Item>
@@ -728,8 +762,8 @@ export default class EditableTable extends React.Component {
 
       if (this.props.onFetchData) {
         let params = {
-          pageSize: state.pageSize,
-          page: state.page,
+          // pageSize: state.pageSize,
+          // page: state.page,
           sorted: state.sorted,
           filtered: filtered,
         }
@@ -753,8 +787,15 @@ export default class EditableTable extends React.Component {
           data={this.props.data}
           columns={this.state.columns}
           loading={this.props.loading}
-          defaultPageSize={12}
-          minRows={3}
+          pageSizeOptions={this.props.pageSizeOptions
+            ? this.props.pageSizeOptions
+            : [5, 10, 20, 25, 50, 100]
+          }
+          defaultPageSize={this.props.defaultPageSize
+            ? this.props.defaultPageSize
+            : 20
+          }
+          minRows={10}
           filterable={this.props.filterable
             ? this.props.filterable
             : false
@@ -772,27 +813,31 @@ export default class EditableTable extends React.Component {
 
     // エラー発生時のポップアップを表示するため、Popupでwrapする。
     return (
-      <Popup
-        trigger={table}
-        wide='very'
-        size='large'
-        inverted
-        on='click'
-        hideOnScroll
-        position='top center'
-        open={(this.state.errorMessage.header || this.state.errorMessage.content) ? true : false}
-      >
-        <Popup.Header>{this.state.errorMessage.header}</Popup.Header>
-        <Popup.Content>
-          {(() => {
-            if (this.state.errorMessage.content instanceof Array) {
-              return <List items={this.state.errorMessage.content} />
-            } else {
-              return this.state.errorMessage.content;
-            }
-          })()}
-        </Popup.Content>
-      </Popup>
+      <Segment loading={this.props.loading}>
+        <Header label={this.props.label}/>
+
+        <Popup
+          trigger={table}
+          wide='very'
+          size='large'
+          inverted
+          on='click'
+          hideOnScroll
+          position='top center'
+          open={(this.state.errorMessage.header || this.state.errorMessage.content) ? true : false}
+        >
+          <Popup.Header>{this.state.errorMessage.header}</Popup.Header>
+          <Popup.Content>
+            {(() => {
+              if (this.state.errorMessage.content instanceof Array) {
+                return <List items={this.state.errorMessage.content} />
+              } else {
+                return this.state.errorMessage.content;
+              }
+            })()}
+          </Popup.Content>
+        </Popup>
+      </Segment>
     );
   }
 

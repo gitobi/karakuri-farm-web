@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Logger from '../js/Logger';
 
-import DeviceSetting from './DeviceSetting';
-import DevicesPyranometerTab from '../components/DevicesPyranometerTab';
+import DeviceSetting from '../components/DeviceSetting';
+import DevicesPyranometerTab from '../containers/DevicesPyranometerTab';
 
 import { connect } from 'react-redux';
 

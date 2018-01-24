@@ -1,14 +1,39 @@
+import moment from 'moment';
+
 export default class GtbUtils {
-  static dateString(date=null) {
-    var d = (null === date) ? new Date() : date;
-    var year  = d.getFullYear();
-    var month = ( d.getMonth() + 1 < 10 ) ? '0' + (d.getMonth() + 1) : d.getMonth() + 1;
-    var day   = ( d.getDate()      < 10 ) ? '0' + d.getDate()        : d.getDate();
-    var hour  = ( d.getHours()     < 10 ) ? '0' + d.getHours()       : d.getHours();
-    var min   = ( d.getMinutes()   < 10 ) ? '0' + d.getMinutes()     : d.getMinutes();
-    var sec   = ( d.getSeconds()   < 10 ) ? '0' + d.getSeconds()     : d.getSeconds();
-    return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec
+  static dateStringWithinTimezone(date) {
+    let d = moment(date);
+    return d.format();
   }
+
+  static dateString(date) {
+    let d = moment(date);
+    return d.format("YYYY/MM/DD HH:mm:ss");
+  }
+
+  static ymdString(date) {
+    let d = moment(date);
+    return d.format("YYYY/MM/DD");
+  }
+
+  // static dateString(date=null) {
+  //   var d = (null === date) ? new Date() : date;
+  //   var year  = d.getFullYear();
+  //   var month = ( d.getMonth() + 1 < 10 ) ? '0' + (d.getMonth() + 1) : d.getMonth() + 1;
+  //   var day   = ( d.getDate()      < 10 ) ? '0' + d.getDate()        : d.getDate();
+  //   var hour  = ( d.getHours()     < 10 ) ? '0' + d.getHours()       : d.getHours();
+  //   var min   = ( d.getMinutes()   < 10 ) ? '0' + d.getMinutes()     : d.getMinutes();
+  //   var sec   = ( d.getSeconds()   < 10 ) ? '0' + d.getSeconds()     : d.getSeconds();
+  //   return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec
+  // }
+
+  // static ymdString(date=null) {
+  //   var d = (null === date) ? new Date() : date;
+  //   var year  = d.getFullYear();
+  //   var month = ( d.getMonth() + 1 < 10 ) ? '0' + (d.getMonth() + 1) : d.getMonth() + 1;
+  //   var day   = ( d.getDate()      < 10 ) ? '0' + d.getDate()        : d.getDate();
+  //   return year + '-' + month + '-' + day;
+  // }
 
   static round(number, precision=0) {
     var factor = Math.pow(10, precision);
@@ -100,7 +125,7 @@ export default class GtbUtils {
   static compare(obj1, obj2) {
     let j1 = JSON.stringify(this.objectSort(obj1));
     let j2 = JSON.stringify(this.objectSort(obj2));
-    console.log("compare:", j1, j2);
+    // console.log("compare:", j1, j2);
     return (j1 === j2);
   }
 

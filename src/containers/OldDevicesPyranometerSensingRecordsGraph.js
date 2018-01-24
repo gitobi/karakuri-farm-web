@@ -1,26 +1,32 @@
 import React from 'react'
 import {Container} from 'semantic-ui-react';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import 'react-datepicker/dist/react-datepicker.css';
+
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import Logger from '../js/Logger'
 
 import Field from '../components/part/Field';
 import Dropdown from '../components/part/Dropdown';
+import InlineDatePicker from '../components/part/InlineDatePicker';
+import InlineMonthPicker from '../components/part/InlineMonthPicker';
+import StatsGraph from '../components/part/StatsGraph';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/devicesPyranometer';
 
-class DevicesPyranometerSensingRecordsGraph extends React.Component {
+class OldDevicesPyranometerSensingRecordsGraph extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
 
-    this.toDropdownOption = this.toDropdownOption.bind(this);
-    this.select = this.select.bind(this);
-    this.state = {selectedDay: null};
+    this.selectedKey = this.selectedKey.bind(this);
+    this.selectUnit = this.selectUnit.bind(this);
+    this.selectKey = this.selectKey.bind(this);
+    this.state = {
+      units: ["minute", "hour", "day"],
+      unit: "day",
+      selectedKey: null,
+    };
   }
 
   componentDidMount() {
@@ -29,70 +35,67 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // this.logger.log("componentWillReceiveProps", nextProps);
     if (this.props.item.id !== nextProps.item.id) {
       // デバイス変更時
       this.load(nextProps.item.id);
     }
   }
 
-  load(id = this.props.item.id) {
+  load(id = this.props.item.id, unit = this.state.unit) {
     if (id) {
-      this.props.actions.loadDevicesPyranometerSensingRecords(id);
+      this.props.actions.loadDevicesPyranometerStats(id, unit);
     }
   }
 
-  toDropdownOption(element) {
-    return {
-      value: element,
-      text: element,
-    }
+  selectedKey() {
+    return this.state.selectedKey;
+    // if (!this.state.selectedKey) {
+    //   let initialSelectedKey = this.props.enableSuperiorUnits[this.props.enableSuperiorUnits.length - 1];
+    //   if (this.state.selectedKey !== initialSelectedKey) {
+    //     this.setState({
+    //       selectedKey: initialSelectedKey,
+    //     })
+    //   }
+    //   return initialSelectedKey;
+
+    // } else {
+    //   return this.state.selectedKey;
+    // }
+
+    // return this.state.selectedKey
+    //   ? this.state.selectedKey
+    //   : this.props.enableSuperiorUnits[this.props.enableSuperiorUnits.length - 1];
   }
 
-  select(value) {
+  selectUnit(value) {
     // this.logger.log("select",
     //   this.props.recordsParDay[this.state.selectedDay],
     //   '=>', this.props.recordsParDay[value]);
-    this.setState({selectedDay: value});
+    this.setState({unit: value});
+    this.load(this.props.item.id, value);
+  }
+
+  selectKey(value) {
+    // this.logger.log("selectKey", value);
+    this.setState({
+      selectedKey: value,
+    });
   }
 
   render() {
     return (
       <Container>
-        <Field label='date'>
-          <Dropdown
-            selection
-            itemToOption={this.toDropdownOption}
-            items={Object.keys(this.props.recordsParDay)}
-            value={this.state.selectedDay}
-            callback={(value) => { this.select(value)}}
-          />
-        </Field>
+        <StatsGraph
+          onChangeUnitOfPlot={this.selectUnit}
+          onChangeDataMapKey={this.selectKey}
+          dataMap={this.props.statsParGroupUnit}
 
-        <Field>
-          <DatePicker
-            inline
-            monthsShown={2}
-            dateFormat="YYYY/MM/DD"
-            todayButton={"today"}
-            selected={this.state.selectedDay
-              ? moment(this.state.selectedDay, "YYYY-MM-DD")
-              : moment(Object.keys(this.props.recordsParDay)[Object.keys(this.props.recordsParDay).length - 1], "YYYY-MM-DD")}
-            onChange={moment => {this.select(moment.format('YYYY-MM-DD'))}}
-            includeDates={Object.keys(this.props.recordsParDay).map(value => moment(value, "YYYY-MM-DD"))}
-          />
-        </Field>
-
-
-        <LineChart
           width={800}
           height={480}
-          data={this.props.recordsParDay[this.state.selectedDay]
-            ? this.props.recordsParDay[this.state.selectedDay]
-            : []
-          }
           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
 
-          <XAxis dataKey="sensed_at_time"
+          <XAxis dataKey="_subordinateUnit"
             label={{value: 'sensed_at', position: 'insideBottom'}} />
           <YAxis yAxisId="left"
             label={{value: 'measurement', angle: -90, position: 'insideLeft'}} />
@@ -104,7 +107,8 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
           {/*<Line type="monotone" dataKey="measurement" stroke="#8884d8" />*/}
           <Line yAxisId="left" type="monotone" dataKey="measurement" stroke="#8884d8" />
           <Line yAxisId="right" type="monotone" dataKey="samplings_count" stroke="#82ca9d" />
-        </LineChart>
+          <Line yAxisId="right" type="monotone" dataKey="counts" stroke="#f4a460" />
+        </StatsGraph>
       </Container>
     );
   }
@@ -112,8 +116,7 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
 
 function mapStateToProps(state) {
   return  {
-    records: state.devicesPyranometer.get('sensingRecords').toJS(),
-    recordsParDay: state.devicesPyranometer.get('sensingRecordsParDay').toJS(),
+    statsParGroupUnit: state.devicesPyranometer.get('statsParGroupUnit').toJS(),
     progress: state.devicesPyranometer.get('progress'),
   };
 }
@@ -125,4 +128,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DevicesPyranometerSensingRecordsGraph);
+)(OldDevicesPyranometerSensingRecordsGraph);

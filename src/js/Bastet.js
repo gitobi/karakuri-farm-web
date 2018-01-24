@@ -180,15 +180,30 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
-  getPyranometersSensingRecords(pyranometersId) {
+  getPyranometersSensingRecords(pyranometersId, params={}) {
     var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
-    return this.callApi(this.get, url);
+    if (!params.limit) {
+      params.limit = 10080
+    }
+    if (!params.sorted) {
+      params.sorted = [{id: "sensed_at", desc: true}]
+    }
+    let hash = this.nestedObjectToQueryObject(params);
+    return this.callApi(this.get, url, hash);
   }
 
-  getPyranometersSensingRecordsPage(pyranometersId, params) {
+  getPyranometersSensingRecordsPage(pyranometersId, params={}) {
     var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
+    params.limit = 10080
     let hash = this.nestedObjectToQueryObject(params);
-    // this.logger.log('getPyranometersSensingRecordsPage:', params, '=>', hash);
+    this.logger.log('getPyranometersSensingRecordsPage:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
+  }
+
+  getPyranometersStats(pyranometersId, params={}) {
+    var url = this.host + '/devices/pyranometers/' + pyranometersId + '/stats';
+    let hash = this.nestedObjectToQueryObject(params);
+    this.logger.log('getPyranometersSensingRecordsPage:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
