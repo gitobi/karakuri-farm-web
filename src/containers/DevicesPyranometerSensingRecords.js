@@ -2,9 +2,6 @@ import React from 'react'
 import {Container} from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
-import GtbUtils from '../js/GtbUtils'
-
-import moment from 'moment';
 
 import Field from '../components/part/Field';
 import InlineDatePicker from '../components/part/InlineDatePicker';
@@ -34,50 +31,24 @@ class DevicesPyranometerSensingRecords extends React.Component {
   componentWillReceiveProps(nextProps) {
     // this.logger.log("componentWillReceiveProps", nextProps);
 
-    let needReload = false;
-    let itemId = this.props.item.id;
-    let selectedDate = this.state.selectedDate;
-    if (itemId !== nextProps.item.id) {
+    if (this.props.item.id !== nextProps.item.id) {
       // デバイス変更時
-      // TODO デバイス変更 -> workingDays変更 と２回来るため、２回取得を行ってしまう。。。
-      // this.logger.log("componentWillReceiveProps change id", nextProps);
-      itemId = nextProps.item.id;
-      needReload = true;
+      let itemId = nextProps.item.id;
 
-    } else if (!this.state.selectedDate && nextProps.lastWorkingDay) {
-      // 未だ未選択で最終稼働日が取得された場合
-      // this.logger.log("componentWillReceiveProps first select", this.state.selectedDate);
-      selectedDate = nextProps.lastWorkingDay
-      this.setState({
-        selectedDate: selectedDate,
-      })
-      needReload = true;
-
-    } else if (!GtbUtils.compare(this.props.workingDays, nextProps.workingDays)
-      && !nextProps.workingDays.includes(this.state.selectedDate)) {
-      // または、最終稼働日の変更により、現在選択している日のデータが存在しなくなった場合
-      // this.logger.log("componentWillReceiveProps workingDays changed", this.props.workingDays, "=>", nextProps.workingDays);
-      selectedDate = nextProps.lastWorkingDay
-      this.setState({
-        selectedDate: selectedDate,
-      })
-      needReload = true;
-    }
-
-    if (needReload) {
-      this.load(itemId, selectedDate);
+      // 稼働日を取得
+      this.props.actions.loadDevicesPyranometerWorkingDays(itemId)
+      .then((result) => {
+        // 最新稼働日を初期表示とする
+        // this.logger.log("loaded workingDays", result, this.props.workingDays);
+        let lastWorkingDay = this.props.workingDays[this.props.workingDays.length - 1];
+        this.selectDate(lastWorkingDay);
+      });
     }
   }
 
   load(id = this.props.item.id, selectedDate = this.state.selectedDate) {
-    if (id && selectedDate) {
-      let replaced = selectedDate.replace(new RegExp("/","g"), "-");
-      let min = moment(`${replaced} 00:00:00`);
-      let max = moment(`${replaced} 23:59:59`);
-      let params = {
-        filtered: [
-        {id: "sensed_at", value: {min: min, max: max}}]};
-      this.props.actions.loadDevicesPyranometerSensingRecords(id, params);
+    if (id) {
+      this.props.actions.loadDevicesPyranometerSensingRecords(id, selectedDate);
     }
   }
 
@@ -143,6 +114,7 @@ class DevicesPyranometerSensingRecords extends React.Component {
 
 function mapStateToProps(state) {
   return  {
+    workingDays: state.devicesPyranometer.getIn(['workingDays']).toJS(),
     records: state.devicesPyranometer.get('sensingRecords').toJS(),
     progress: state.devicesPyranometer.get('progress'),
   };

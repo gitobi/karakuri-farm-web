@@ -1,4 +1,5 @@
 import {DevicesPyranometer} from '../constants/devicesPyranometer';
+import moment from 'moment';
 import Bastet from '../js/Bastet'
 
 export function loadDevicesPyranometerWorkingDays(deviceId) {
@@ -15,9 +16,18 @@ export function loadDevicesPyranometerWorkingDays(deviceId) {
   }
 };
 
-export function loadDevicesPyranometerSensingRecords(deviceId, params) {
+export function loadDevicesPyranometerSensingRecords(deviceId, date) {
   return function(dispatch) {
     dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_REQUEST });
+
+    let params = {};
+    if (date) {
+      let replaced = date.replace(new RegExp("/","g"), "-");
+      let min = moment(`${replaced} 00:00:00`);
+      let max = moment(`${replaced} 23:59:59`);
+      params = {filtered: [{id: "sensed_at", value: {min: min, max: max}}]};
+    }
+
     let bastet = new Bastet();
     return bastet.getPyranometersSensingRecords(deviceId, params).then(
       result => dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_SUCCESS, sensingRecords: result.data }),

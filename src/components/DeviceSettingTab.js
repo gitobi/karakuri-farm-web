@@ -9,7 +9,7 @@ export default class DeviceSettingTab extends Component {
       activeTab: props.activeTabKey,
     };
 
-    this.logger = new Logger({prefix: 'DevicesWateringTab'});
+    this.logger = new Logger({prefix: this.constructor.name});
     this.createTabHeader = this.createTabHeader.bind(this);
     this.createTabContent = this.createTabContent.bind(this);
     this.onTabClick = this.onTabClick.bind(this);
@@ -46,26 +46,29 @@ export default class DeviceSettingTab extends Component {
   }
 
   render() {
+
+
+
+    const tabHeaders = this.props.tabs.map((tab) => {
+        return this.createTabHeader(tab.key, tab.title);
+      });
+
+    const tabContents = this.props.tabs.map((tab) => {
+      return this.createTabContent(
+        tab.key,
+        <tab.component
+          item={this.props.item}
+          {...tab.props}
+          />
+        );
+      });
+
     return (
       <div>
         <div className="ui top attached tabular menu">
-          {this.props.tabs.map((tab) => {
-            return this.createTabHeader(tab.key, tab.title);
-          })}
+          {tabHeaders}
         </div>
-        {this.props.tabs.map((tab) => {
-          return this.createTabContent(
-            tab.key,
-            <tab.component
-              item={this.props.item}
-              workingDays={this.props.workingDays}
-              lastWorkingDay={
-                this.props.workingDays
-                ? this.props.workingDays[this.props.workingDays.length - 1]
-                : null}
-              />
-            );
-          })}
+        {tabContents}
       </div>
     );
   }
