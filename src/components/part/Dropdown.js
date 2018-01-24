@@ -8,6 +8,7 @@ class Dropdown extends Component {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
     this.onChange = this.onChange.bind(this);
+    this.defaultDropdownOption = this.defaultDropdownOption.bind(this);
   }
 
   onChange(event, data) {
@@ -15,6 +16,13 @@ class Dropdown extends Component {
     if (this.props.value !== data.value
       && this.props.callback) {
       this.props.callback(data.value);
+    }
+  }
+
+  defaultDropdownOption(element) {
+    return {
+      value: element,
+      text: element,
     }
   }
 
@@ -26,7 +34,12 @@ class Dropdown extends Component {
       ...rest,
     } = this.props;
 
-    let options = items.map(itemToOption) || [];
+    let options = [];
+    if (itemToOption) {
+      options = items.map(itemToOption) || [];
+    } else {
+      options = items.map(this.defaultDropdownOption) || [];
+    }
 
     // this.logger.log("render:", options, '->', this.props.value);
     return (

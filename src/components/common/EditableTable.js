@@ -1,8 +1,11 @@
 import React from 'react'
-import { Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
+import {Segment, Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
+
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
+
 import Logger from '../../js/Logger'
+import Header from '../../components/part/Header'
 
 export default class EditableTable extends React.Component {
 
@@ -124,6 +127,7 @@ export default class EditableTable extends React.Component {
       columnId: row.column.id,
       newValue: value,
       originalValue: row.value,
+      value: value,
     };
 
     if (formatter) {
@@ -423,8 +427,15 @@ export default class EditableTable extends React.Component {
           data={this.props.data}
           columns={this.state.columns}
           loading={this.props.loading}
-          defaultPageSize={12}
-          minRows={3}
+          pageSizeOptions={this.props.pageSizeOptions
+            ? this.props.pageSizeOptions
+            : [5, 10, 20, 25, 50, 100]
+          }
+          defaultPageSize={this.props.defaultPageSize
+            ? this.props.defaultPageSize
+            : 20
+          }
+          minRows={10}
           filterable={this.props.filterable
             ? this.props.filterable
             : false
@@ -451,27 +462,31 @@ export default class EditableTable extends React.Component {
 
     // エラー発生時のポップアップを表示するため、Popupでwrapする。
     return (
-      <Popup
-        trigger={table}
-        wide='very'
-        size='large'
-        inverted
-        on='click'
-        hideOnScroll
-        position='top center'
-        open={(this.state.errorMessage.header || this.state.errorMessage.content) ? true : false}
-      >
-        <Popup.Header>{this.state.errorMessage.header}</Popup.Header>
-        <Popup.Content>
-          {(() => {
-            if (this.state.errorMessage.content instanceof Array) {
-              return <List items={this.state.errorMessage.content} />
-            } else {
-              return this.state.errorMessage.content;
-            }
-          })()}
-        </Popup.Content>
-      </Popup>
+      <Segment loading={this.props.loading}>
+        <Header label={this.props.label}/>
+
+        <Popup
+          trigger={table}
+          wide='very'
+          size='large'
+          inverted
+          on='click'
+          hideOnScroll
+          position='top center'
+          open={(this.state.errorMessage.header || this.state.errorMessage.content) ? true : false}
+        >
+          <Popup.Header>{this.state.errorMessage.header}</Popup.Header>
+          <Popup.Content>
+            {(() => {
+              if (this.state.errorMessage.content instanceof Array) {
+                return <List items={this.state.errorMessage.content} />
+              } else {
+                return this.state.errorMessage.content;
+              }
+            })()}
+          </Popup.Content>
+        </Popup>
+      </Segment>
     );
   }
 
