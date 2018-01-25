@@ -6,39 +6,16 @@ import DevicesPyranometerSensingRecords from '../containers/DevicesPyranometerSe
 // import DevicesPyranometerSensingRecordsGraph from '../containers/DevicesPyranometerSensingRecordsGraph'
 import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as Actions from '../actions/devicesPyranometer';
-
-class DevicesPyranometerTab extends Component {
+export default class DevicesPyranometerTab extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesPyranometerTab'});
-  }
-
-  componentDidMount() {
-    // 初期表示時
-    this.load();
-  }
-
-  componentWillReceiveProps(nextProps, nextState) {
-    if (this.props.item.id !== nextProps.item.id) {
-      // デバイス変更時
-      this.load(nextProps.item.id);
-    }
-  }
-
-  load(id = this.props.item.id) {
-    if (id) {
-      this.props.actions.loadDevicesPyranometerWorkingDays(id);
-    }
+    this.logger = new Logger({prefix: this.constructor.name});
   }
 
   render() {
     return (
       <DeviceSettingTab
         item={this.props.item}
-        workingDays={this.props.workingDays}
         activeTabKey='sensingRecords'
         tabs={[{
           key: "settingBasic",
@@ -61,19 +38,3 @@ class DevicesPyranometerTab extends Component {
     );
   }
 }
-
-
-function mapStateToProps(state) {
-  return  {
-    workingDays: state.devicesPyranometer.getIn(['workingDays']).toJS(),
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(Actions, dispatch) };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DevicesPyranometerTab);

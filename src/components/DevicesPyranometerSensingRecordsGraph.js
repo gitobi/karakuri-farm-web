@@ -23,14 +23,14 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
 
           <XAxis dataKey="_plot_x"
-            label={{value: 'sensed_at', offset: 0, position: 'insideBottom'}} />
+            label={{value: 'sensed_at', offset: -3, position: 'insideBottom'}} />
           <YAxis yAxisId="left"
             label={{value: 'measurement', angle: -90, position: 'insideLeft'}} />
           <YAxis yAxisId="right" orientation="right"
             label={{value: 'samplings_count', angle: 90, position: 'insideRight'}} />
           <CartesianGrid strokeDasharray="3 3"/>
           <Tooltip/>
-          <Legend />
+          <Legend verticalAlign="top" height={36} />
           <Line yAxisId="left" type="monotone" dataKey="measurement" stroke="#8884d8" />
           <Line yAxisId="right" type="monotone" dataKey="samplings_count" stroke="#82ca9d" />
           {(() => {if (this.props.counts) {
