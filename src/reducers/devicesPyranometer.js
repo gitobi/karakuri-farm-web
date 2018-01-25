@@ -9,8 +9,7 @@ const initialDevicesPyranometer = Map({
   'workingDays': List([]),
   'sensingRecords': List([]),
   'stats': List([]),
-  'statsParGroupUnit': Map({}),
-  'enableSuperiorUnits': List([]),
+  'statsMap': Map({}),
   'progress': false,
 });
 
@@ -44,13 +43,13 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
       // 実績の取得完了
       let sensingRecords = action.sensingRecords.map((value) => {
           let sensed_at = GtbUtils.dateString(new Date(value["sensed_at"]));
-          let _plot_x = GtbUtils.hhmmString(new Date(value["sensed_at"]));;
+          let _plotX = GtbUtils.hhmmString(new Date(value["sensed_at"]));;
           return {
             id: value["id"],
             sensed_at: sensed_at,
             measurement: value["measurement"] * 1,
             samplings_count: value["samplings_count"] * 1,
-            _plot_x: _plot_x
+            _plotX: _plotX,
           };
         }).sort((a, b) => {
           if( a.sensed_at < b.sensed_at ) return -1;
@@ -121,16 +120,16 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
       let stats = action.stats.map((value) => {
           let sensed_at = value["sensed_at"];
           // let sensed_at = GtbUtils.dateString(new Date(value["sensed_at"]));
-          let _superiorUnit = sensed_at.substr(0, superiorUnitLength);
-          let _subordinateUnit = sensed_at.substr(subordinateUnitStart, subordinateUnitLength);
+          let _mapKey = sensed_at.substr(0, superiorUnitLength);
+          let _plotX = sensed_at.substr(subordinateUnitStart, subordinateUnitLength);
 
           return {
             counts: value["counts"] * 1,
             sensed_at: sensed_at,
             measurement: value["measurement"] * 1,
             samplings_count: value["samplings_count"] * 1,
-            _superiorUnit: _superiorUnit,
-            _subordinateUnit: _subordinateUnit,
+            _mapKey: _mapKey,
+            _plotX: _plotX,
           };
         // }).sort((a, b) => {
         //   if( a.sensed_at < b.sensed_at ) return -1;
@@ -138,22 +137,17 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
         //   return 0;
         });
 
-      let enableSuperiorUnits = [];
-      let statsParGroupUnit = {};
+      let statsMap = {};
       stats.forEach((value) => {
-        if (!enableSuperiorUnits.includes(value._superiorUnit)) {
-          enableSuperiorUnits.push(value._superiorUnit);
-          statsParGroupUnit[value._superiorUnit] = [];
+        if (!statsMap[value._mapKey]) {
+          statsMap[value._mapKey] = [];
         }
-
-        statsParGroupUnit[value._superiorUnit].push(value);
-
+        statsMap[value._mapKey].push(value);
       });
 
       return state.withMutations(map => { map
         .set('stats', fromJS(stats))
-        .set('enableSuperiorUnits', fromJS(enableSuperiorUnits))
-        .set('statsParGroupUnit', fromJS(statsParGroupUnit))
+        .set('statsMap', fromJS(statsMap))
         .set('progress', false)
         ;
       });

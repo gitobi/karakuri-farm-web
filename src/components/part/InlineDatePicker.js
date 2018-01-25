@@ -33,6 +33,7 @@ class InlineDatePicker extends Component {
     return (
       <UIDatePicker
         inline
+        monthsShown={2}
         dateFormat="YYYY/MM/DD"
         todayButton={"today"}
         selected={moment(selected, "YYYY-MM-DD")}

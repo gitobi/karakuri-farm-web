@@ -7,11 +7,12 @@ import Logger from '../../js/Logger'
 class InlineMonthPicker extends Component {
   constructor(props) {
     super(props);
-    // this.logger = new Logger({prefix: this.constructor.name});
+    this.logger = new Logger({prefix: this.constructor.name});
 
     this.selectedYear = this.selectedYear.bind(this);
     this.selectedMonth = this.selectedMonth.bind(this);
-    this.displayedYearMonth = this.displayedYearMonth.bind(this);
+    this.displayedYearMonth1 = this.displayedYearMonth1.bind(this);
+    this.displayedYearMonth2 = this.displayedYearMonth2.bind(this);
     this.isDisableYearMonth = this.isDisableYearMonth.bind(this);
     this.isDisableYear = this.isDisableYear.bind(this);
     this.navigateDisplayYear = this.navigateDisplayYear.bind(this);
@@ -34,11 +35,17 @@ class InlineMonthPicker extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.selected !== nextProps.selected
+    if ((this.props.selected !== nextProps.selected)
       && nextProps.selected) {
-      this.setState({
-        displayedYear: nextProps.selected.substr(0, 4)
-      });
+
+      let selectedYear = nextProps.selected.substr(0, 4);
+      if (((selectedYear * 1) !== (this.state.displayedYear * 1))
+        && ((selectedYear * 1) !== (this.state.displayedYear * 1) + 1)) {
+
+        this.setState({
+          displayedYear: nextProps.selected.substr(0, 4)
+        });
+      }
     }
   }
 
@@ -50,8 +57,12 @@ class InlineMonthPicker extends Component {
     return this.props.selected ? this.props.selected.substr(5, 2) : "";
   }
 
-  displayedYearMonth(month) {
+  displayedYearMonth1(month) {
     return `${this.state.displayedYear}-${month}`;
+  }
+
+  displayedYearMonth2(month) {
+    return `${(this.state.displayedYear * 1) + 1}-${month}`;
   }
 
   navigateDisplayYear(increment) {
@@ -76,7 +87,6 @@ class InlineMonthPicker extends Component {
     }
 
     // this.logger.log('onClick:', yearMonth);
-
     if (this.props.selected !== yearMonth) {
       this.onChange(yearMonth);
     }
@@ -90,18 +100,32 @@ class InlineMonthPicker extends Component {
   }
 
   render() {
-    const cell = (value) => {
+    const cell1 = (value) => {
       return (
         <div
           key={value.key}
           className={
             "react-datepicker__day "
-            + (this.props.selected === this.displayedYearMonth(value.key) ? "react-datepicker__day--selected " : "")
-            + (this.isDisableYearMonth(this.displayedYearMonth(value.key)) ? "react-datepicker__day--disabled " : "")
+            + (this.props.selected === this.displayedYearMonth1(value.key) ? "react-datepicker__day--selected " : "")
+            + (this.isDisableYearMonth(this.displayedYearMonth1(value.key)) ? "react-datepicker__day--disabled " : "")
             }
-          aria-label="day-30"
-          role="option"
-          onClick={() => this.onClick(this.displayedYearMonth(value.key))}
+          onClick={() => this.onClick(this.displayedYearMonth1(value.key))}
+          >
+            {value.text}
+        </div>
+        );
+    }
+
+    const cell2 = (value) => {
+      return (
+        <div
+          key={value.key}
+          className={
+            "react-datepicker__day "
+            + (this.props.selected === this.displayedYearMonth2(value.key) ? "react-datepicker__day--selected " : "")
+            + (this.isDisableYearMonth(this.displayedYearMonth2(value.key)) ? "react-datepicker__day--disabled " : "")
+            }
+          onClick={() => this.onClick(this.displayedYearMonth2(value.key))}
           >
             {value.text}
         </div>
@@ -124,8 +148,10 @@ class InlineMonthPicker extends Component {
       {key: "11", text: "11月"},
       {key: "12", text: "12月"},
       ];
-    let list1 = params1.map(cell);
-    let list2 = params2.map(cell);
+    let list11 = params1.map(cell1);
+    let list12 = params2.map(cell1);
+    let list21 = params1.map(cell2);
+    let list22 = params2.map(cell2);
 
 
     // this.logger.log("render:", options, '->', this.props.value);
@@ -134,11 +160,11 @@ class InlineMonthPicker extends Component {
       <div className="react-datepicker">
         {(() => { if (!this.isDisableYear(-1)) { return (
           <a className="react-datepicker__navigation react-datepicker__navigation--previous "
-            onClick={() => this.navigateDisplayYear(-1)}></a>
+            onClick={() => this.navigateDisplayYear(-1)}> </a>
         );}})()}
         {(() => { if (!this.isDisableYear(1)) { return (
           <a className="react-datepicker__navigation react-datepicker__navigation--next"
-            onClick={() => this.navigateDisplayYear(1)}></a>
+            onClick={() => this.navigateDisplayYear(1)}> </a>
         );}})()}
         <div className="react-datepicker__month-container">
           <div className="react-datepicker__header">
@@ -148,10 +174,25 @@ class InlineMonthPicker extends Component {
           </div>
           <div className="react-datepicker__month" role="listbox">
             <div className="react-datepicker__week">
-              {list1}
+              {list11}
             </div>
             <div className="react-datepicker__week">
-              {list2}
+              {list12}
+            </div>
+          </div>
+        </div>
+        <div className="react-datepicker__month-container">
+          <div className="react-datepicker__header">
+            <div className="react-datepicker__current-month">
+              {this.state.displayedYear === "--" ? "--" : (this.state.displayedYear * 1) + 1}
+            </div>
+          </div>
+          <div className="react-datepicker__month" role="listbox">
+            <div className="react-datepicker__week">
+              {list21}
+            </div>
+            <div className="react-datepicker__week">
+              {list22}
             </div>
           </div>
         </div>

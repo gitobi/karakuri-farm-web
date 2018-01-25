@@ -13,7 +13,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/devicesPyranometer';
 
-class DevicesPyranometerSensingRecordsGraph extends React.Component {
+class OldDevicesPyranometerSensingRecordsGraph extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
@@ -125,4 +125,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DevicesPyranometerSensingRecordsGraph);
+)(OldDevicesPyranometerSensingRecordsGraph);
