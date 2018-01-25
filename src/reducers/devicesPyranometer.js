@@ -8,7 +8,6 @@ import GtbUtils from '../js/GtbUtils'
 const initialDevicesPyranometer = Map({
   'workingDays': List([]),
   'sensingRecords': List([]),
-  'stats': List([]),
   'statsMap': Map({}),
   'progress': false,
 });
@@ -57,24 +56,8 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
           return 0;
         });
 
-      // let sensingRecordsParDay = {};
-      // sensingRecords.forEach((value) => {
-      //   let date = value.sensed_at.substr(0, 10);
-      //   let time = value.sensed_at.substr(11, 8);
-      //   if (!sensingRecordsParDay[date]) {
-      //     sensingRecordsParDay[date] = [];
-      //   }
-      //   value.sensed_at_date = date;
-      //   value.sensed_at_time = time;
-
-      //   sensingRecordsParDay[date].push(value);
-      // });
-
-
-
       return state.withMutations(map => { map
         .set('sensingRecords', fromJS(sensingRecords))
-        // .set('sensingRecordsParDay', fromJS(sensingRecordsParDay))
         .set('progress', false)
         ;
       });
@@ -87,6 +70,9 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
       return state.set('progress', true);
 
     case DevicesPyranometer.LOAD_STATS_SUCCESS:
+
+      // mapのキーになる部分 yyyy/mm と、plot表示部分 dd を作成
+      // TODO ここもうちょっとなんとかできる
       let superiorUnitLength = 0;
       let subordinateUnitStart = 0;
       let subordinateUnitLength = 0;
@@ -119,7 +105,6 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
       }
       let stats = action.stats.map((value) => {
           let sensed_at = value["sensed_at"];
-          // let sensed_at = GtbUtils.dateString(new Date(value["sensed_at"]));
           let _mapKey = sensed_at.substr(0, superiorUnitLength);
           let _plotX = sensed_at.substr(subordinateUnitStart, subordinateUnitLength);
 
@@ -131,10 +116,6 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
             _mapKey: _mapKey,
             _plotX: _plotX,
           };
-        // }).sort((a, b) => {
-        //   if( a.sensed_at < b.sensed_at ) return -1;
-        //   if( a.sensed_at > b.sensed_at ) return 1;
-        //   return 0;
         });
 
       let statsMap = {};
@@ -146,7 +127,6 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
       });
 
       return state.withMutations(map => { map
-        .set('stats', fromJS(stats))
         .set('statsMap', fromJS(statsMap))
         .set('progress', false)
         ;

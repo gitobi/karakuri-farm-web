@@ -12,7 +12,7 @@ class Dropdown extends Component {
   }
 
   onChange(event, data) {
-    this.logger.log('onChange:', this.props.value, '->', data.value);
+    // this.logger.log('onChange:', this.props.value, '->', data.value);
     if (this.props.value !== data.value
       && this.props.callback) {
       this.props.callback(data.value);

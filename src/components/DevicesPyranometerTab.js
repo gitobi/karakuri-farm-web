@@ -16,7 +16,7 @@ export default class DevicesPyranometerTab extends Component {
     return (
       <DeviceSettingTab
         item={this.props.item}
-        activeTabKey='stats'
+        activeTabKey='sensingRecords'
         tabs={[{
           key: "settingBasic",
           title: "基本設定",
