@@ -1,14 +1,28 @@
 import {DevicesPyranometer} from '../constants/devicesPyranometer';
 import Bastet from '../js/Bastet'
 
-export function loadDevicesPyranometerSensingRecords(deviceId) {
+export function loadDevicesPyranometerWorkingDays(deviceId) {
+  return function(dispatch) {
+    dispatch({ type: DevicesPyranometer.LOAD_WORKING_DAYS_REQUEST });
+    let params = {date_trunc: "day"}
+    let bastet = new Bastet();
+    return bastet.getPyranometersStats(deviceId, params).then(
+      result => dispatch({ type: DevicesPyranometer.LOAD_WORKING_DAYS_SUCCESS, data: result.data }),
+      error => {
+        dispatch({ type: DevicesPyranometer.LOAD_WORKING_DAYS_FAILURE, error: error })
+      }
+    );
+  }
+};
+
+export function loadDevicesPyranometerSensingRecords(deviceId, params) {
   return function(dispatch) {
     dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_REQUEST });
     let bastet = new Bastet();
-    return bastet.getPyranometersSensingRecords(deviceId).then(
+    return bastet.getPyranometersSensingRecords(deviceId, params).then(
       result => dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_SUCCESS, sensingRecords: result.data }),
       error => {
-        dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_FAILURE, schedules: error })
+        dispatch({ type: DevicesPyranometer.LOAD_SENSING_RECORDS_FAILURE, error: error })
       }
     );
   }

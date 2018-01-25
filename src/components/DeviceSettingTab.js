@@ -58,6 +58,11 @@ export default class DeviceSettingTab extends Component {
             tab.key,
             <tab.component
               item={this.props.item}
+              workingDays={this.props.workingDays}
+              lastWorkingDay={
+                this.props.workingDays
+                ? this.props.workingDays[this.props.workingDays.length - 1]
+                : null}
               />
             );
           })}

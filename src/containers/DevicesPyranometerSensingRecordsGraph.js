@@ -37,7 +37,7 @@ class DevicesPyranometerSensingRecordsGraph extends React.Component {
 
   load(id = this.props.item.id) {
     if (id) {
-      this.props.actions.loadDevicesPyranometerSensingRecords(id);
+      // this.props.actions.loadDevicesPyranometerSensingRecords(id);
     }
   }
 

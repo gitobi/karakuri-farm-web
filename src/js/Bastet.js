@@ -1,5 +1,6 @@
 import Logger from './Logger'
 import request from 'superagent'
+import moment from 'moment';
 
 export default class Bastet {
 
@@ -179,9 +180,19 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
-  getPyranometersSensingRecords(pyranometersId) {
+  getPyranometersSensingRecords(pyranometersId, params={}) {
     var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
-    return this.callApi(this.get, url);
+    params.limit = 10080
+    let hash = this.nestedObjectToQueryObject(params);
+    // this.logger.log('getPyranometersSensingRecords:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
+  }
+
+  getPyranometersStats(pyranometersId, params={}) {
+    var url = this.host + '/devices/pyranometers/' + pyranometersId + '/stats';
+    let hash = this.nestedObjectToQueryObject(params);
+    // this.logger.log('getPyranometersStats:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
   }
 
   getDevicesSystemLogs(deviceId) {
@@ -275,5 +286,78 @@ export default class Bastet {
           reject(err);
         });
       });
+  }
+
+  // superagentがネストパラメータに対応していないため、整形する
+  // [ex]
+  //  [params]
+  //    {
+  //      a: '1',
+  //      b: {
+  //        innerA: '2',
+  //        innerB: '3'
+  //      }
+  //    }
+  //
+  //  [return]
+  //    {
+  //      a: '1',
+  //      'b[innerA]': '2',
+  //      'b[innerB]': '3',
+  //    }
+  nestedObjectToQueryObject(params) {
+    let hash = {};
+    Object.keys(params).forEach((key) =>  {
+      let value = params[key];
+      let returndHash = this.toQueryStringHash(key, value);
+      Object.keys(returndHash).forEach((returndHashKey) =>  {
+        hash[returndHashKey] = returndHash[returndHashKey];
+      });
+    });
+    return hash;
+  }
+
+  // ネストされたパラメータを再帰的に展開していく
+  // [ex]
+  //  オブジェクトの場合
+  //  [params]
+  //    key = 'a[1]'
+  //    value = {id: A, value: B}
+  //  [return]
+  //    {'a[1][id]': A, 'a[1][value]': B}
+  //
+  //  Arrayの場合
+  //  [params]
+  //    key = 'a[1]'
+  //    value = [A, B]
+  //  [return]
+  //    {'a[1][0]': A, 'a[1][1]': B}
+  toQueryStringHash(key, value) {
+    let hash = {};
+    if (moment.isMoment(value)) {
+      hash[key] = value.utc().format();
+
+    } else if (this.isArray(value)) {
+      value.forEach((element, index) => {
+        Object.assign(hash, this.toQueryStringHash(`${key}[${index}]`, element));
+      });
+
+    } else if (this.isObject(value)) {
+      Object.keys(value).forEach((valueKey) =>  {
+        let element = value[valueKey];
+        Object.assign(hash, this.toQueryStringHash(`${key}[${valueKey}]`, element));
+      });
+
+    } else {
+      hash[key] = value;
+    }
+    // this.logger.log('tqsh return:', key, value, '=>', hash);
+    return hash;
+  }
+  isArray(o) {
+    return (o instanceof Array);
+  }
+  isObject(o) {
+    return (o instanceof Object && !(o instanceof Array)) ? true : false;
   }
 }
