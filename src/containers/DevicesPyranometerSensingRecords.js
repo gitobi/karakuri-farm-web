@@ -23,14 +23,8 @@ class DevicesPyranometerSensingRecords extends React.Component {
     };
   }
 
-  componentDidMount() {
-    // 初期表示時
-    this.load();
-  }
-
   componentWillReceiveProps(nextProps) {
     // this.logger.log("componentWillReceiveProps", nextProps);
-
     if (this.props.item.id !== nextProps.item.id) {
       // デバイス変更時
       let itemId = nextProps.item.id;

@@ -3,7 +3,7 @@ import Logger from '../js/Logger'
 import DeviceSettingTab from './DeviceSettingTab'
 import DevicesSummary from '../containers/DevicesSummary'
 import DevicesPyranometerSensingRecords from '../containers/DevicesPyranometerSensingRecords'
-// import DevicesPyranometerSensingRecordsGraph from '../containers/DevicesPyranometerSensingRecordsGraph'
+import DevicesPyranometerStats from '../containers/DevicesPyranometerStats'
 import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 
 export default class DevicesPyranometerTab extends Component {
@@ -25,10 +25,10 @@ export default class DevicesPyranometerTab extends Component {
           key: "sensingRecords",
           title: "計測実績",
           component: DevicesPyranometerSensingRecords,
-        // }, {
-        //   key: "sensingRecordsGraph",
-        //   title: "グラフ",
-        //   component: DevicesPyranometerSensingRecordsGraph,
+        }, {
+          key: "stats",
+          title: "統計",
+          component: DevicesPyranometerStats,
         }, {
           key: "systemLogs",
           title: "ログ",
