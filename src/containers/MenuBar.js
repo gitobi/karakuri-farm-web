@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import icon from '../images/logo.svg';
 import { logoutMe } from '../actions/me';
+import kf_logo_and_font from '../images/kf_logo_and_font.png';
 import gitobi_logo from '../images/gitobi.png';
 import '../components/Logo.css';
 import '../components/App.css';
@@ -49,15 +49,14 @@ class Menubar extends Component {
     return (
       <Menu
         className="menubar"
-        inverted
         vertical
         fixed="left"
+        style={{"backgroundColor": "#f7f7f7"}}
       >
 
         {/* sidebar content */}
         <Menu.Item as={Link} to='/app' header>
-          <Image src={icon} verticalAlign="middle" className="App-logo" />
-          <span>Karakuri Farm</span>
+          <Image src={kf_logo_and_font} verticalAlign="middle"/>
         </Menu.Item>
 
         <Menu.Item>
