@@ -61,7 +61,8 @@ export function save(changed) {
         Machine.PUT_FAILURE,
         bastet,
         bastet.updateMachine,
-        params,
+        [params.id, params],
+        params.id
       ));
     });
 

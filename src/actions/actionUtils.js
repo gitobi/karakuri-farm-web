@@ -31,20 +31,24 @@ export function ApiRequest(
   actionTypeFailure,
   bastet,
   bastetApi,
-  params
+  apiParams,
+  resourceId,
   ) {
   dispatch({ type: actionTypeRequest });
-  return bastetApi.call(bastet, params.device_id || params.id, params).then(
+  return bastetApi.call(bastet, ...apiParams).then(
     result => {
       dispatch({
         type: actionTypeSuccess,
-        params: params,
-        result: result.data.schedule,
+        apiParams: apiParams,
+        resourceId: resourceId,
+        result: result,
       });
     },
     error => {
       dispatch({
         type: actionTypeFailure,
+        apiParams: apiParams,
+        resourceId: resourceId,
         error: error,
       });
       return Promise.reject(error);

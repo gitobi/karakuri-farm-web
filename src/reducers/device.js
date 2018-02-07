@@ -74,7 +74,7 @@ const device = (state = initialDevice, action) => {
               break;
             case 'pyranometer':
               break;
-            case 'radiationalWatering':
+            case 'radiational_watering':
               map.watering_id = value["watering_id"];
               map.pyranometer_id = value["pyranometer_id"];
               break;
@@ -131,7 +131,7 @@ const device = (state = initialDevice, action) => {
       return state;
 
     case Device.PUT_SUCCESS:
-      return state.deleteIn(['changed', action.params.id]);
+      return state.deleteIn(['changed', action.resourceId]);
 
     case Device.PUT_FAILURE:
       return state;

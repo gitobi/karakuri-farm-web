@@ -8,9 +8,8 @@ export function loadConfigurations(machineId) {
   return function(dispatch) {
     dispatch({ type: MachinesRadiationalWatering.LOAD_CONFIGURATIONS_REQUEST });
     let bastet = new Bastet();
-    return bastet.getRadiationalWateringsConfigurations(machineId).then(
+    return bastet.getRadiationalWateringsFormulae(machineId).then(
       result => {
-        console.log("result: ", result);
         dispatch({ type: MachinesRadiationalWatering.LOAD_CONFIGURATIONS_SUCCESS, list: result.data });
       },
       error => {
@@ -20,7 +19,7 @@ export function loadConfigurations(machineId) {
   }
 };
 
-export function saveConfigurations(items, changed) {
+export function saveConfigurations(machineId, items, changed) {
   return function(dispatch) {
 
     if (!ActionUtils.checkValid(changed)) {
@@ -44,7 +43,7 @@ export function saveConfigurations(items, changed) {
       // console.log('items', items);
       // console.log('change', change);
       // console.log('item', item);
-      // console.log('params', params);
+      console.log('params', params);
 
       switch (params._state) {
        case 'create':
@@ -55,8 +54,9 @@ export function saveConfigurations(items, changed) {
           MachinesRadiationalWatering.POST_CONFIGURATIONS_SUCCESS,
           MachinesRadiationalWatering.POST_CONFIGURATIONS_FAILURE,
           bastet,
-          bastet.createRadiationalWateringsConfigurations,
-          params,
+          bastet.createRadiationalWateringsFormula,
+          [machineId, params],
+          key
         ));
         break;
 
@@ -68,8 +68,9 @@ export function saveConfigurations(items, changed) {
           MachinesRadiationalWatering.DELETE_CONFIGURATIONS_SUCCESS,
           MachinesRadiationalWatering.DELETE_CONFIGURATIONS_FAILURE,
           bastet,
-          bastet.deleteRadiationalWateringsConfigurations,
-          params,
+          bastet.deleteRadiationalWateringsFormula,
+          [machineId, params],
+          key
         ));
         break;
 
@@ -81,8 +82,9 @@ export function saveConfigurations(items, changed) {
           MachinesRadiationalWatering.PUT_CONFIGURATIONS_SUCCESS,
           MachinesRadiationalWatering.PUT_CONFIGURATIONS_FAILURE,
           bastet,
-          bastet.updateRadiationalWateringsConfigurations,
-          params,
+          bastet.updateRadiationalWateringsFormula,
+          [machineId, params],
+          key
         ));
         break
       }
