@@ -50,8 +50,10 @@ export function save(changed) {
 
     let promises = [];
     Object.keys(changed).forEach((key) => {
-      let params = changed[key];
-      params.id = key;
+      let params = {
+        id: key,
+        radiational_watering: changed[key]
+      };
 
       // 更新
       promises.push(ActionUtils.ApiRequest(
@@ -60,7 +62,7 @@ export function save(changed) {
         Machine.PUT_SUCCESS,
         Machine.PUT_FAILURE,
         bastet,
-        bastet.updateMachine,
+        bastet.updateMachinesRadiationalWatering,
         [params.id, params],
         params.id
       ));

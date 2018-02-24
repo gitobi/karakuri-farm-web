@@ -124,6 +124,11 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
         width: 100,
         customCell: { type: 'input', formatter: new IntegerFormatter(), callback: this.update }
       }, {
+        Header: 'Repeat',
+        accessor: 'repeat_count',
+        width: 70,
+        customCell: { type: 'input', formatter: new IntegerFormatter(), callback: this.update }
+      }, {
         Header: 'Slope',
         accessor: 'slope',
         width: 100,
