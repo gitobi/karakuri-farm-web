@@ -61,7 +61,8 @@ export function save(changed) {
         Device.PUT_FAILURE,
         bastet,
         bastet.updateDevice,
-        params,
+        [params.id, params],
+        params.id
       ));
     });
 

@@ -4,6 +4,7 @@ import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
 import Formatter from '../js/formatter/Formatter'
 import TimeFormatter from '../js/formatter/TimeFormatter'
+import IntegerFormatter from '../js/formatter/IntegerFormatter'
 import DecimalFormatter from '../js/formatter/DecimalFormatter'
 
 import { bindActionCreators } from 'redux';
@@ -69,6 +70,7 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
   save() {
     // セーブボタンクリック時の処理
     this.props.actions.saveConfigurations(
+      this.props.item.id,
       this.props.records,
       this.props.changed);
   }
@@ -112,19 +114,19 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
         accessor: 'name',
         customCell: { type: 'input', formatter: new Formatter(), callback: this.update }
       }, {
+        Header: 'Start Time',
+        accessor: 'start_time',
+        width: 100,
+        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
+      }, {
         Header: 'Interval',
         accessor: 'interval',
         width: 100,
-        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
+        customCell: { type: 'input', formatter: new IntegerFormatter(), callback: this.update }
       }, {
         Header: 'Slope',
         accessor: 'slope',
         width: 100,
-        customCell: { type: 'input', formatter: new TimeFormatter(), callback: this.update }
-      }, {
-        Header: 'Duration',
-        accessor: 'duration',
-        width: 80,
         customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
       }, {
         Header: '-',

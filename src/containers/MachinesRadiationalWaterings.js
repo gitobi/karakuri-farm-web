@@ -6,7 +6,7 @@ import MachinesRadiationalWateringTab from '../components/MachinesRadiationalWat
 
 import { connect } from 'react-redux';
 
-const app = 'radiationalWatering';
+const app = 'radiational_watering';
 
 class MachinesRadiationalWaterings extends Component {
   constructor(props) {

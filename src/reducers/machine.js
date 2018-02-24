@@ -5,7 +5,7 @@ import GtbUtils from '../js/GtbUtils'
 // import Logger from '../js/Logger'
 // const _logger = new Logger({prefix: 'machinesWatering'});
 
-const machineTypes = ['radiationalWatering']
+const machineTypes = ['radiational_watering']
 
 const machineTypeArray = (() => {
   // {a: [], b: [], ...}
@@ -67,7 +67,7 @@ const machine = (state = initialMachine, action) => {
             '_type': value["_type"]
           };
           switch (map._type) {
-            case 'radiationalWatering':
+            case 'radiational_watering':
               map.watering_id = value["watering_id"];
               map.pyranometer_id = value["pyranometer_id"];
               break;
@@ -124,7 +124,7 @@ const machine = (state = initialMachine, action) => {
       return state;
 
     case Machine.PUT_SUCCESS:
-      return state.deleteIn(['changed', action.params.id]);
+      return state.deleteIn(['changed', action.resourceId]);
 
     case Machine.PUT_FAILURE:
       return state;
