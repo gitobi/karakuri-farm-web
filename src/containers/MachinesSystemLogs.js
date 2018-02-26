@@ -79,7 +79,7 @@ class MachinesSystemLogs extends React.Component {
           loading={this.props.progress}
           filterable={true}
           sortable={true}
-          defaultSorted={[{id: 'updated_at', desc: true}]}
+          defaultSorted={[{id: 'raised_at', desc: true}]}
         />
 
       </div>
