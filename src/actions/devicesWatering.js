@@ -2,6 +2,8 @@ import { Map } from 'immutable';
 import {DevicesWatering} from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
 import Bastet from '../js/Bastet'
+import * as ActionUtils from './actionUtils'
+
 
 export function loadDevicesWateringSchedules(deviceId) {
   return function(dispatch) {
@@ -16,25 +18,10 @@ export function loadDevicesWateringSchedules(deviceId) {
   }
 };
 
-function checkValid(changed) {
-  let valid = true;
-  Object.keys(changed).forEach((key) => {
-    let change = changed[key];
-    let errors = change._errors;
-    if (errors) {
-      Object.keys(errors).forEach((column) => {
-        let error = errors[column];
-        valid &= (null === error || undefined === error);
-      });
-    }
-  });
-  return valid;
-}
-
-export function saveDevicesWateringSchedules(schedules, changed) {
+export function saveDevicesWateringSchedules(deviceId, schedules, changed) {
   return function(dispatch) {
 
-    if (!checkValid(changed)) {
+    if (!ActionUtils.checkValid(changed)) {
       // TODO エラーが存在するためBastetへの更新を行わない場合の画面表示メッセージ
       console.log('check error', changed);
       return false;
@@ -60,40 +47,43 @@ export function saveDevicesWateringSchedules(schedules, changed) {
       switch (params._state) {
        case 'create':
         // 新規
-        promises.push(apiDevicesWateringSchedule(
+        promises.push(ActionUtils.ApiRequest(
           dispatch,
           DevicesWatering.POST_SCHEDULES_REQUEST,
           DevicesWatering.POST_SCHEDULES_SUCCESS,
           DevicesWatering.POST_SCHEDULES_FAILURE,
           bastet,
           bastet.createWateringsSchedule,
-          params,
+          [deviceId, params],
+          key
         ));
         break;
 
       case 'delete':
         // 削除
-        promises.push(apiDevicesWateringSchedule(
+        promises.push(ActionUtils.ApiRequest(
           dispatch,
           DevicesWatering.DELETE_SCHEDULES_REQUEST,
           DevicesWatering.DELETE_SCHEDULES_SUCCESS,
           DevicesWatering.DELETE_SCHEDULES_FAILURE,
           bastet,
           bastet.deleteWateringsSchedule,
-          params,
+          [deviceId, params],
+          key
         ));
         break;
 
       default:
         // 更新
-        promises.push(apiDevicesWateringSchedule(
+        promises.push(ActionUtils.ApiRequest(
           dispatch,
           DevicesWatering.PUT_SCHEDULES_REQUEST,
           DevicesWatering.PUT_SCHEDULES_SUCCESS,
           DevicesWatering.PUT_SCHEDULES_FAILURE,
           bastet,
           bastet.updateWateringsSchedule,
-          params,
+          [deviceId, params],
+          key
         ));
         break
       }
@@ -142,42 +132,4 @@ export function loadDevicesWateringOperationalRecords(deviceId) {
     );
   }
 };
-
-/**
- * Api For DevicesWateringSchedule Wrapper
- * @param  {[type]} dispatch          [description]
- * @param  {[type]} actionTypeRequest [description]
- * @param  {[type]} actionTypeSuccess [description]
- * @param  {[type]} actionTypeFailure [description]
- * @param  {[type]} bastet            [description]
- * @param  {[type]} bastetApi         [description]
- * @param  {[type]} params            [description]
- * @return {[type]}                   [description]
- */
-const apiDevicesWateringSchedule = (
-  dispatch,
-  actionTypeRequest,
-  actionTypeSuccess,
-  actionTypeFailure,
-  bastet,
-  bastetApi,
-  params
-  ) => {
-  dispatch({ type: actionTypeRequest });
-  return bastetApi.call(bastet, params.device_id, params).then(
-    result => {
-      dispatch({
-        type: actionTypeSuccess,
-        params: params,
-        result: result.data.schedule,
-      });
-    },
-    error => {
-      dispatch({
-        type: actionTypeFailure,
-        error: error,
-      });
-    }
-  );
-}
 

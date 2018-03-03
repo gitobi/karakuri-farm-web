@@ -60,10 +60,10 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
 
       // postした結果払い出されたIDを設定する
       // 変更が完了した情報を削除する
-      var postedIndex = GtbUtils.findIndex(state.get('schedules').toJS(), 'id', action.params.id);
+      var postedIndex = GtbUtils.findIndex(state.get('schedules').toJS(), 'id', action.resourceId);
       return state.withMutations(map => { map
-        .setIn(['schedules', postedIndex, 'id'], action.result.id)
-        .deleteIn(['changed', action.params.id])
+        .setIn(['schedules', postedIndex, 'id'], action.result.data.schedule.id)
+        .deleteIn(['changed', action.resourceId])
         ;
       });
 
@@ -78,7 +78,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     case DevicesWatering.PUT_SCHEDULES_SUCCESS:
       // スケジュール情報のput完了
       // 変更が完了した情報を削除する
-      return state.deleteIn(['changed', action.params.id]);
+      return state.deleteIn(['changed', action.resourceId]);
 
     case DevicesWatering.PUT_SCHEDULES_FAILURE:
       // スケジュール情報のput失敗
@@ -91,7 +91,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     case DevicesWatering.DELETE_SCHEDULES_SUCCESS:
       // スケジュール情報のdelete完了
       // 変更が完了した情報を削除する
-      return state.deleteIn(['changed', action.params.id]);
+      return state.deleteIn(['changed', action.resourceId]);
 
     case DevicesWatering.DELETE_SCHEDULES_FAILURE:
       // スケジュール情報のdelete失敗
