@@ -1,6 +1,11 @@
 import React from 'react'
+import {Container} from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
+
+import Field from '../components/part/Field';
+import InlineDatePicker from '../components/part/InlineDatePicker';
+import DevicesWateringOperationalRecordsGraph from '../components/DevicesWateringOperationalRecordsGraph';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,25 +14,41 @@ import * as Actions from '../actions/devicesWatering';
 class DevicesWateringOperationalRecords extends React.Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesWateringOperationalRecords'});
-  }
+    this.logger = new Logger({prefix: this.constructor.name});
+    this.load = this.load.bind(this);
+    this.selectDate = this.selectDate.bind(this);
 
-  componentDidMount() {
-    // 初期表示時
-    this.load();
+    this.state = {
+      selectedDate: null,
+    };
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.item.id !== nextProps.item.id) {
       // デバイス変更時
-      this.load(nextProps.item.id);
+      let itemId = nextProps.item.id;
+
+      // 稼働日を取得
+      this.props.actions.loadDevicesWateringWorkingDays(itemId)
+      .then((result) => {
+        // 最新稼働日を初期表示とする
+        // this.logger.log("loaded workingDays", result, this.props.workingDays);
+        let lastWorkingDay = this.props.workingDays[this.props.workingDays.length - 1];
+        this.selectDate(lastWorkingDay);
+      });
     }
   }
 
-  load(id = this.props.item.id) {
+  load(id = this.props.item.id, selectedDate = this.state.selectedDate) {
     if (id) {
-      this.props.actions.loadDevicesWateringOperationalRecords(id);
+      this.props.actions.loadDevicesWateringOperationalRecords(id, selectedDate);
     }
+  }
+
+  selectDate(value) {
+    // this.logger.log("selectDate", this.state.selectedDate, "=>", value);
+    this.setState({selectedDate: value});
+    this.load(this.props.item.id, value);
   }
 
   render() {
@@ -60,7 +81,21 @@ class DevicesWateringOperationalRecords extends React.Component {
     }];
 
     return (
-      <div className="ui container">
+      <Container>
+        <Field label='Select Date'>
+          <InlineDatePicker
+            selected={this.state.selectedDate}
+            callback={this.selectDate}
+            includeDates={this.props.workingDays}
+          />
+        </Field>
+
+        <DevicesWateringOperationalRecordsGraph
+          loading={this.props.progress}
+          label={`Graph ${this.state.selectedDate || ""}`}
+          data={this.props.records}
+        />
+
         <EditableTable
           data={this.props.records}
           columns={columns}
@@ -70,13 +105,14 @@ class DevicesWateringOperationalRecords extends React.Component {
           defaultSorted={[{id: 'started_at', desc: true}]}
         />
 
-      </div>
+      </Container>
     );
   }
 }
 
 function mapStateToProps(state) {
   return  {
+    workingDays: state.devicesWatering.getIn(['workingDays']).toJS(),
     records: state.devicesWatering.get('operationalRecords').toJS(),
     progress: state.devicesWatering.get('progress'),
   };

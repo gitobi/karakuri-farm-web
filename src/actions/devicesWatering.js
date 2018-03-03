@@ -1,9 +1,62 @@
 import { Map } from 'immutable';
 import {DevicesWatering} from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
+import moment from 'moment';
 import Bastet from '../js/Bastet'
 import * as ActionUtils from './actionUtils'
 
+export function loadDevicesWateringWorkingDays(deviceId) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.LOAD_WORKING_DAYS_REQUEST });
+    let params = {date_trunc: "day"}
+    let bastet = new Bastet();
+    return bastet.getWateringsStats(deviceId, params).then(
+      result => dispatch({ type: DevicesWatering.LOAD_WORKING_DAYS_SUCCESS, data: result.data }),
+      error => {
+        return dispatch({ type: DevicesWatering.LOAD_WORKING_DAYS_FAILURE, error: error });
+      }
+    );
+  }
+};
+
+export function loadDevicesWateringOperationalRecords(deviceId, date) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_REQUEST });
+
+    let params = {};
+    if (date) {
+      let replaced = date.replace(new RegExp("/","g"), "-");
+      let min = moment(`${replaced} 00:00:00`);
+      let max = moment(`${replaced} 23:59:59`);
+      params = {filtered: [{id: "started_at", value: {min: min, max: max}}]};
+    }
+
+    let bastet = new Bastet();
+    return bastet.getWateringsOperationalRecords(deviceId, params).then(
+      result => dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: result.data }),
+      error => {
+        dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
+      }
+    );
+  }
+};
+
+export function loadDevicesWateringStats(deviceId, unit) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.LOAD_STATS_REQUEST });
+    let params = {date_trunc: unit}
+    let bastet = new Bastet();
+    return bastet.getWateringsStats(deviceId, params).then(
+      result => {
+        // console.log("action loaded:", result);
+        return dispatch({ type: DevicesWatering.LOAD_STATS_SUCCESS, stats: result.data, unit: unit })
+      },
+      error => {
+        return dispatch({ type: DevicesWatering.LOAD_STATS_FAILURE, error: error });
+      }
+    );
+  }
+};
 
 export function loadDevicesWateringSchedules(deviceId) {
   return function(dispatch) {
@@ -119,17 +172,3 @@ export function updateDevicesWateringSchedule(id, column, value, error) {
     error: error,
   };
 };
-
-export function loadDevicesWateringOperationalRecords(deviceId) {
-  return function(dispatch) {
-    dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_REQUEST });
-    let bastet = new Bastet();
-    return bastet.getWateringsOperationalRecords(deviceId).then(
-      result => dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: result.data }),
-      error => {
-        dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
-      }
-    );
-  }
-};
-

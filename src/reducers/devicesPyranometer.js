@@ -42,7 +42,7 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
       // 実績の取得完了
       let sensingRecords = action.sensingRecords.map((value) => {
           let sensed_at = GtbUtils.dateString(new Date(value["sensed_at"]));
-          let _plotX = GtbUtils.hhmmString(new Date(value["sensed_at"]));;
+          let _plotX = GtbUtils.hhmmString(new Date(value["sensed_at"]));
           return {
             id: value["id"],
             sensed_at: sensed_at,

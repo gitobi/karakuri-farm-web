@@ -139,9 +139,19 @@ export default class Bastet {
 
   /////
 
-  getWateringsOperationalRecords(wateringsId) {
+  getWateringsOperationalRecords(wateringsId, params={}) {
     var url = this.host + '/devices/waterings/' + wateringsId + '/operational_records';
-    return this.callApi(this.get, url);
+    params.limit = 10080
+    let hash = this.nestedObjectToQueryObject(params);
+    // this.logger.log('getPyranometersSensingRecords:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
+  }
+
+  getWateringsStats(wateringsId, params={}) {
+    var url = this.host + '/devices/waterings/' + wateringsId + '/stats';
+    let hash = this.nestedObjectToQueryObject(params);
+    // this.logger.log('getPyranometersStats:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
   }
 
   getPyranometersSensingRecords(pyranometersId, params={}) {
