@@ -4,12 +4,13 @@ import DeviceSettingTab from './DeviceSettingTab'
 import DevicesSummary from '../containers/DevicesSummary'
 import DevicesWateringSchedules from '../containers/DevicesWateringSchedules'
 import DevicesWateringOperationalRecords from '../containers/DevicesWateringOperationalRecords'
+import DevicesWateringStats from '../containers/DevicesWateringStats'
 import DevicesSystemLogs from '../containers/DevicesSystemLogs'
 
 export default class DevicesWateringTab extends Component {
   constructor(props) {
     super(props);
-    this.logger = new Logger({prefix: 'DevicesWateringTab'});
+    this.logger = new Logger({prefix: this.constructor.name});
   }
 
   render() {
@@ -29,6 +30,10 @@ export default class DevicesWateringTab extends Component {
           key: "operationalRecords",
           title: "灌水実績",
           component: DevicesWateringOperationalRecords,
+        }, {
+          key: "stats",
+          title: "統計",
+          component: DevicesWateringStats,
         }, {
           key: "systemLogs",
           title: "ログ",
