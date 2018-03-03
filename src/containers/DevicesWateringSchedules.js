@@ -69,6 +69,7 @@ class DevicesWateringSchedules extends React.Component {
   save() {
     // セーブボタンクリック時の処理
     this.props.actions.saveDevicesWateringSchedules(
+      this.props.item.id,
       this.props.records,
       this.props.changed);
   }

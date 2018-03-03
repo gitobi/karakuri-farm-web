@@ -21,7 +21,8 @@ export function checkValid(changed) {
  * @param  {[type]} actionTypeFailure [description]
  * @param  {[type]} bastet            [description]
  * @param  {[type]} bastetApi         [description]
- * @param  {[type]} params            [description]
+ * @param  {[type]} apiParams         [description]
+ * @param  {[type]} resourceId        [description]
  * @return {[type]}                   [description]
  */
 export function ApiRequest(

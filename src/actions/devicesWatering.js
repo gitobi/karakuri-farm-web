@@ -1,7 +1,62 @@
 import { Map } from 'immutable';
 import {DevicesWatering} from '../constants/devicesWatering';
 import GtbUtils from '../js/GtbUtils'
+import moment from 'moment';
 import Bastet from '../js/Bastet'
+import * as ActionUtils from './actionUtils'
+
+export function loadDevicesWateringWorkingDays(deviceId) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.LOAD_WORKING_DAYS_REQUEST });
+    let params = {date_trunc: "day"}
+    let bastet = new Bastet();
+    return bastet.getWateringsStats(deviceId, params).then(
+      result => dispatch({ type: DevicesWatering.LOAD_WORKING_DAYS_SUCCESS, data: result.data }),
+      error => {
+        return dispatch({ type: DevicesWatering.LOAD_WORKING_DAYS_FAILURE, error: error });
+      }
+    );
+  }
+};
+
+export function loadDevicesWateringOperationalRecords(deviceId, date) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_REQUEST });
+
+    let params = {};
+    if (date) {
+      let replaced = date.replace(new RegExp("/","g"), "-");
+      let min = moment(`${replaced} 00:00:00`);
+      let max = moment(`${replaced} 23:59:59`);
+      params = {filtered: [{id: "started_at", value: {min: min, max: max}}]};
+    }
+
+    let bastet = new Bastet();
+    return bastet.getWateringsOperationalRecords(deviceId, params).then(
+      result => dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: result.data }),
+      error => {
+        dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
+      }
+    );
+  }
+};
+
+export function loadDevicesWateringStats(deviceId, unit) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.LOAD_STATS_REQUEST });
+    let params = {date_trunc: unit}
+    let bastet = new Bastet();
+    return bastet.getWateringsStats(deviceId, params).then(
+      result => {
+        // console.log("action loaded:", result);
+        return dispatch({ type: DevicesWatering.LOAD_STATS_SUCCESS, stats: result.data, unit: unit })
+      },
+      error => {
+        return dispatch({ type: DevicesWatering.LOAD_STATS_FAILURE, error: error });
+      }
+    );
+  }
+};
 
 export function loadDevicesWateringSchedules(deviceId) {
   return function(dispatch) {
@@ -16,25 +71,10 @@ export function loadDevicesWateringSchedules(deviceId) {
   }
 };
 
-function checkValid(changed) {
-  let valid = true;
-  Object.keys(changed).forEach((key) => {
-    let change = changed[key];
-    let errors = change._errors;
-    if (errors) {
-      Object.keys(errors).forEach((column) => {
-        let error = errors[column];
-        valid &= (null === error || undefined === error);
-      });
-    }
-  });
-  return valid;
-}
-
-export function saveDevicesWateringSchedules(schedules, changed) {
+export function saveDevicesWateringSchedules(deviceId, schedules, changed) {
   return function(dispatch) {
 
-    if (!checkValid(changed)) {
+    if (!ActionUtils.checkValid(changed)) {
       // TODO エラーが存在するためBastetへの更新を行わない場合の画面表示メッセージ
       console.log('check error', changed);
       return false;
@@ -60,40 +100,43 @@ export function saveDevicesWateringSchedules(schedules, changed) {
       switch (params._state) {
        case 'create':
         // 新規
-        promises.push(apiDevicesWateringSchedule(
+        promises.push(ActionUtils.ApiRequest(
           dispatch,
           DevicesWatering.POST_SCHEDULES_REQUEST,
           DevicesWatering.POST_SCHEDULES_SUCCESS,
           DevicesWatering.POST_SCHEDULES_FAILURE,
           bastet,
           bastet.createWateringsSchedule,
-          params,
+          [deviceId, params],
+          key
         ));
         break;
 
       case 'delete':
         // 削除
-        promises.push(apiDevicesWateringSchedule(
+        promises.push(ActionUtils.ApiRequest(
           dispatch,
           DevicesWatering.DELETE_SCHEDULES_REQUEST,
           DevicesWatering.DELETE_SCHEDULES_SUCCESS,
           DevicesWatering.DELETE_SCHEDULES_FAILURE,
           bastet,
           bastet.deleteWateringsSchedule,
-          params,
+          [deviceId, params],
+          key
         ));
         break;
 
       default:
         // 更新
-        promises.push(apiDevicesWateringSchedule(
+        promises.push(ActionUtils.ApiRequest(
           dispatch,
           DevicesWatering.PUT_SCHEDULES_REQUEST,
           DevicesWatering.PUT_SCHEDULES_SUCCESS,
           DevicesWatering.PUT_SCHEDULES_FAILURE,
           bastet,
           bastet.updateWateringsSchedule,
-          params,
+          [deviceId, params],
+          key
         ));
         break
       }
@@ -129,55 +172,3 @@ export function updateDevicesWateringSchedule(id, column, value, error) {
     error: error,
   };
 };
-
-export function loadDevicesWateringOperationalRecords(deviceId) {
-  return function(dispatch) {
-    dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_REQUEST });
-    let bastet = new Bastet();
-    return bastet.getWateringsOperationalRecords(deviceId).then(
-      result => dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: result.data }),
-      error => {
-        dispatch({ type: DevicesWatering.LOAD_SCHEDULES_FAILURE, schedules: error })
-      }
-    );
-  }
-};
-
-/**
- * Api For DevicesWateringSchedule Wrapper
- * @param  {[type]} dispatch          [description]
- * @param  {[type]} actionTypeRequest [description]
- * @param  {[type]} actionTypeSuccess [description]
- * @param  {[type]} actionTypeFailure [description]
- * @param  {[type]} bastet            [description]
- * @param  {[type]} bastetApi         [description]
- * @param  {[type]} params            [description]
- * @return {[type]}                   [description]
- */
-const apiDevicesWateringSchedule = (
-  dispatch,
-  actionTypeRequest,
-  actionTypeSuccess,
-  actionTypeFailure,
-  bastet,
-  bastetApi,
-  params
-  ) => {
-  dispatch({ type: actionTypeRequest });
-  return bastetApi.call(bastet, params.device_id, params).then(
-    result => {
-      dispatch({
-        type: actionTypeSuccess,
-        params: params,
-        result: result.data.schedule,
-      });
-    },
-    error => {
-      dispatch({
-        type: actionTypeFailure,
-        error: error,
-      });
-    }
-  );
-}
-
