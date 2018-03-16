@@ -183,6 +183,7 @@ export default class Bastet {
         this.logger.log('getSession', err, signInUserSession);
         resolve(signInUserSession);
       });
+      // FIXME ログイン情報取得失敗時の処理
 
     }).then((result) => {
       // Bastetへリクエスト
