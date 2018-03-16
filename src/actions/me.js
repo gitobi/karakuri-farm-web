@@ -38,6 +38,7 @@ export function signUpMe(username, email, password) {
     }).then(
       // 成功時は成功ActionをDispatch
       (result) => {
+        // console.log("signUpMe", result);
         dispatch({ type: Me.SIGN_UP_SUCCESS, username: result.user.username });
       },
       // 失敗時は失敗ActionをDispatch
@@ -70,6 +71,7 @@ export function confirmMe(pincode) {
       });
     }).then(
       (result) => {
+        // console.log("confirmMe", result);
         dispatch({ type: Me.CONFIRM_SUCCESS });
       },
       (error) => {
@@ -108,6 +110,7 @@ export function loginMe(username, password) {
       });
     }).then(
       (result) => {
+        // console.log("loginMe", result);
         dispatch({ type: Me.LOGIN_SUCCESS, username: username });
       },
       (error) => {

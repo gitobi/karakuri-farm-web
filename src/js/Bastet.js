@@ -1,6 +1,7 @@
 import Logger from './Logger'
 import request from 'superagent'
 import moment from 'moment';
+import { userPool } from '../js/AuthUserPool';
 
 export default class Bastet {
 
@@ -176,19 +177,32 @@ export default class Bastet {
 
   ///// lowlevel functions
   callApi(api, url, query={}) {
-    return api(url, query)
-      .then((response) => {
-        // this.logger.log('request', url, query);
-        // this.logger.log('response', response);
-        return(response.body);
-
-      }).catch((err) => {
-        if (err.status !== 404) {
-          this.logger.error('request', url, query);
-          this.logger.error('response', err.status, err.response.statusText, err.response.body);
-        }
-        throw new Error(err);
+    return new Promise((resolve, reject) => {
+      // ログイン情報取得
+      userPool.getCurrentUser().getSession((err, signInUserSession) => {
+        this.logger.log('getSession', err, signInUserSession);
+        resolve(signInUserSession);
       });
+
+    }).then((result) => {
+      // Bastetへリクエスト
+      let req = api(url, query);
+      return this.methodsCommon(req, result.idToken.jwtToken)
+        .then((response) => {
+          // this.logger.log('request', url, query);
+          // this.logger.log('response', response);
+          return(response.body);
+
+        }).catch((err) => {
+          if (err.status !== 404) {
+            this.logger.error('request', url, query);
+            this.logger.error('response', err.status, err.response.statusText, err.response.body);
+          }
+          throw new Error(err);
+        });
+
+    });
+
   }
 
   /// [ex.]
@@ -204,54 +218,27 @@ export default class Bastet {
   //   }).catch((err) => {
   //     console.error(err);
   //   });
-  get(url, query={}) {
-    return new Promise((resolve, reject) => {
-      request
-        .get(url)
-        .set('Content-Type', 'application/json')
-        .query(query)
-        .then((data) => {
-          resolve(data);
-        }).catch((err) => {
-          reject(err);
-        });
-      });
+  get(url, query) {
+    return request.get(url).query(query);
   }
 
-  post(url, query={}) {
-    return new Promise((resolve, reject) => {
-      request
-        .post(url)
-        .set('Content-Type', 'application/json')
-        .send(query)
-        .then((data) => {
-          resolve(data);
-        }).catch((err) => {
-          reject(err);
-        });
-      });
+  post(url, query) {
+    return request.post(url).send(query);
   }
 
-  put(url, query={}) {
-    return new Promise((resolve, reject) => {
-      request
-        .put(url)
-        .set('Content-Type', 'application/json')
-        .send(query)
-        .then((data) => {
-          resolve(data);
-        }).catch((err) => {
-          reject(err);
-        });
-      });
+  put(url, query) {
+    return request.put(url).send(query);
   }
 
-  delete(url, query={}) {
+  delete(url, query) {
+    return request.delete(url).send(query);
+  }
+
+  methodsCommon(req, idToken) {
     return new Promise((resolve, reject) => {
-      request
-        .delete(url)
+      req
         .set('Content-Type', 'application/json')
-        .send(query)
+        .set('Authorization', idToken)
         .then((data) => {
           resolve(data);
         }).catch((err) => {
