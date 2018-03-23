@@ -6,6 +6,7 @@ import devicesPyranometer from './devicesPyranometer'
 import devicesSystemLog from './devicesSystemLog'
 import machine from './machine'
 import machinesRadiationalWatering from './machinesRadiationalWatering'
+import account from './account'
 
 const karakuriFarmApp = combineReducers({
   me,
@@ -15,6 +16,7 @@ const karakuriFarmApp = combineReducers({
   devicesSystemLog,
   machine,
   machinesRadiationalWatering,
+  account,
 });
 
 export default karakuriFarmApp;
