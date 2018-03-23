@@ -38,21 +38,24 @@ export function ApiRequest(
   dispatch({ type: actionTypeRequest });
   return bastetApi.call(bastet, ...apiParams).then(
     result => {
-      dispatch({
+      let res = {
         type: actionTypeSuccess,
         apiParams: apiParams,
         resourceId: resourceId,
         result: result,
-      });
+      }
+      dispatch(res);
+      return Promise.resolve(res);
     },
     error => {
-      dispatch({
+      let res = {
         type: actionTypeFailure,
         apiParams: apiParams,
         resourceId: resourceId,
         error: error,
-      });
-      return Promise.reject(error);
+      }
+      dispatch(res);
+      return Promise.reject(res);
     }
   );
 }

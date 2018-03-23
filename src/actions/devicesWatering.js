@@ -98,47 +98,47 @@ export function saveDevicesWateringSchedules(deviceId, schedules, changed) {
       // console.log('params', params);
 
       switch (params._state) {
-       case 'create':
-        // 新規
-        promises.push(ActionUtils.ApiRequest(
-          dispatch,
-          DevicesWatering.POST_SCHEDULES_REQUEST,
-          DevicesWatering.POST_SCHEDULES_SUCCESS,
-          DevicesWatering.POST_SCHEDULES_FAILURE,
-          bastet,
-          bastet.createWateringsSchedule,
-          [deviceId, params],
-          key
-        ));
-        break;
+        case 'create':
+          // 新規
+          promises.push(ActionUtils.ApiRequest(
+            dispatch,
+            DevicesWatering.POST_SCHEDULES_REQUEST,
+            DevicesWatering.POST_SCHEDULES_SUCCESS,
+            DevicesWatering.POST_SCHEDULES_FAILURE,
+            bastet,
+            bastet.createWateringsSchedule,
+            [deviceId, params],
+            key
+          ));
+          break;
 
-      case 'delete':
-        // 削除
-        promises.push(ActionUtils.ApiRequest(
-          dispatch,
-          DevicesWatering.DELETE_SCHEDULES_REQUEST,
-          DevicesWatering.DELETE_SCHEDULES_SUCCESS,
-          DevicesWatering.DELETE_SCHEDULES_FAILURE,
-          bastet,
-          bastet.deleteWateringsSchedule,
-          [deviceId, params],
-          key
-        ));
-        break;
+        case 'delete':
+          // 削除
+          promises.push(ActionUtils.ApiRequest(
+            dispatch,
+            DevicesWatering.DELETE_SCHEDULES_REQUEST,
+            DevicesWatering.DELETE_SCHEDULES_SUCCESS,
+            DevicesWatering.DELETE_SCHEDULES_FAILURE,
+            bastet,
+            bastet.deleteWateringsSchedule,
+            [deviceId, params],
+            key
+          ));
+          break;
 
-      default:
-        // 更新
-        promises.push(ActionUtils.ApiRequest(
-          dispatch,
-          DevicesWatering.PUT_SCHEDULES_REQUEST,
-          DevicesWatering.PUT_SCHEDULES_SUCCESS,
-          DevicesWatering.PUT_SCHEDULES_FAILURE,
-          bastet,
-          bastet.updateWateringsSchedule,
-          [deviceId, params],
-          key
-        ));
-        break
+        default:
+          // 更新
+          promises.push(ActionUtils.ApiRequest(
+            dispatch,
+            DevicesWatering.PUT_SCHEDULES_REQUEST,
+            DevicesWatering.PUT_SCHEDULES_SUCCESS,
+            DevicesWatering.PUT_SCHEDULES_FAILURE,
+            bastet,
+            bastet.updateWateringsSchedule,
+            [deviceId, params],
+            key
+          ));
+          break
       }
     });
 
