@@ -6,7 +6,6 @@ import Header from '../../components/part/Header'
 
 import UserSummary from './UserSummary';
 
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 class AccountSettings extends Component {
