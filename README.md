@@ -8,6 +8,7 @@
 
 1. `git clone https://github.com/gitobi/karakuri-farm-web`
 1. `cd karakuri-farm-web`
+1. `cp aws_secrets.env.sample aws_secrets.env`
 1. `docker-compose build`
 1. `docker-compose run --rm web yarn install`
 1. `cp .env.development.sample .env.development`
