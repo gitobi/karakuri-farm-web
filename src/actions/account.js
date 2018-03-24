@@ -7,7 +7,6 @@ import Bastet from '../js/Bastet'
  * @return {[type]}      [description]
  */
 export function loadAccount(args = {}) {
-  // TODO argsにはOrganizationIdなどを予定
   return function(dispatch) {
     dispatch({ type: Account.LOAD_REQUEST });
     let bastet = new Bastet();

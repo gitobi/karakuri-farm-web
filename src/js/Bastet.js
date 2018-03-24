@@ -182,23 +182,6 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
-  createAccountsOrganization(data) {
-    var url = this.host + '/accounts/organizations/';
-    return this.callApi(this.post, url, {organization: data});
-  }
-
-  updateAccountsOrganization(id, data) {
-    this.logger.log(id, data);
-    var url = this.host + '/accounts/organizations/' + id;
-    return this.callApi(this.put, url, {organization: data});
-  }
-
-  updateAccountsUser(id, data) {
-    this.logger.log(id, data);
-    var url = this.host + '/accounts/users/' + id;
-    return this.callApi(this.put, url, {user: data});
-  }
-
   ///// lowlevel functions
   callApi(api, url, query={}) {
     return new Promise((resolve, reject) => {
