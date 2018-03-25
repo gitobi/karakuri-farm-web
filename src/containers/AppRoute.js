@@ -17,6 +17,7 @@ import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
 import MachinesRadiationalWaterings from './MachinesRadiationalWaterings';
 import AccountSettings from './account/AccountSettings';
+import Activation from './activation/Activation';
 // import ApiTest from './ApiTest';
 
 class AppRoute extends Component {
@@ -55,6 +56,7 @@ class AppRoute extends Component {
             <Route path={`${match.url}/devices`} component={BlankComponent} />
             <Route path={`${match.url}/stats`} component={BlankComponent} />
             <Route path={`${match.url}/account`} component={AccountSettings} />
+            <Route path={`${match.url}/activation`} component={Activation} />
             <Redirect to={`${match.url}`} />
           </Switch>
         </AppLayout>
