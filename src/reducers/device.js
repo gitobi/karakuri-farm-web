@@ -5,24 +5,24 @@ import GtbUtils from '../js/GtbUtils'
 // import Logger from '../js/Logger'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
-const deviceTypes = ['watering', 'pyranometer']
+const deviceTypes = ['watering', 'pyranometer'];
 
-const deviceTypeArray = (() => {
+const deviceTypeArray = () => {
   // {a: [], b: [], ...}
   let hash = {};
   deviceTypes.forEach(v => hash[v] = []);
   return hash;
-})();
+};
 
-const deviceTypeMap = (() => {
+const deviceTypeMap = () => {
   // {a: {}, b: {}, ...}
   let hash = {};
   deviceTypes.forEach(v => hash[v] = {});
   return hash;
-})();
+};
 
 const toTypeDevicesMap = (devices) => {
-  let hash = deviceTypeMap;
+  let hash = deviceTypeMap();
   for (let device of devices) {
     hash[device._type][device.id] = device;
   }
@@ -30,7 +30,7 @@ const toTypeDevicesMap = (devices) => {
 }
 
 const toTypeDevices = (devices) => {
-  let hash = deviceTypeArray;
+  let hash = deviceTypeArray();
   for (let device of devices) {
     hash[device._type].push(device);
   }
@@ -39,8 +39,8 @@ const toTypeDevices = (devices) => {
 
 const initialDevice = Map({
   'devices': List([]),
-  'devicesList': fromJS(deviceTypeArray),
-  'devicesMap': fromJS(deviceTypeMap),
+  'devicesList': fromJS(deviceTypeArray()),
+  'devicesMap': fromJS(deviceTypeMap()),
   'changed': Map({}),
   'progress': false,
 });
