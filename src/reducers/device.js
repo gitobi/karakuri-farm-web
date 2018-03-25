@@ -136,6 +136,18 @@ const device = (state = initialDevice, action) => {
     case Device.PUT_FAILURE:
       return state;
 
+    case Device.ACTIVATE_REQUEST:
+      // デバイスのアクティベート開始
+      return state.set('progress', true);
+
+    case Device.ACTIVATE_SUCCESS:
+      // デバイスのアクティベート完了
+      return state.set('progress', false);
+
+    case Device.ACTIVATE_FAILURE:
+      // デバイスのアクティベート失敗
+      return state.set('progress', false);
+
     default:
       return state;
   }

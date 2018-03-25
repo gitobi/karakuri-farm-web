@@ -199,6 +199,11 @@ export default class Bastet {
     return this.callApi(this.put, url, {user: data});
   }
 
+  activateDevice(activationCode) {
+    var url = this.host + '/activation/activate/';
+    return this.callApi(this.put, url, {type: 'device', value: activationCode});
+  }
+
   ///// lowlevel functions
   callApi(api, url, query={}) {
     return new Promise((resolve, reject) => {

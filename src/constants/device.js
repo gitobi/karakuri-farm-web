@@ -12,4 +12,7 @@ export const Device = {
   PUT_REQUEST: prefix + 'PUT_REQUEST',
   PUT_SUCCESS: prefix + 'PUT_SUCCESS',
   PUT_FAILURE: prefix + 'PUT_FAILURE',
+  ACTIVATE_REQUEST: prefix + 'ACTIVATE_REQUEST',
+  ACTIVATE_SUCCESS: prefix + 'ACTIVATE_SUCCESS',
+  ACTIVATE_FAILURE: prefix + 'ACTIVATE_FAILURE',
 }
