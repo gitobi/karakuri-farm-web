@@ -62,7 +62,7 @@ export function confirmMe(pincode) {
     dispatch({ type: Me.CONFIRM_REQUEST });
 
     return new Promise((resolve, reject) => {
-      cognitoUser.confirmRegistration(pincode, true, (error, result) => {
+      cognitoUser.confirmRegistration(pincode, false, (error, result) => {
         if (error) {
           reject(error);
         } else {
