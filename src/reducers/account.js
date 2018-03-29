@@ -7,6 +7,7 @@ import GtbUtils from '../js/GtbUtils'
 
 const initialAccount = Map({
   'user': Map({}),
+  'organization': Map({}),
   'progress': false,
 });
 
@@ -23,6 +24,20 @@ const createUserObject = (object) => {
   };
 }
 
+const createOrganizationObject = (object) => {
+  return 0 === Object.keys(object).length ? {
+      id: "",
+      name: "",
+      inserted_at: null,
+      updated_at: null,
+    } : {
+      id: object["id"],
+      name: object["name"],
+      inserted_at: GtbUtils.dateString(new Date(object["inserted_at"])),
+      updated_at: GtbUtils.dateString(new Date(object["updated_at"])),
+    };
+}
+
 const account = (state = initialAccount, action) => {
   // _logger.info('state :', state.toJS());
   // _logger.info('action :', action);
@@ -35,9 +50,11 @@ const account = (state = initialAccount, action) => {
     case Account.LOAD_SUCCESS:
       // アカウント情報の取得完了
       let user = createUserObject(action.account["user"]);
+      let organization = createOrganizationObject(action.account["organization"]);
 
       return state.withMutations(map => { map
         .set('user', fromJS(user))
+        .set('organization', fromJS(organization))
         .set('progress', false)
         ;
       });
