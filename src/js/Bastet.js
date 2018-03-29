@@ -175,12 +175,19 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
+  /////
+
+  getAccount() {
+    var url = this.host + '/account';
+    return this.callApi(this.get, url);
+  }
+
   ///// lowlevel functions
   callApi(api, url, query={}) {
     return new Promise((resolve, reject) => {
       // ログイン情報取得
       userPool.getCurrentUser().getSession((err, signInUserSession) => {
-        this.logger.log('getSession', err, signInUserSession);
+        // this.logger.log('getSession', err, signInUserSession);
         resolve(signInUserSession);
       });
       // FIXME ログイン情報取得失敗時の処理

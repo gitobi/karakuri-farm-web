@@ -82,7 +82,7 @@ class Menubar extends Component {
         <Menu.Item>
           <Menu.Header>お問合せ</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('user', '/app/user', this.props.me.get('username'))}
+            {this.menuItem('account', '/app/account', this.props.me.get('username'))}
             <Menu.Item
               onClick={this.handleLogoutClick}
               as='a'
