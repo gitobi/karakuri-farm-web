@@ -6,6 +6,7 @@ import Logger from '../js/Logger';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as AccountActions from '../actions/account';
 import * as DeviceActions from '../actions/device';
 import * as MachineActions from '../actions/machine';
 
@@ -38,6 +39,16 @@ class AppStore extends Component {
   }
 
   load() {
+    // アカウント情報をロード
+    this.props.accountActions.loadAccount().then(
+      result => {
+        // 必要であれば、その他の初期設定
+        // this.logger.log('load success:', this.props);
+      },
+      error => {
+        this.logger.error('load error:', error);
+    });
+
     // デバイス情報をロード
     this.props.deviceActions.loadDevices().then(
       result => {
@@ -79,6 +90,7 @@ class AppStore extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
+    accountActions: bindActionCreators(AccountActions, dispatch),
     deviceActions: bindActionCreators(DeviceActions, dispatch),
     machineActions: bindActionCreators(MachineActions, dispatch),
   };

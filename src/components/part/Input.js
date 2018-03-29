@@ -25,7 +25,7 @@ class Input extends Component {
       placeholder: placeholder || formatter.placeholder,
       callback: callback,
       formatter: formatter,
-      error: error,
+      error: error || null,
       rest: rest,
     };
 
@@ -73,6 +73,7 @@ class Input extends Component {
   }
 
   update(formatted) {
+    // this.debug({method: 'update', formatted});
     if (formatted.value !== this.state.value
       || formatted.error !== this.state.error) {
       this.setState({
@@ -146,7 +147,7 @@ class InputHash extends Component {
     return (
       <Input
         value={this.state.hash[this.state.column]}
-        error={this.state.errors[this.state.column] ? true : false}
+        error={this.state.errors[this.state.column]}
         column={this.state.column}
         {...this.state.rest}
       />

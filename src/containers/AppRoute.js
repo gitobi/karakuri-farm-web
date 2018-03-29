@@ -16,6 +16,8 @@ import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
 import MachinesRadiationalWaterings from './MachinesRadiationalWaterings';
+import AccountSettings from './account/AccountSettings';
+// import ApiTest from './ApiTest';
 
 class AppRoute extends Component {
   constructor(props) {
@@ -52,6 +54,7 @@ class AppRoute extends Component {
             <Route path={`${match.url}/alert`} component={BlankComponent} />
             <Route path={`${match.url}/devices`} component={BlankComponent} />
             <Route path={`${match.url}/stats`} component={BlankComponent} />
+            <Route path={`${match.url}/account`} component={AccountSettings} />
             <Redirect to={`${match.url}`} />
           </Switch>
         </AppLayout>
