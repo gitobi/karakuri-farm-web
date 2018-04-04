@@ -27,7 +27,8 @@
   },
   "scripts": {
     "build": "react-scripts build",
-    "deploy": "./deploy.sh",
+    "deploy-to-production": "./deploy-to-production.sh",
+    "deploy-to-staging": "./deploy-to-staging.sh",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.js",
     "start": "react-scripts start",

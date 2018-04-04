@@ -13,9 +13,15 @@ services:
     command: yarn test
     volumes:
       - .:/app:cached
-  deployment:
+  deployment-staging:
     build: ./docker_files/deployment/
     env_file: ./aws_secrets.env
-    command: yarn deploy
+    command: yarn deploy-to-staging
+    volumes:
+      - .:/app:cached
+  deployment-production:
+    build: ./docker_files/deployment/
+    env_file: ./aws_secrets.env
+    command: yarn deploy-to-production
     volumes:
       - .:/app:cached

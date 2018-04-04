@@ -50,11 +50,18 @@
 
 1. `cp aws_secrets.env.sample aws_secrets.env`
 1. Add your credentials to the `aws_secrets.env` file.
-1. Make the `.env.production` file.
+1. `cp .env.staging-env.sample .env.staging-env`
+1. Edit the `.env.staging-env` file.
+1. `cp .env.production-env.sample .env.production-env`
+1. Edit the `.env.production-env` file.
+
+### Deploy to Staging
+
+`docker-compose run --rm deployment-staging`
 
 ### Deploy to Production
 
-`docker-compose run --rm deployment`
+`docker-compose run --rm deployment-production`
 
 # Backend
 
