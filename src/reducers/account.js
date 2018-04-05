@@ -8,6 +8,7 @@ import GtbUtils from '../js/GtbUtils'
 const initialAccount = Map({
   'user': Map({}),
   'organization': Map({}),
+  'changed': Map({}),
   'progress': false,
 });
 
@@ -26,7 +27,7 @@ const createUserObject = (object) => {
 
 const createOrganizationObject = (object) => {
   return 0 === Object.keys(object).length ? {
-      id: "",
+      id: "[新規作成]",
       name: "",
       inserted_at: null,
       updated_at: null,
@@ -55,6 +56,7 @@ const account = (state = initialAccount, action) => {
       return state.withMutations(map => { map
         .set('user', fromJS(user))
         .set('organization', fromJS(organization))
+        .set('changed', Map({}))
         .set('progress', false)
         ;
       });
@@ -62,6 +64,64 @@ const account = (state = initialAccount, action) => {
     case Account.LOAD_FAILURE:
       // アカウント情報の取得失敗
       return state.set('progress', false);
+
+    case Account.UPDATE:
+      // 情報を変更
+
+      if (state.getIn(['user', 'id']) === action.id) {
+        return state.withMutations(map => { map
+          .setIn(['changed', action.id, action.column], action.value)
+          .setIn(['changed', action.id, '_errors', action.column], action.error)
+          .setIn(['changed', action.id, '_type'], "user")
+          .setIn(['user', action.column], action.value)
+          ;
+        });
+      } else {
+        return state.withMutations(map => { map
+          .setIn(['changed', action.id, action.column], action.value)
+          .setIn(['changed', action.id, '_errors', action.column], action.error)
+          .setIn(['changed', action.id, '_type'], "organization")
+          .setIn(['organization', action.column], action.value)
+          ;
+          if (map.getIn(['organization', 'id']) === "[新規作成]") {
+            map.setIn(['changed', action.id, '_state'], "create")
+          }
+        });
+      }
+
+    case Account.SAVE_REQUEST:
+      return state.set('progress', true);
+
+    case Account.SAVE_SUCCESS:
+      return state.set('progress', false);
+
+    case Account.SAVE_FAILURE:
+      return state.set('progress', false);
+
+    case Account.PUT_REQUEST:
+      return state;
+
+    case Account.PUT_SUCCESS:
+      return state.deleteIn(['changed', action.resourceId]);
+
+    case Account.PUT_FAILURE:
+      return state;
+
+    case Account.POST_REQUEST:
+      return state;
+
+    case Account.POST_SUCCESS:
+      // postした結果払い出されたIDを設定する
+      // 変更が完了した情報を削除する
+      let createdOrganization = createOrganizationObject(action.result.data);
+      return state.withMutations(map => { map
+        .set('organization', fromJS(createdOrganization))
+        .deleteIn(['changed', action.resourceId])
+        ;
+      });
+
+    case Account.POST_FAILURE:
+      return state;
 
     default:
       return state;
