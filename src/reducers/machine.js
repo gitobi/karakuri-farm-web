@@ -7,22 +7,22 @@ import GtbUtils from '../js/GtbUtils'
 
 const machineTypes = ['radiational_watering']
 
-const machineTypeArray = (() => {
+const machineTypeArray = () => {
   // {a: [], b: [], ...}
   let hash = {};
   machineTypes.forEach(v => hash[v] = []);
   return hash;
-})();
+};
 
-const machineTypeMap = (() => {
+const machineTypeMap = () => {
   // {a: {}, b: {}, ...}
   let hash = {};
   machineTypes.forEach(v => hash[v] = {});
   return hash;
-})();
+};
 
 const toTypeMachinesMap = (machines) => {
-  let hash = machineTypeMap;
+  let hash = machineTypeMap();
   for (let machine of machines) {
     hash[machine._type][machine.id] = machine;
   }
@@ -30,7 +30,7 @@ const toTypeMachinesMap = (machines) => {
 }
 
 const toTypeMachines = (machines) => {
-  let hash = machineTypeArray;
+  let hash = machineTypeArray();
   for (let machine of machines) {
     hash[machine._type].push(machine);
   }
@@ -39,8 +39,8 @@ const toTypeMachines = (machines) => {
 
 const initialMachine = Map({
   'machines': List([]),
-  'machinesList': fromJS(machineTypeArray),
-  'machinesMap': fromJS(machineTypeMap),
+  'machinesList': fromJS(machineTypeArray()),
+  'machinesMap': fromJS(machineTypeMap()),
   'changed': Map({}),
   'progress': false,
 });

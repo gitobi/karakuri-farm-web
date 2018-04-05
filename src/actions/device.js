@@ -72,3 +72,19 @@ export function save(changed) {
     );
   }
 };
+
+export function activate(activationCode) {
+  return function(dispatch) {
+    let bastet = new Bastet();
+    return ActionUtils.ApiRequest(
+      dispatch,
+      Device.ACTIVATE_REQUEST,
+      Device.ACTIVATE_SUCCESS,
+      Device.ACTIVATE_FAILURE,
+      bastet,
+      bastet.activateDevice,
+      [activationCode],
+      activationCode
+    );
+  }
+};
