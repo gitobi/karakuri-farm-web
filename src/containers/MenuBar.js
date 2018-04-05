@@ -83,6 +83,7 @@ class Menubar extends Component {
           <Menu.Header>お問合せ</Menu.Header>
           <Menu.Menu>
             {this.menuItem('account', '/app/account', this.props.me.get('username'))}
+            {this.menuItem('activation', '/app/activation', 'デバイス登録')}
             <Menu.Item
               onClick={this.handleLogoutClick}
               as='a'
