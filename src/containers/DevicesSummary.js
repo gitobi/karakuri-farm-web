@@ -62,7 +62,7 @@ class DevicesSummary extends Component {
         </div>
 
         <Header label={"DeviceMonitor"}/>
-        <DevicesMonitor item={this.props.item.device_monitor || {}} />
+        <DevicesMonitor item={this.props.item} />
       </div>
     );
   }

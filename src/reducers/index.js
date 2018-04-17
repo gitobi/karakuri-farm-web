@@ -7,6 +7,7 @@ import devicesSystemLog from './devicesSystemLog'
 import machine from './machine'
 import machinesRadiationalWatering from './machinesRadiationalWatering'
 import account from './account'
+import suzu from './suzu'
 
 const karakuriFarmApp = combineReducers({
   me,
@@ -17,6 +18,7 @@ const karakuriFarmApp = combineReducers({
   machine,
   machinesRadiationalWatering,
   account,
+  suzu,
 });
 
 export default karakuriFarmApp;

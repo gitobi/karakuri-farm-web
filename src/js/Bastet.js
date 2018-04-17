@@ -204,6 +204,24 @@ export default class Bastet {
     return this.callApi(this.put, url, {type: 'device', value: activationCode});
   }
 
+  /////
+
+  getDevicesDeviceMonitor(deviceId) {
+    var url = this.host + '/devices/' + deviceId + '/monitors';
+    return this.callApi(this.get, url);
+  }
+
+  createDevicesDeviceMonitor(deviceId, data) {
+    var url = this.host + '/devices/' + deviceId +  '/monitors';
+    return this.callApi(this.post, url, {device_monitor: data});
+  }
+
+  updateDevicesDeviceMonitor(deviceId, id, data) {
+    this.logger.log(id, data);
+    var url = this.host + '/accounts/' + deviceId + '/monitors/' + id;
+    return this.callApi(this.put, url, {device_monitor: data});
+  }
+
   ///// lowlevel functions
   callApi(api, url, query={}) {
     return new Promise((resolve, reject) => {
