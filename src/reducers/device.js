@@ -66,6 +66,11 @@ const device = (state = initialDevice, action) => {
             heartbeated_at: GtbUtils.dateString(new Date(value["heartbeated_at"])),
             inserted_at: GtbUtils.dateString(new Date(value["inserted_at"])),
             updated_at: GtbUtils.dateString(new Date(value["updated_at"])),
+            device_monitor: {
+              enable: true,
+              monitoring_range: 180,
+              last_result: "alive",
+            },
             '_type': value["_type"]
           };
           switch (map._type) {
