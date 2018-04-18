@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Grid } from 'semantic-ui-react';
 import Logger from '../js/Logger'
+import IntegerFormatter from '../js/formatter/IntegerFormatter'
 
 import Field from '../components/part/Field';
 import Input from '../components/part/Input';
@@ -40,14 +41,22 @@ class DevicesMonitor extends Component {
 
   update(column, value, error) {
     // 値の更新
+    this.props.actions.update(
+      this.props.deviceMonitor.id,
+      column,
+      value,
+      error,
+      );
   }
 
   isDisableSaveButton() {
     // 変更されたデータがあるか判定
+    return (0 === Object.keys(this.props.changed).length);
   }
 
   save(event, data) {
     // 値の保存
+    this.props.actions.save(this.props.item.id, this.props.changed);
   }
 
   render() {
@@ -65,7 +74,7 @@ class DevicesMonitor extends Component {
                 <Checkbox.Hash toggle size='large' hash={this.props.deviceMonitor} column='enable' callback={this.update} />
               </Grid.Column>
               <Grid.Column width={8}>
-                <Input.Hash size='large' fluid hash={this.props.deviceMonitor} column='monitoring_range' callback={this.update} />
+                <Input.Hash size='large' fluid hash={this.props.deviceMonitor} column='monitoring_range' callback={this.update} formatter={new IntegerFormatter()} />
               </Grid.Column>
             </Grid>
           </Field>
@@ -80,6 +89,7 @@ class DevicesMonitor extends Component {
 function mapStateToProps(state) {
   return  {
     deviceMonitor: state.suzu.get('deviceMonitor').toJS(),
+    changed: state.suzu.get('changed').toJS(),
     progress: state.suzu.get('progress'),
   };
 }

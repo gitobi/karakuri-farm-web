@@ -7,6 +7,7 @@ import GtbUtils from '../js/GtbUtils'
 
 const initialSuzu = Map({
   'deviceMonitor': Map({}),
+  'changed': Map({}),
   'progress': false,
 });
 
@@ -29,7 +30,14 @@ const suzu = (state = initialSuzu, action) => {
             last_result: value["last_result"],
           };
         });
-      let deviceMonitor = deviceMonitors[0] ? deviceMonitors[0] : {};
+      let deviceMonitor = deviceMonitors[0]
+        ? deviceMonitors[0]
+        : {
+          id: GtbUtils.getTmpId([]),
+          enable: false,
+          monitoring_range: null,
+          last_result: null,
+        };
 
       return state.withMutations(map => { map
         .set('deviceMonitor', fromJS(deviceMonitor))
@@ -39,6 +47,53 @@ const suzu = (state = initialSuzu, action) => {
 
     case Suzu.LOAD_FAILURE:
       return state.set('progress', false);
+
+    case Suzu.SAVE_DEVICE_MONITOR_REQUEST:
+      return state.set('progress', true);
+
+    case Suzu.SAVE_DEVICE_MONITOR_SUCCESS:
+      return state.set('progress', false);
+
+    case Suzu.SAVE_DEVICE_MONITOR_FAILURE:
+      console.log(action.error);
+      return state.set('progress', false);
+
+    case Suzu.POST_DEVICE_MONITOR_REQUEST:
+      return state;
+
+    case Suzu.POST_DEVICE_MONITOR_SUCCESS:
+      // postした結果払い出されたIDを設定する
+      // 変更が完了した情報を削除する
+      return state.withMutations(map => { map
+        .setIn(['deviceMonitor', 'id'], action.result.data.id)
+        .deleteIn(['changed', action.resourceId])
+        ;
+      });
+
+    case Suzu.POST_DEVICE_MONITOR_FAILURE:
+      return state;
+
+    case Suzu.PUT_DEVICE_MONITOR_REQUEST:
+      return state;
+
+    case Suzu.PUT_DEVICE_MONITOR_SUCCESS:
+      // 変更が完了した情報を削除する
+      return state.deleteIn(['changed', action.resourceId]);
+
+    case Suzu.PUT_DEVICE_MONITOR_FAILURE:
+      // スケジュール情報のput失敗
+      return state;
+
+    case Suzu.UPDATE_DEVICE_MONITOR:
+      let _state = GtbUtils.isTmpId(state.getIn(['deviceMonitor', "id"])) ? 'create' : 'update';
+      return state.withMutations(map => { map
+        .setIn(['deviceMonitor', action.column], action.value)
+        .setIn(['changed', action.id, action.column], action.value)
+        .setIn(['changed', action.id, "_state"], _state)
+        .setIn(['deviceMonitor', '_errors', action.column], action.error)
+        .setIn(['changed', action.id, '_errors', action.column], action.error)
+        ;
+      });
 
     default:
       return state;
