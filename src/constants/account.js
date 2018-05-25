@@ -15,4 +15,7 @@ export const Account = {
   POST_REQUEST: prefix + 'POST_REQUEST',
   POST_SUCCESS: prefix + 'POST_SUCCESS',
   POST_FAILURE: prefix + 'POST_FAILURE',
+  JOIN_REQUEST: prefix + 'JOIN_REQUEST',
+  JOIN_SUCCESS: prefix + 'JOIN_SUCCESS',
+  JOIN_FAILURE: prefix + 'JOIN_FAILURE',
 }

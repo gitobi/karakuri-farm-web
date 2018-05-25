@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Segment, Button } from 'semantic-ui-react';
+import { Segment, Button, Divider } from 'semantic-ui-react';
 import Logger from '../../js/Logger'
 
 import Header from '../../components/part/Header'
 
 import UserSummary from './UserSummary';
-import OrganizationSummary from './OrganizationSummary';
+import Organizations from './Organizations';
+import JoinOrganization from './JoinOrganization';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -61,8 +62,12 @@ class AccountSettings extends Component {
         </Segment>
 
         <Segment loading={this.props.loading}>
-          <Header label={"Organization"}/>
-          <OrganizationSummary item={this.props.organization} />
+          <Header label={"Organizations"}/>
+          <Organizations items={this.props.organizations} />
+
+          <Divider horizontal> Or </Divider>
+          <JoinOrganization />
+
         </Segment>
       </div>
     );
@@ -72,7 +77,7 @@ class AccountSettings extends Component {
 function mapStateToProps(state) {
   return  {
     user: state.account.get('user').toJS(),
-    organization: state.account.get('organization').toJS(),
+    organizations: state.account.get('organizations').toJS(),
     changed: state.account.get('changed').toJS(),
     progress: state.account.get('progress'),
   };

@@ -103,3 +103,36 @@ export function save(changed) {
     );
   }
 };
+
+export function joinOrganization(organizationName) {
+  console.log('joinOrganization:', organizationName);
+  return function(dispatch) {
+    let bastet = new Bastet();
+    dispatch({ type: Account.JOIN_REQUEST });
+
+    let params = ActionUtils.addFilteredQuery({}, "name", "eq", organizationName);
+    return bastet.getAccountsOrganizationBy(params)
+      .then(result => {
+        console.log('getAccountsOrganizationBy:', result);
+        if (0 === result.data.length) {
+          // 存在しない場合は作成
+          return bastet.createAccountsOrganization({"name": organizationName});
+        } else {
+          // 存在する場合は次のフェーズへ
+          return {data: result.data[0]};
+        }
+      })
+      .then(result => {
+        console.log('created Organization:', result);
+        return bastet.createAccountsOrganizationsMember(result.data["id"], {});
+        // TODO すでにメンバーになっている場合エラーとなる
+      })
+      .then(result => {
+        dispatch({ type: Account.JOIN_SUCCESS, account: result.data });
+      })
+      .catch(error => {
+        dispatch({ type: Account.JOIN_FAILURE, error: error });
+
+      });
+  }
+};
