@@ -209,7 +209,7 @@ export default class Bastet {
   createAccountsOrganizationsMember(id, data) {
     this.logger.log(id, data);
     var url = this.host + '/accounts/organizations/' + id + '/members/';
-    return this.callApi(this.post, url, {members: data});
+    return this.callApi(this.post, url, {member: data});
   }
 
   /////
