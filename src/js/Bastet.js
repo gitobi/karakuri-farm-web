@@ -218,7 +218,7 @@ export default class Bastet {
 
   updateDevicesDeviceMonitor(deviceId, id, data) {
     this.logger.log(id, data);
-    var url = this.host + '/accounts/' + deviceId + '/monitors/' + id;
+    var url = this.host + '/devices/' + deviceId + '/monitors/' + id;
     return this.callApi(this.put, url, {device_monitor: data});
   }
 
