@@ -170,6 +170,8 @@ export default class Bastet {
     return this.callApi(this.get, url, hash);
   }
 
+  /////
+
   getDevicesSystemLogs(deviceId, params={}) {
     var url = this.host + '/devices/' + deviceId + '/system_logs';
     params.sorted = {
@@ -177,7 +179,7 @@ export default class Bastet {
     };
     params.limit = 10080;
     let hash = this.nestedObjectToQueryObject(params);
-    this.logger.log('getDevicesSystemLogs:', params, '=>', hash);
+    // this.logger.log('getDevicesSystemLogs:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
