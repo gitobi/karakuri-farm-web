@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
 import Logger from '../js/Logger'
 
+import Header from '../components/part/Header'
 import Field from '../components/part/Field';
 import Input from '../components/part/Input';
+
+import DevicesMonitor from './DevicesMonitor';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -57,6 +60,9 @@ class DevicesSummary extends Component {
           <Field label='inserted_at' text={this.props.item.inserted_at} />
           <Field label='updated_at' text={this.props.item.updated_at} />
         </div>
+
+        <Header label={"DeviceMonitor"}/>
+        <DevicesMonitor item={this.props.item.device_monitor || {}} />
       </div>
     );
   }
