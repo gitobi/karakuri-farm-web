@@ -12,6 +12,7 @@ import Signup from '../components/home/Signup';
 import Confirm from '../components/home/Confirm';
 import Login from '../components/home/Login';
 import Dashboard from '../components/Dashboard';
+import DevicesIndex from './device/DevicesIndex';
 import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
@@ -53,7 +54,7 @@ class AppRoute extends Component {
             <Route path={`${match.url}/devices_pyranometer`} component={DevicesPyranometers} />
             <Route path={`${match.url}/machine_radiational_waterings`} component={MachinesRadiationalWaterings} />
             <Route path={`${match.url}/alert`} component={BlankComponent} />
-            <Route path={`${match.url}/devices`} component={BlankComponent} />
+            <Route path={`${match.url}/devices`} component={DevicesIndex} />
             <Route path={`${match.url}/stats`} component={BlankComponent} />
             <Route path={`${match.url}/account`} component={AccountSettings} />
             <Route path={`${match.url}/activation`} component={Activation} />

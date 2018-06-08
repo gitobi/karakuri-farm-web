@@ -75,9 +75,9 @@ class Menubar extends Component {
           </Menu.Menu>
         </Menu.Item>
 
-        {this.menuItem('alert', '/app/alert', 'アラート', 1)}
-        {this.menuItem('devices', '/app/devices', 'デバイス一覧', 6)}
-        {this.menuItem('stats', '/app/stats', '統計', 1)}
+        {this.menuItem('alert', '/app/alert', 'アラート')}
+        {this.menuItem('devices', '/app/devices', 'デバイス一覧', (this.props.devices ? this.props.devices.length : 0) )}
+        {this.menuItem('stats', '/app/stats', '統計')}
 
         <Menu.Item>
           <Menu.Header>お問合せ</Menu.Header>
@@ -102,7 +102,8 @@ class Menubar extends Component {
 function mapStateToProps(state) {
   return (
     {
-      me: state.me
+      me:      state.me,
+      devices: state.device.getIn(['devices']).toJS(),
     }
   );
 }
