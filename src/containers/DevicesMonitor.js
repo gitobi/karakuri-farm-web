@@ -6,13 +6,36 @@ import Field from '../components/part/Field';
 import Input from '../components/part/Input';
 import Checkbox from '../components/part/Checkbox';
 
-export default class DevicesMonitor extends Component {
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as Actions from '../actions/suzu';
+
+
+class DevicesMonitor extends Component {
   constructor(props) {
     super(props);
 
     this.logger = new Logger({prefix: this.constructor.name});
     this.update = this.update.bind(this);
     this.save = this.save.bind(this);
+  }
+
+  componentDidMount() {
+    // 初期表示時
+    this.load();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.item.id !== nextProps.item.id) {
+      // デバイス変更時
+      this.load(nextProps.item.id);
+    }
+  }
+
+  load(id = this.props.item.id) {
+    if (id) {
+      this.props.actions.loadSuzu(id);
+    }
   }
 
   update(column, value, error) {
@@ -39,17 +62,33 @@ export default class DevicesMonitor extends Component {
           <Field label='monitoring_range'>
             <Grid verticalAlign={"middle"}>
               <Grid.Column width={2}>
-                <Checkbox.Hash toggle size='large' hash={this.props.item} column='enable' callback={this.update} />
+                <Checkbox.Hash toggle size='large' hash={this.props.deviceMonitor} column='enable' callback={this.update} />
               </Grid.Column>
               <Grid.Column width={8}>
-                <Input.Hash size='large' fluid hash={this.props.item} column='monitoring_range' callback={this.update} />
+                <Input.Hash size='large' fluid hash={this.props.deviceMonitor} column='monitoring_range' callback={this.update} />
               </Grid.Column>
             </Grid>
           </Field>
-          <Field label='last_result' text={this.props.item.last_result} />
+          <Field label='last_result' text={this.props.deviceMonitor.last_result} />
         </div>
       </div>
     );
   }
 }
 
+
+function mapStateToProps(state) {
+  return  {
+    deviceMonitor: state.suzu.get('deviceMonitor').toJS(),
+    progress: state.suzu.get('progress'),
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(Actions, dispatch) };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DevicesMonitor);
