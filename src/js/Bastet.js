@@ -182,6 +182,13 @@ export default class Bastet {
     return this.callApi(this.get, url);
   }
 
+  getAccountsOrganizationBy(params) {
+    var url = this.host + '/accounts/organizations/';
+    params.limit = 1
+    let hash = this.nestedObjectToQueryObject(params);
+    return this.callApi(this.get, url, hash);
+  }
+
   createAccountsOrganization(data) {
     var url = this.host + '/accounts/organizations/';
     return this.callApi(this.post, url, {organization: data});
@@ -198,6 +205,14 @@ export default class Bastet {
     var url = this.host + '/accounts/users/' + id;
     return this.callApi(this.put, url, {user: data});
   }
+
+  createAccountsOrganizationsMember(id, data) {
+    this.logger.log(id, data);
+    var url = this.host + '/accounts/organizations/' + id + '/members/';
+    return this.callApi(this.post, url, {member: data});
+  }
+
+  /////
 
   activateDevice(activationCode) {
     var url = this.host + '/activation/activate/';
@@ -244,7 +259,10 @@ export default class Bastet {
         }).catch((err) => {
           if (err.status !== 404) {
             this.logger.error('request', url, query);
-            this.logger.error('response', err.status, err.response.statusText, err.response.body);
+            this.logger.error('status', err.status);
+            if (err.response) {
+              this.logger.error('response', err.response.statusText, err.response.body);
+            }
           }
           throw new Error(err);
         });

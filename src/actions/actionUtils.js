@@ -59,3 +59,21 @@ export function ApiRequest(
     }
   );
 }
+
+export function addFilteredQuery(
+  object,
+  id,
+  operator,
+  value
+  ) {
+    if (!object.filtered) {
+      object.filtered = []
+    }
+    object.filtered.push({
+      "id": id,
+      "value": {
+        [operator]: value
+      }
+    });
+    return object;
+}

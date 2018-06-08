@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import { Account } from '../constants/account';
 import GtbUtils from '../js/GtbUtils'
 
@@ -7,7 +7,7 @@ import GtbUtils from '../js/GtbUtils'
 
 const initialAccount = Map({
   'user': Map({}),
-  'organization': Map({}),
+  'organizations': List([]),
   'changed': Map({}),
   'progress': false,
 });
@@ -25,18 +25,23 @@ const createUserObject = (object) => {
   };
 }
 
+const createOrganizations = (list) => {
+  let organizations = [];
+  for (var i in list) {
+    let item = list[i];
+    organizations.push(createOrganizationObject(item));
+  }
+
+  return organizations;
+}
+
 const createOrganizationObject = (object) => {
-  return 0 === Object.keys(object).length ? {
-      id: "[新規作成]",
-      name: "",
-      inserted_at: null,
-      updated_at: null,
-    } : {
-      id: object["id"],
-      name: object["name"],
-      inserted_at: GtbUtils.dateString(new Date(object["inserted_at"])),
-      updated_at: GtbUtils.dateString(new Date(object["updated_at"])),
-    };
+  return {
+    id: object["id"],
+    name: object["name"],
+    inserted_at: GtbUtils.dateString(new Date(object["inserted_at"])),
+    updated_at: GtbUtils.dateString(new Date(object["updated_at"])),
+  };
 }
 
 const account = (state = initialAccount, action) => {
@@ -51,11 +56,11 @@ const account = (state = initialAccount, action) => {
     case Account.LOAD_SUCCESS:
       // アカウント情報の取得完了
       let user = createUserObject(action.account["user"]);
-      let organization = createOrganizationObject(action.account["organization"]);
+      let organizations = createOrganizations(action.account["organizations"]);
 
       return state.withMutations(map => { map
         .set('user', fromJS(user))
-        .set('organization', fromJS(organization))
+        .set('organizations', fromJS(organizations))
         .set('changed', Map({}))
         .set('progress', false)
         ;
@@ -122,6 +127,15 @@ const account = (state = initialAccount, action) => {
 
     case Account.POST_FAILURE:
       return state;
+
+    case Account.JOIN_REQUEST:
+      return state.set('progress', true);
+
+    case Account.JOIN_SUCCESS:
+      return state.set('progress', false);
+
+    case Account.JOIN_FAILURE:
+      return state.set('progress', false);
 
     default:
       return state;
