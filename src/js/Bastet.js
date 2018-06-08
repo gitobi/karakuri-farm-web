@@ -157,7 +157,7 @@ export default class Bastet {
 
   getPyranometersSensingRecords(pyranometersId, params={}) {
     var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
-    params.limit = 10080
+    params.limit = 10080;
     let hash = this.nestedObjectToQueryObject(params);
     // this.logger.log('getPyranometersSensingRecords:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
@@ -170,9 +170,15 @@ export default class Bastet {
     return this.callApi(this.get, url, hash);
   }
 
-  getDevicesSystemLogs(deviceId) {
+  getDevicesSystemLogs(deviceId, params={}) {
     var url = this.host + '/devices/' + deviceId + '/system_logs';
-    return this.callApi(this.get, url);
+    params.sorted = {
+      "0": {"id": "raised_at", "desc": true},
+    };
+    params.limit = 10080;
+    let hash = this.nestedObjectToQueryObject(params);
+    this.logger.log('getDevicesSystemLogs:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
   }
 
   /////
