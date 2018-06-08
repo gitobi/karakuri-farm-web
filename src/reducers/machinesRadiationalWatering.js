@@ -110,6 +110,7 @@ const machinesRadiationalWatering = (state = initialMachinesRadiationalWatering,
       var row = Map({
         id: tmpId,
         radiational_watering_id: action.machinesId,
+        enable: false,
         _state: 'create',
       })
 

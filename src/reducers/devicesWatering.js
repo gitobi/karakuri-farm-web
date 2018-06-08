@@ -235,6 +235,7 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       var row = Map({
         id: tmpId,
         device_id: action.deviceId,
+        enable: false,
         _state: 'create',
       })
 
