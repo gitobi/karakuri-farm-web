@@ -63,6 +63,7 @@ const device = (state = initialDevice, action) => {
             name: value["name"],
             software_version: value["software_version"],
             model_number: value["model_number"],
+            organization_id: value["organization_id"],
             heartbeated_at: GtbUtils.dateString(new Date(value["heartbeated_at"])),
             inserted_at: GtbUtils.dateString(new Date(value["inserted_at"])),
             updated_at: GtbUtils.dateString(new Date(value["updated_at"])),
@@ -83,6 +84,12 @@ const device = (state = initialDevice, action) => {
           }
 
           return map;
+        }).sort((a, b) => {
+          let a_order = a.organization_id + a.name;
+          let b_order = b.organization_id + b.name;
+          if( a_order < b_order ) return -1;
+          if( a_order > b_order ) return 1;
+          return 0;
         });
 
       let devicesList = toTypeDevices(devices);
