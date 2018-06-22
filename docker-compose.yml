@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/app:cached
   test:
-    image: karakurifarmweb_web
+    image: karakuri-farm-web_web
     command: yarn test
     volumes:
       - .:/app:cached

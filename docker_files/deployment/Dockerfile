@@ -1,4 +1,4 @@
-FROM karakurifarmweb_web
+FROM karakuri-farm-web_web
 
 RUN apk add --no-cache python3
 
