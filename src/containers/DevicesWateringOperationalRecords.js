@@ -1,5 +1,5 @@
 import React from 'react'
-import {Container} from 'semantic-ui-react';
+import {Container, Button} from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
 import Logger from '../js/Logger'
 
@@ -17,6 +17,7 @@ class DevicesWateringOperationalRecords extends React.Component {
     this.logger = new Logger({prefix: this.constructor.name});
     this.load = this.load.bind(this);
     this.selectDate = this.selectDate.bind(this);
+    this.csvDownload = this.csvDownload.bind(this);
 
     this.state = {
       selectedDate: null,
@@ -49,6 +50,12 @@ class DevicesWateringOperationalRecords extends React.Component {
     // this.logger.log("selectDate", this.state.selectedDate, "=>", value);
     this.setState({selectedDate: value});
     this.load(this.props.item.id, value);
+  }
+
+  csvDownload() {
+    let id = this.props.item.id;
+    let selectedDate = this.state.selectedDate;
+    this.props.actions.downloadDevicesWateringOperationalRecords(id, selectedDate);
   }
 
   render() {
@@ -104,6 +111,13 @@ class DevicesWateringOperationalRecords extends React.Component {
           sortable={true}
           defaultSorted={[{id: 'started_at', desc: true}]}
         />
+
+        <Button as='a'
+          onClick={this.csvDownload}
+          loading={this.props.progress}
+          >
+          csv
+        </Button>
 
       </Container>
     );

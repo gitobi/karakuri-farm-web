@@ -23,13 +23,7 @@ export function loadDevicesWateringOperationalRecords(deviceId, date) {
   return function(dispatch) {
     dispatch({ type: DevicesWatering.LOAD_OPERATIONAL_RECORDS_REQUEST });
 
-    let params = {};
-    if (date) {
-      let replaced = date.replace(new RegExp("/","g"), "-");
-      let min = moment(`${replaced} 00:00:00`);
-      let max = moment(`${replaced} 23:59:59`);
-      params = {filtered: [{id: "started_at", value: {min: min, max: max}}]};
-    }
+    let params = createParams(date);
 
     let bastet = new Bastet();
     return bastet.getWateringsOperationalRecords(deviceId, params).then(
@@ -171,4 +165,35 @@ export function updateDevicesWateringSchedule(id, column, value, error) {
     value: value,
     error: error,
   };
+};
+
+export function downloadDevicesWateringOperationalRecords(deviceId, date) {
+  return function(dispatch) {
+    dispatch({ type: DevicesWatering.DOWNLOAD_OPERATIONAL_RECORDS_REQUEST });
+
+    let params = createParams(date);
+    params.csv = true;
+
+    let bastet = new Bastet();
+    return bastet.csvWateringsOperationalRecords(deviceId, params).then(
+      result => {
+        console.log(result);
+        dispatch({ type: DevicesWatering.DOWNLOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: result })
+      },
+      error => {
+        dispatch({ type: DevicesWatering.DOWNLOAD_SCHEDULES_FAILURE, schedules: error })
+      }
+    );
+  }
+};
+
+function createParams(date) {
+  let params = {};
+  if (date) {
+    let replaced = date.replace(new RegExp("/","g"), "-");
+    let min = moment(`${replaced} 00:00:00`);
+    let max = moment(`${replaced} 23:59:59`);
+    params = {filtered: [{id: "started_at", value: {min: min, max: max}}]};
+  }
+  return params;
 };
