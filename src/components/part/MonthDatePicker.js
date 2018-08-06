@@ -33,34 +33,23 @@ class MonthDatePicker extends React.Component {
       nextKeys = nextProps.includeMonths;
     }
 
-    // prevKeys |= [];
-    // nextKeys |= [];
-
     prevKeys = prevKeys || [];
     nextKeys = nextKeys || [];
-    // this.logger.log("keys", keys);
-    // this.logger.log("keys.length", keys.length);
-
     // this.logger.log("keys", prevKeys, '=>', nextKeys);
     // this.logger.log("keys.length", prevKeys.length, '=>', nextKeys.length);
 
     if (!GtbUtils.compare(prevKeys, nextKeys)) {
       // 変更あり
-      this.logger.log("changed", prevKeys, '=>', nextKeys);
+      // this.logger.log("changed", prevKeys, '=>', nextKeys);
 
       if (!this.state.selectedDate
         || !nextKeys.includes(this.state.selectedDate)) {
         // 未だ未選択の場合、または、選択できない key の場合
 
-        this.logger.log("need change selected", prevKeys, '=>', nextKeys);
+        // this.logger.log("need change selected", prevKeys, '=>', nextKeys);
         let tailKey = nextKeys[nextKeys.length - 1];
-        this.logger.log("call onChange", tailKey);
+        // this.logger.log("call onChange", tailKey);
         this.onChange(tailKey);
-
-        // if (tailKey) {
-        //   this.logger.log("call onChange", tailKey);
-        //   this.onChange(tailKey);
-        // }
       }
     }
   }
@@ -80,7 +69,7 @@ class MonthDatePicker extends React.Component {
   }
 
   onChange(value, unit = this.state.selectedUnit) {
-    this.logger.log("onChange", unit, value);
+    // this.logger.log("onChange", unit, value);
     if (this.state.selectedDate !== value) {
       this.setState({selectedDate: value});
       if (this.props.onChange) {
@@ -93,7 +82,6 @@ class MonthDatePicker extends React.Component {
     // this.logger.log("this.props", this.props);
 
     let {
-      selected,
       includeDates,
       includeMonths,
     } = this.props;

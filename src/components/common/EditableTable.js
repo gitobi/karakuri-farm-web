@@ -413,8 +413,6 @@ export default class EditableTable extends React.Component {
     this.setState({errorCells: errorCells});
   }
 
-  // onClickCsv
-
   /**
    * TODO テーブル描画 必要に応じて外部から設定できるように修正していく
    */
@@ -431,7 +429,6 @@ export default class EditableTable extends React.Component {
           </div>
         );
       }
-
     })();
 
     // ReactTable

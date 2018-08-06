@@ -172,68 +172,38 @@ export function updateDevicesWateringSchedule(id, column, value, error) {
   };
 };
 
-// export function downloadDevicesWateringOperationalRecords(deviceId, unit, date) {
-//   return function(dispatch) {
-//     dispatch({ type: DevicesWatering.DOWNLOAD_OPERATIONAL_RECORDS_REQUEST });
-
-//     let params = createParams(unit, date);
-//     params.csv = true;
-
-//     let bastet = new Bastet();
-//     return bastet.csvWateringsOperationalRecords(deviceId, params).then(
-//       result => {
-//         console.log(result);
-//         dispatch({ type: DevicesWatering.DOWNLOAD_OPERATIONAL_RECORDS_SUCCESS, operationalRecords: result })
-//       },
-//       error => {
-//         dispatch({ type: DevicesWatering.DOWNLOAD_SCHEDULES_FAILURE, schedules: error })
-//       }
-//     );
-//   }
-// };
-
 function createParams(unit, start, end = null) {
   // console.log('createParams start', unit, start, end);
   let params = {};
-  if (unit === 'date') {
-    params = createParamsWithDate(start, end);
-  } else {
+  if (!start) {
+    return params;
+  }
+
+  if (end === null) {
+    end = start;
+  }
+
+  if (unit === 'months') {
     params = createParamsWithMonth(start, end);
+  } else {
+    params = createParamsWithDate(start, end);
   }
   // console.log('createParams end', params);
   return params;
 };
 
-function createParamsWithDate(start, end = null) {
-  let params = {};
-  if (end === null) {
-    end = start;
-  }
-
-  if (start) {
-    let replacedStartDate = start.replace(new RegExp("/","g"), "-");
-    let replacedEndDate = end.replace(new RegExp("/","g"), "-");
-    let min = moment(`${replacedStartDate} 00:00:00`);
-    let max = moment(`${replacedEndDate} 00:00:00`).add(1, 'days').subtract(1, 'seconds');
-    // let max = moment(`${replacedEndDate} 23:59:59`);
-    params = {filtered: [{id: "started_at", value: {min: min, max: max}}]};
-  }
-  return params;
+function createParamsWithDate(start, end) {
+  let replacedStartDate = start.replace(new RegExp("/","g"), "-");
+  let replacedEndDate = end.replace(new RegExp("/","g"), "-");
+  let min = moment(`${replacedStartDate} 00:00:00`);
+  let max = moment(`${replacedEndDate} 00:00:00`).add(1, 'days').subtract(1, 'seconds');
+  return {filtered: [{id: "started_at", value: {min: min, max: max}}]};
 };
 
 function createParamsWithMonth(start, end = null) {
-  let params = {};
-  if (end === null) {
-    end = start;
-  }
-
-  if (start) {
-    let replacedStartDate = (start + '/01').replace(new RegExp("/","g"), "-");
-    let replacedEndDate = (end + '/01').replace(new RegExp("/","g"), "-");
-    let min = moment(`${replacedStartDate} 00:00:00`);
-    let max = moment(`${replacedEndDate} 00:00:00`).add(1, 'months').subtract(1, 'seconds');
-    // let max = moment(`${replacedEndDate} 23:59:59`);
-    params = {filtered: [{id: "started_at", value: {min: min, max: max}}]};
-  }
-  return params;
+  let replacedStartDate = (start + '/01').replace(new RegExp("/","g"), "-");
+  let replacedEndDate = (end + '/01').replace(new RegExp("/","g"), "-");
+  let min = moment(`${replacedStartDate} 00:00:00`);
+  let max = moment(`${replacedEndDate} 00:00:00`).add(1, 'months').subtract(1, 'seconds');
+  return {filtered: [{id: "started_at", value: {min: min, max: max}}]};
 };

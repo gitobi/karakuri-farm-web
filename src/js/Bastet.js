@@ -148,13 +148,6 @@ export default class Bastet {
     return this.callApi(this.get, url, hash);
   }
 
-  csvWateringsOperationalRecords(wateringsId, params={}) {
-    var url = this.host + '/devices/waterings/' + wateringsId + '/operational_records';
-    params.limit = 10080
-    let hash = this.nestedObjectToQueryObject(params);
-    return this.callApi(this.get, url, hash, {contentType: 'text/csv'});
-  }
-
   getWateringsStats(wateringsId, params={}) {
     var url = this.host + '/devices/waterings/' + wateringsId + '/stats';
     let hash = this.nestedObjectToQueryObject(params);
