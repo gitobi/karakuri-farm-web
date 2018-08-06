@@ -1,10 +1,11 @@
 import React from 'react'
-import {Container, Button} from 'semantic-ui-react';
+import {Container} from 'semantic-ui-react';
 import EditableTable from '../components/common/EditableTable'
+import RecordDownloader from '../components/common/RecordDownloader'
 import Logger from '../js/Logger'
 
 import Field from '../components/part/Field';
-import InlineDatePicker from '../components/part/InlineDatePicker';
+import MonthDatePicker from '../components/part/MonthDatePicker';
 import DevicesWateringOperationalRecordsGraph from '../components/DevicesWateringOperationalRecordsGraph';
 
 import { bindActionCreators } from 'redux';
@@ -15,47 +16,48 @@ class DevicesWateringOperationalRecords extends React.Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
-    this.load = this.load.bind(this);
+    this.loadWorkingDays = this.loadWorkingDays.bind(this);
     this.selectDate = this.selectDate.bind(this);
-    this.csvDownload = this.csvDownload.bind(this);
 
     this.state = {
+      selectedUnit: null,
       selectedDate: null,
     };
   }
 
+  componentDidMount() {
+    this.loadWorkingDays();
+  }
+
   componentWillReceiveProps(nextProps) {
+    // this.logger.log("componentWillReceiveProps", this.props.item, nextProps.item);
     if (this.props.item.id !== nextProps.item.id) {
       // デバイス変更時
       let itemId = nextProps.item.id;
-
-      // 稼働日を取得
-      this.props.actions.loadDevicesWateringWorkingDays(itemId)
-      .then((result) => {
-        // 最新稼働日を初期表示とする
-        // this.logger.log("loaded workingDays", result, this.props.workingDays);
-        let lastWorkingDay = this.props.workingDays[this.props.workingDays.length - 1];
-        this.selectDate(lastWorkingDay);
-      });
+      this.loadWorkingDays(itemId);
     }
   }
 
-  load(id = this.props.item.id, selectedDate = this.state.selectedDate) {
+  loadWorkingDays(id = this.props.item.id) {
+    // this.logger.log("loadWorkingDays", id);
     if (id) {
-      this.props.actions.loadDevicesWateringOperationalRecords(id, selectedDate);
+      // 稼働日を取得
+      this.props.actions.loadDevicesWateringWorkingDays(id);
     }
   }
 
-  selectDate(value) {
+  selectDate(unit, value) {
     // this.logger.log("selectDate", this.state.selectedDate, "=>", value);
-    this.setState({selectedDate: value});
-    this.load(this.props.item.id, value);
-  }
-
-  csvDownload() {
-    let id = this.props.item.id;
-    let selectedDate = this.state.selectedDate;
-    this.props.actions.downloadDevicesWateringOperationalRecords(id, selectedDate);
+    this.setState({
+      selectedUnit: unit,
+      selectedDate: value,
+    });
+    this.logger.log("selectDate", unit, value);
+    if (unit && value) {
+      this.props.actions.loadDevicesWateringOperationalRecords(this.props.item.id, unit, value);
+    } else {
+      this.props.actions.clearDevicesWateringOperationalRecords(this.props.item.id);
+    }
   }
 
   render() {
@@ -90,10 +92,11 @@ class DevicesWateringOperationalRecords extends React.Component {
     return (
       <Container>
         <Field label='Select Date'>
-          <InlineDatePicker
-            selected={this.state.selectedDate}
-            callback={this.selectDate}
+          <MonthDatePicker
             includeDates={this.props.workingDays}
+            includeMonths={this.props.workingMonths}
+            // selected={this.state.selectedDate}
+            onChange={this.selectDate}
           />
         </Field>
 
@@ -110,14 +113,12 @@ class DevicesWateringOperationalRecords extends React.Component {
           filterable={true}
           sortable={true}
           defaultSorted={[{id: 'started_at', desc: true}]}
-        />
-
-        <Button as='a'
-          onClick={this.csvDownload}
-          loading={this.props.progress}
-          >
-          csv
-        </Button>
+        >
+          <RecordDownloader
+            data={this.props.records}
+            fileName={this.state.selectedDate}
+          />
+        </EditableTable>
 
       </Container>
     );
@@ -127,6 +128,7 @@ class DevicesWateringOperationalRecords extends React.Component {
 function mapStateToProps(state) {
   return  {
     workingDays: state.devicesWatering.getIn(['workingDays']).toJS(),
+    workingMonths: state.devicesWatering.getIn(['workingMonths']).toJS(),
     records: state.devicesWatering.get('operationalRecords').toJS(),
     progress: state.devicesWatering.get('progress'),
   };

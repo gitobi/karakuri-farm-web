@@ -42,6 +42,9 @@
 
 `docker-compose run --rm web yarn lint`
 
+## Adding Libraries
+- `docker-compose run --rm web yarn add csv`
+
 # Operation
 
 ## Deployments

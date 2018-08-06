@@ -1,5 +1,5 @@
 import React from 'react'
-import {Segment, Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
+import {Segment, Button, Input, Checkbox, Popup, List, Divider} from 'semantic-ui-react';
 
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
@@ -413,11 +413,26 @@ export default class EditableTable extends React.Component {
     this.setState({errorCells: errorCells});
   }
 
+  // onClickCsv
+
   /**
    * TODO テーブル描画 必要に応じて外部から設定できるように修正していく
    */
   render() {
     // this.logger.log('render', this.props, this.state);
+
+    // record size
+    const children = (() => {
+      if (this.props.children) {
+        return (
+          <div>
+            <Divider />
+            {this.props.children}
+          </div>
+        );
+      }
+
+    })();
 
     // ReactTable
     const table = (
@@ -486,6 +501,9 @@ export default class EditableTable extends React.Component {
             })()}
           </Popup.Content>
         </Popup>
+
+        {children}
+
       </Segment>
     );
   }

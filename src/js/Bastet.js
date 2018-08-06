@@ -268,7 +268,7 @@ export default class Bastet {
       return this.methodsCommon(req, result.idToken.jwtToken, opt)
         .then((response) => {
           // this.logger.log('request', url, query);
-          this.logger.log('response', response);
+          // this.logger.log('response', response);
           return(response.body);
 
         }).catch((err) => {
