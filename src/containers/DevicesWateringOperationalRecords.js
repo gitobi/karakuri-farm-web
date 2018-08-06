@@ -52,7 +52,7 @@ class DevicesWateringOperationalRecords extends React.Component {
       selectedUnit: unit,
       selectedDate: value,
     });
-    this.logger.log("selectDate", unit, value);
+    // this.logger.log("selectDate", unit, value);
     if (unit && value) {
       this.props.actions.loadDevicesWateringOperationalRecords(this.props.item.id, unit, value);
     } else {

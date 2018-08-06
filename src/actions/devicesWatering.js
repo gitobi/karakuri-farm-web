@@ -183,7 +183,7 @@ function createParams(unit, start, end = null) {
     end = start;
   }
 
-  if (unit === 'months') {
+  if (unit === 'month') {
     params = createParamsWithMonth(start, end);
   } else {
     params = createParamsWithDate(start, end);
