@@ -7,6 +7,7 @@ import GtbUtils from '../js/GtbUtils'
 
 const initialDevicesWatering = Map({
   'workingDays': List([]),
+  'workingMonths': List([]),
   'operationalRecords': List([]),
   'statsMap': Map({}),
 
@@ -25,12 +26,18 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
       return state.set('progress', true);
 
     case DevicesWatering.LOAD_WORKING_DAYS_SUCCESS:
+      let workingMonths = [];
       let workingDays = action.data.map((value) => {
         let workingDay = GtbUtils.ymdString(new Date(value["started_at"]));
+        let workingMonth = workingDay.slice(0, 4) + '-' + workingDay.slice(5, 7);
+        if (workingMonths.indexOf(workingMonth) === -1){
+          workingMonths.push(workingMonth);
+        }
         return workingDay;
       });
       return state.withMutations(map => { map
         .set('workingDays', fromJS(workingDays))
+        .set('workingMonths', fromJS(workingMonths))
         .set('progress', false)
         ;
       });
@@ -72,6 +79,14 @@ const deviceWatering = (state = initialDevicesWatering, action) => {
     case DevicesWatering.LOAD_OPERATIONAL_RECORDS_FAILURE:
       // 実績の取得失敗
       return state.set('progress', false);
+
+    case DevicesWatering.CLEAR_OPERATIONAL_RECORDS:
+      // 実績のクリア
+      return state.withMutations(map => { map
+        .set('operationalRecords', fromJS([]))
+        .set('progress', false)
+        ;
+      });
 
     case DevicesWatering.LOAD_STATS_REQUEST:
       return state.set('progress', true);

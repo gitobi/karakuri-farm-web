@@ -144,7 +144,7 @@ export default class Bastet {
     var url = this.host + '/devices/waterings/' + wateringsId + '/operational_records';
     params.limit = 10080
     let hash = this.nestedObjectToQueryObject(params);
-    // this.logger.log('getPyranometersSensingRecords:', params, '=>', hash);
+    // this.logger.log('getWateringsOperationalRecords:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
@@ -246,7 +246,7 @@ export default class Bastet {
   }
 
   ///// lowlevel functions
-  callApi(api, url, query={}) {
+  callApi(api, url, query={}, opt={}) {
     return new Promise((resolve, reject) => {
       // ログイン情報取得
       userPool.getCurrentUser().getSession((err, signInUserSession) => {
@@ -258,7 +258,7 @@ export default class Bastet {
     }).then((result) => {
       // Bastetへリクエスト
       let req = api(url, query);
-      return this.methodsCommon(req, result.idToken.jwtToken)
+      return this.methodsCommon(req, result.idToken.jwtToken, opt)
         .then((response) => {
           // this.logger.log('request', url, query);
           // this.logger.log('response', response);
@@ -308,10 +308,11 @@ export default class Bastet {
     return request.delete(url).send(query);
   }
 
-  methodsCommon(req, idToken) {
+  methodsCommon(req, idToken, opt) {
+    let contentType = opt.contentType || 'application/json';
     return new Promise((resolve, reject) => {
       req
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', contentType)
         .set('Authorization', idToken)
         .then((data) => {
           resolve(data);

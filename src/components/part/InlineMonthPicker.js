@@ -78,6 +78,8 @@ class InlineMonthPicker extends Component {
   }
 
   isDisableYearMonth(yearMonth) {
+    // this.logger.log("includeDates", this.props.includeDates);
+    // this.logger.log("yearMonth", yearMonth);
     return !this.props.includeDates.includes(yearMonth);
   }
 

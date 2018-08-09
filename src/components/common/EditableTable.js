@@ -1,5 +1,5 @@
 import React from 'react'
-import {Segment, Button, Input, Checkbox, Popup, List } from 'semantic-ui-react';
+import {Segment, Button, Input, Checkbox, Popup, List, Divider} from 'semantic-ui-react';
 
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
@@ -419,6 +419,18 @@ export default class EditableTable extends React.Component {
   render() {
     // this.logger.log('render', this.props, this.state);
 
+    // record size
+    const children = (() => {
+      if (this.props.children) {
+        return (
+          <div>
+            <Divider />
+            {this.props.children}
+          </div>
+        );
+      }
+    })();
+
     // ReactTable
     const table = (
       <div>
@@ -486,6 +498,9 @@ export default class EditableTable extends React.Component {
             })()}
           </Popup.Content>
         </Popup>
+
+        {children}
+
       </Segment>
     );
   }

@@ -91,6 +91,7 @@ class StatsPicker extends React.Component {
   }
 
   render() {
+    // this.logger.log("keys", this.props.keys);
     return (
       <Container>
 
