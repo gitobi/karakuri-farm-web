@@ -16,6 +16,7 @@ import DevicesIndex from './device/DevicesIndex';
 import BlankComponent from '@gitobi/react-blank-component';
 import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
+import DevicesSoilmoisture from './device/soilmoisture/Soilmoisture';
 import MachinesRadiationalWaterings from './MachinesRadiationalWaterings';
 import AccountSettings from './account/AccountSettings';
 import Activation from './activation/Activation';
@@ -52,6 +53,7 @@ class AppRoute extends Component {
             <Route exact path={`${match.url}/`} component={Dashboard} />
             <Route path={`${match.url}/devices_waterings`} component={DevicesWaterings} />
             <Route path={`${match.url}/devices_pyranometer`} component={DevicesPyranometers} />
+            <Route path={`${match.url}/devices_soilmoisture`} component={DevicesSoilmoisture} />
             <Route path={`${match.url}/machine_radiational_waterings`} component={MachinesRadiationalWaterings} />
             <Route path={`${match.url}/alert`} component={BlankComponent} />
             <Route path={`${match.url}/devices`} component={DevicesIndex} />
