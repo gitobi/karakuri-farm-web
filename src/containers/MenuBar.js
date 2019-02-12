@@ -63,8 +63,9 @@ class Menubar extends Component {
         <Menu.Item>
           <Menu.Header>デバイス設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('device_waterings', '/app/devices_waterings', 'Joro')}
-            {this.menuItem('device_pyranometer', '/app/devices_pyranometer', 'Himawari')}
+            {this.menuItem('device_waterings', '/app/devices_waterings', 'JORO')}
+            {this.menuItem('device_pyranometer', '/app/devices_pyranometer', 'JUKO')}
+            {this.menuItem('device_soilmoisture', '/app/devices_soilmoisture', 'KAERU')}
           </Menu.Menu>
         </Menu.Item>
 
