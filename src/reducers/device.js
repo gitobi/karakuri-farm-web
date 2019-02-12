@@ -5,7 +5,7 @@ import GtbUtils from '../js/GtbUtils'
 // import Logger from '../js/Logger'
 // const _logger = new Logger({prefix: 'devicesWatering'});
 
-const deviceTypes = ['watering', 'pyranometer'];
+const deviceTypes = ['watering', 'pyranometer', 'soilmoisture'];
 
 const deviceTypeArray = () => {
   // {a: [], b: [], ...}
@@ -74,6 +74,8 @@ const device = (state = initialDevice, action) => {
               map.order_amount = value["order_amount"];
               break;
             case 'pyranometer':
+              break;
+            case 'soilmoisture':
               break;
             case 'radiational_watering':
               map.watering_id = value["watering_id"];

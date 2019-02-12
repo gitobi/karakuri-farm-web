@@ -15,6 +15,7 @@ export default class Bastet {
     const promises = [
       this.getDevicesWaterings(),
       this.getDevicesPyranometers(),
+      this.getDevicesSoilmoistures(),
     ];
 
     // 結合
@@ -41,6 +42,17 @@ export default class Bastet {
 
   getDevicesPyranometers(id=null) {
     var url = this.host + '/devices/pyranometers/';
+    return this.callApi(this.get, url)
+      .then((data) => {
+        return data.data.map((value, index, array) => {
+          value["_type"] = value.device_type;
+          return value;
+        });
+      });
+  }
+
+  getDevicesSoilmoistures(id=null) {
+    var url = this.host + '/devices/soilmoistures/';
     return this.callApi(this.get, url)
       .then((data) => {
         return data.data.map((value, index, array) => {
@@ -140,33 +152,52 @@ export default class Bastet {
 
   /////
 
-  getWateringsOperationalRecords(wateringsId, params={}) {
-    var url = this.host + '/devices/waterings/' + wateringsId + '/operational_records';
+  getWateringsOperationalRecords(id, params={}) {
+    var url = this.host + '/devices/waterings/' + id + '/operational_records';
     params.limit = 10080
     let hash = this.nestedObjectToQueryObject(params);
     // this.logger.log('getWateringsOperationalRecords:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
-  getWateringsStats(wateringsId, params={}) {
-    var url = this.host + '/devices/waterings/' + wateringsId + '/stats';
+  getWateringsStats(id, params={}) {
+    var url = this.host + '/devices/waterings/' + id + '/stats';
     let hash = this.nestedObjectToQueryObject(params);
-    // this.logger.log('getPyranometersStats:', params, '=>', hash);
+    // this.logger.log('getWateringsStats:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
-  getPyranometersSensingRecords(pyranometersId, params={}) {
-    var url = this.host + '/devices/pyranometers/' + pyranometersId + '/sensing_records';
+  ///
+
+  getPyranometersSensingRecords(id, params={}) {
+    var url = this.host + '/devices/pyranometers/' + id + '/sensing_records';
     params.limit = 10080;
     let hash = this.nestedObjectToQueryObject(params);
     // this.logger.log('getPyranometersSensingRecords:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
-  getPyranometersStats(pyranometersId, params={}) {
-    var url = this.host + '/devices/pyranometers/' + pyranometersId + '/stats';
+  getPyranometersStats(id, params={}) {
+    var url = this.host + '/devices/pyranometers/' + id + '/stats';
     let hash = this.nestedObjectToQueryObject(params);
     // this.logger.log('getPyranometersStats:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
+  }
+
+  ///
+
+  getSoilmoisturesSensingRecords(id, params={}) {
+    var url = this.host + '/devices/soilmoistures/' + id + '/sensing_records';
+    params.limit = 10080;
+    let hash = this.nestedObjectToQueryObject(params);
+    // this.logger.log('getSoilmoisturesSensingRecords:', params, '=>', hash);
+    return this.callApi(this.get, url, hash);
+  }
+
+  getSoilmoisturesStats(id, params={}) {
+    var url = this.host + '/devices/soilmoistures/' + id + '/stats';
+    let hash = this.nestedObjectToQueryObject(params);
+    // this.logger.log('getSoilmoisturesStats:', params, '=>', hash);
     return this.callApi(this.get, url, hash);
   }
 
