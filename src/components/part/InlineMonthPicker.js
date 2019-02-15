@@ -161,10 +161,12 @@ class InlineMonthPicker extends Component {
 
       <div className="react-datepicker">
         {(() => { if (!this.isDisableYear(-1)) { return (
+          // eslint-disable-next-line
           <a className="react-datepicker__navigation react-datepicker__navigation--previous "
             onClick={() => this.navigateDisplayYear(-1)}> </a>
         );}})()}
         {(() => { if (!this.isDisableYear(1)) { return (
+          // eslint-disable-next-line
           <a className="react-datepicker__navigation react-datepicker__navigation--next"
             onClick={() => this.navigateDisplayYear(1)}> </a>
         );}})()}
