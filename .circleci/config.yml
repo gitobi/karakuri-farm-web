@@ -40,10 +40,10 @@ commands:
       - run:
           name: Set Env << parameters.local_env >>
           command: |
-            TMP_ENV_FILENAME=".env.<< parameters.local_env >>"
-            echo "" > ${TMP_ENV_FILENAME}
-            echo "REACT_APP_COGNITO_USER_POOL_ID=${BASTET_HOST_URL}" >> ${TMP_ENV_FILENAME}
-            echo "REACT_APP_COGNITO_CLIENT_ID=${BASTET_HOST_URL}" >> ${TMP_ENV_FILENAME}
+            echo "" > .env.<< parameters.local_env >>
+            echo "REACT_APP_COGNITO_USER_POOL_ID=${BASTET_HOST_URL}" >> .env.<< parameters.local_env >>
+            echo "REACT_APP_COGNITO_CLIENT_ID=${BASTET_HOST_URL}" >> .env.<< parameters.local_env >>
+            cat .env.<< parameters.local_env >>
 
 jobs:
   install:
