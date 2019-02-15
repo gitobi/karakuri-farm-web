@@ -111,7 +111,8 @@ jobs:
 workflows:
   setup_and_deploy:
     jobs:
-      - install
+      - install:
+          context: Karakuri-Farm-development
       - test:
           context: Karakuri-Farm-development
           requires:
