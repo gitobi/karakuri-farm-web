@@ -66,6 +66,9 @@ jobs:
       - set_env:
           local_env: test.local
       - run:
+          name: Build
+          command: yarn build
+      - run:
           name: Test
           command: yarn test
 
