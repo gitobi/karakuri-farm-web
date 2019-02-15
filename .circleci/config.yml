@@ -2,7 +2,7 @@ version: 2.1
 executors:
   builder:
     docker:
-      - image: circleci/node:8.9.0-alpine
+      - image: circleci/node:8.9.0
     working_directory: ~/repo
   deployer:
     docker:
@@ -100,7 +100,7 @@ workflows:
             - test
           # filters:
           #   branches:
-          #     only: developa
+          #     only: develop
       - approval_to_production:
           type: approval
           requires:
