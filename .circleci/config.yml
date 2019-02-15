@@ -31,6 +31,19 @@ commands:
     steps:
       - attach_workspace:
           at: .
+  set_env:
+    parameters:
+      local_env:
+        type: enum
+        enum: ["test.local", "staging-env.local", "production-env.local"]
+    steps:
+      - run:
+          name: Set Env << parameters.local_env >>
+          command: |
+            TMP_ENV_FILENAME=".env.<< parameters.local_env >>"
+            echo "" > ${TMP_ENV_FILENAME}
+            echo "REACT_APP_COGNITO_USER_POOL_ID=${BASTET_HOST_URL}" >> ${TMP_ENV_FILENAME}
+            echo "REACT_APP_COGNITO_CLIENT_ID=${BASTET_HOST_URL}" >> ${TMP_ENV_FILENAME}
 
 jobs:
   install:
@@ -50,6 +63,8 @@ jobs:
       name: builder
     steps:
       - attach
+      - set_env:
+          local_env: test.local
       - run:
           name: Test
           command: yarn test
@@ -61,6 +76,9 @@ jobs:
       release_target:
         type: enum
         enum: ["staging", "prduction"]
+      local_env:
+        type: enum
+        enum: ["staging-env.local", "production-env.local"]
     steps:
       - attach
       - run:
@@ -70,14 +88,8 @@ jobs:
             echo 'export PATH=~/.local/bin:$PATH' > ~/.profile && \
             source ~/.profile && \
             aws configure set preview.cloudfront true
-      - run:
-          name: Set Env << parameters.release_target >>
-          command: |
-            TMP_ENV_FILENAME=".env.<< parameters.release_target >>-env"
-            echo "" > ${TMP_ENV_FILENAME}
-            echo "REACT_APP_BASTET_HOST_URL=${BASTET_HOST_URL}" >> ${TMP_ENV_FILENAME}
-            echo "REACT_APP_COGNITO_USER_POOL_ID=${BASTET_HOST_URL}" >> ${TMP_ENV_FILENAME}
-            echo "REACT_APP_COGNITO_CLIENT_ID=${BASTET_HOST_URL}" >> ${TMP_ENV_FILENAME}
+      - set_env:
+          local_env: << parameters.local_env >>
       - run:
           name: Deploy to << parameters.release_target >>
           command: |
@@ -89,12 +101,14 @@ workflows:
     jobs:
       - install
       - test:
+          context: Karakuri-Farm-development
           requires:
             - install
       - deploy:
           name: deploy_to_staging
           release_target: staging
-          context: Bastet-Staging
+          local_env: staging-env.local
+          context: Karakuri-Farm-staging
           requires:
             - install
             - test
@@ -114,6 +128,7 @@ workflows:
       - deploy:
           name: deploy_to_prduction
           release_target: prduction
-          context: Bastet-Production
+          local_env: production-env.local
+          context: Karakuri-Farm-production
           requires:
             - approval_to_production
