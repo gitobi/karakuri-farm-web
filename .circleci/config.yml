@@ -124,7 +124,12 @@ jobs:
             pip3 install --upgrade --user awscli
             # echo 'export PATH=~/.local/bin:$PATH' > ~/.profile
             # source ~/.profile
+            echo "---"
+            ls -la ~/.local/bin
+            echo "---"
+            ls -la ~/.local/bin
             ln -s ~/.local/bin/aws ./aws
+            chmod +x ./aws
             aws configure set preview.cloudfront true
           # command: |
           #   pip3 install --upgrade --user awscli
