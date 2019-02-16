@@ -122,16 +122,17 @@ jobs:
           name: 'Install Deploy Tools'
           command: |
             pip3 install --upgrade --user awscli
-            echo 'export PATH=~/.local/bin:$PATH' > ~/.profile && \
-            source ~/.profile && \
+            echo 'export PATH=~/.local/bin:$PATH' > ~/.profile
+            source ~/.profile
             aws configure set preview.cloudfront true
       - run:
           name: 'tmp'
           command: |
+            env
             ls -a
             pwd
-            aws --version
             type aws
+            aws --version
       - deploy_to:
           environment: << parameters.environment >>
 
