@@ -23,6 +23,7 @@ export default class DeviceSettingTab extends Component {
   createTabHeader(key, content) {
     // タブヘッダの作成
     return(
+      // eslint-disable-next-line
       <a className={"item " + (this.state.activeTab === key ? "active" : "")}
         key={key}
         data-tab={key}
