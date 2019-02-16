@@ -86,6 +86,7 @@ jobs:
       - run:
           name: Build to << parameters.environment >>
           command: |
+            ls -la
             TMP_SH_NAME="deploy-to-<< parameters.environment >>-build.sh"
             sh ${TMP_SH_NAME}
       - persist
@@ -109,6 +110,7 @@ jobs:
       - run:
           name: Deploy to << parameters.environment >>
           command: |
+            ls -la
             source ~/.profile
             TMP_SH_NAME="deploy-to-<< parameters.environment >>-deploy.sh"
             sh ${TMP_SH_NAME}
