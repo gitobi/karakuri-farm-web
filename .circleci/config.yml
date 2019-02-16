@@ -127,9 +127,9 @@ jobs:
             echo "---"
             ls -la ~/.local/bin
             echo "---"
-            ls -la ~/.local/bin
             ln -s ~/.local/bin/aws ./aws
             chmod +x ./aws
+            ls -la ./
             aws configure set preview.cloudfront true
           # command: |
           #   pip3 install --upgrade --user awscli
