@@ -125,6 +125,13 @@ jobs:
             echo 'export PATH=~/.local/bin:$PATH' > ~/.profile && \
             source ~/.profile && \
             aws configure set preview.cloudfront true
+      - run:
+          name: 'tmp'
+          command: |
+            ls -a
+            pwd
+            aws --version
+            type aws
       - deploy_to:
           environment: << parameters.environment >>
 
