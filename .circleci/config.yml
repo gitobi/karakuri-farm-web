@@ -45,28 +45,6 @@ commands:
             echo "" > ${TMP_LOCAL_ENV_FILENAME}
             echo "REACT_APP_COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}" >> ${TMP_LOCAL_ENV_FILENAME}
             echo "REACT_APP_COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}" >> ${TMP_LOCAL_ENV_FILENAME}
-  build_to:
-    parameters:
-      environment:
-        type: enum
-        enum: ["staging", "production"]
-    steps:
-      - run:
-          name: Build to << parameters.environment >>
-          command: |
-            TMP_SH_NAME="deploy-to-<< parameters.environment >>-build.sh"
-            sh ${TMP_SH_NAME}
-  deploy_to:
-    parameters:
-      environment:
-        type: enum
-        enum: ["staging", "production"]
-    steps:
-      - run:
-          name: Deploy to << parameters.environment >>
-          command: |
-            TMP_SH_NAME="deploy-to-<< parameters.environment >>-deploy.sh"
-            sh ${TMP_SH_NAME}
 
 jobs:
   install:
@@ -105,9 +83,13 @@ jobs:
       - attach
       - set_env:
           environment_tmp_env_name: << parameters.environment >>-env
-      - build_to:
-          environment: << parameters.environment >>
-      - persist
+      - run:
+          name: Build to << parameters.environment >>
+          command: |
+            ls -al
+            TMP_SH_NAME="deploy-to-<< parameters.environment >>-build.sh"
+            sh ${TMP_SH_NAME}
+      # - persist
 
   deploy:
     executor:
@@ -122,30 +104,16 @@ jobs:
           name: 'Install Deploy Tools'
           command: |
             pip3 install --upgrade --user awscli
-            # echo 'export PATH=~/.local/bin:$PATH' > ~/.profile
-            # source ~/.profile
-            echo "---"
-            ls -la ~/.local/bin
-            echo "---"
-            ln -s ~/.local/bin/aws ./aws
-            chmod +x ./aws
-            ls -la ./
+            echo 'export PATH=~/.local/bin:$PATH' > ~/.profile
+            source ~/.profile
             aws configure set preview.cloudfront true
-          # command: |
-          #   pip3 install --upgrade --user awscli
-          #   echo 'export PATH=~/.local/bin:$PATH' > ~/.profile
-          #   source ~/.profile
-          #   aws configure set preview.cloudfront true
       - run:
-          name: 'tmp'
+          name: Deploy to << parameters.environment >>
           command: |
-            env
-            ls -a
-            pwd
-            type aws
-            aws --version
-      - deploy_to:
-          environment: << parameters.environment >>
+            ls -al
+            source ~/.profile
+            TMP_SH_NAME="deploy-to-<< parameters.environment >>-deploy.sh"
+            sh ${TMP_SH_NAME}
 
 workflows:
   setup_and_deploy:
