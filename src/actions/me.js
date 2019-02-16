@@ -1,6 +1,7 @@
 import { AuthenticationDetails, CognitoUserAttribute, CognitoUser } from 'amazon-cognito-identity-js';
 import { Me } from '../constants/me';
 import { userPool } from '../js/AuthUserPool';
+import { parseCognitoErrorMessage } from './actionUtils'
 
 export function getCurrentMe() {
   let isAuthenticated = false;
@@ -44,7 +45,7 @@ export function signUpMe(username, email, password) {
       // 失敗時は失敗ActionをDispatch
       (error) => {
         dispatch({ type: Me.SIGN_UP_FAILURE, error });
-        return (Promise.reject());
+        return (Promise.reject(parseCognitoErrorMessage(error.message)));
       }
     );
   });
@@ -58,10 +59,10 @@ export function confirmMe(pincode) {
       Username: username,
       Pool: userPool,
     }
-    let cognitoUser = new CognitoUser(userData);
     dispatch({ type: Me.CONFIRM_REQUEST });
 
     return new Promise((resolve, reject) => {
+      let cognitoUser = new CognitoUser(userData);
       cognitoUser.confirmRegistration(pincode, false, (error, result) => {
         if (error) {
           reject(error);
@@ -76,7 +77,7 @@ export function confirmMe(pincode) {
       },
       (error) => {
         dispatch({ type: Me.CONFIRM_FAILURE, error });
-        return (Promise.reject());
+        return (Promise.reject(parseCognitoErrorMessage(error.message)));
       }
     );
   });
@@ -115,7 +116,7 @@ export function loginMe(username, password) {
       },
       (error) => {
         dispatch({ type: Me.LOGIN_FAILURE, error });
-        return (Promise.reject());
+        return (Promise.reject(parseCognitoErrorMessage(error.message)));
       }
     );
   });

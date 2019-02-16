@@ -3,9 +3,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import { signUpMe } from '../../actions/me';
-import {
-  Form
-} from 'semantic-ui-react';
+import { Form, Button, Message } from 'semantic-ui-react';
 
 class SignupForm extends Component {
   constructor(props) {
@@ -15,7 +13,10 @@ class SignupForm extends Component {
         'email': '',
         'username': '',
         'password': '',
-      })
+      }),
+      progress: false,
+      messageLevel: null,
+      message: null
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -25,6 +26,8 @@ class SignupForm extends Component {
   render() {
     return (
       <Form
+        className={this.state.messageLevel}
+        loading={this.state.progress}
         onSubmit={this.handleSubmit} >
         <Form.Input
           onChange={this.handleEmailChange}
@@ -38,7 +41,12 @@ class SignupForm extends Component {
           id='password'
           label='パスワード'
           type='password' />
-        <Form.Button
+        <Message
+          className={this.state.messageLevel ? this.state.messageLevel : 'hidden'}
+          header='エラー'
+          content={this.state.message}
+        />
+        <Button
           type='submit'
           content='登録する'
         />
@@ -47,6 +55,7 @@ class SignupForm extends Component {
   }
 
   handleSubmit(event) {
+    this.setState({ progress: true});
     event.preventDefault();
     let password = document.getElementById('password').value;
     this.props.signUpMe(
@@ -56,9 +65,19 @@ class SignupForm extends Component {
     ).then(
       () => {
         this.props.history.push('/confirm');
+        this.setState({
+          progress: false,
+          messageLevel: null,
+          message: null
+        });
       },
-      () => {
-        console.log('fail');
+      (error) => {
+        console.log(error);
+        this.setState({
+          progress: false,
+          messageLevel: 'error',
+          message: '登録に失敗しました。'
+        });
       }
     );
   }

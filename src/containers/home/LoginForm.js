@@ -63,8 +63,8 @@ class LoginForm extends Component {
           message: null
         });
       },
-      () => {
-        console.log('fail');
+      (error) => {
+        console.log(error);
         this.setState({
           progress: false,
           messageLevel: 'error',
