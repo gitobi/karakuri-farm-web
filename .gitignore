@@ -12,16 +12,15 @@
 # misc
 .DS_Store
 .env.local
-.env.development
-.env.test
-.env.production
 .env.development.local
 .env.test.local
 .env.production.local
+.env.staging-env.local
+.env.production-env.local
+# deploy shell で生成される
+.env.production
 
-.env.staging-env
-.env.production-env
-
+package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
