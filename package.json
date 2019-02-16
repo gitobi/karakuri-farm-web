@@ -4,28 +4,27 @@
   "private": true,
   "dependencies": {
     "@gitobi/react-blank-component": "^1.0.2",
-    "amazon-cognito-identity-js": "^1.21.0",
-    "csv": "^3.1.0",
+    "amazon-cognito-identity-js": "^3.0.7",
+    "csv": "^5.1.1",
     "downloadjs": "^1.4.7",
-    "eslint": "^4.9.0",
-    "immutable": "^3.8.2",
+    "immutable": "^4.0.0-rc.12",
     "immutablediff": "^0.4.4",
-    "immutablepatch": "^0.4.2",
+    "immutablepatch": "^0.5.0",
     "moment": "^2.20.1",
-    "react": "^15.6.1",
+    "react": "^16.8.2",
     "react-datepicker": "^1.0.4",
-    "react-dom": "^15.6.1",
-    "react-redux": "^5.0.6",
+    "react-dom": "^16.8.2",
+    "react-redux": "^6.0.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.13",
+    "react-scripts": "2.1.5",
     "react-table": "^6.6.0",
     "recharts": "^1.0.0-beta.9",
-    "redux": "^3.7.2",
+    "redux": "^4.0.1",
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.12",
-    "semantic-ui-react": "^0.74.2",
-    "superagent": "^3.6.3"
+    "semantic-ui-react": "^0.85.0",
+    "superagent": "^4.1.0"
   },
   "scripts": {
     "build": "react-scripts build",
@@ -36,13 +35,22 @@
     "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom"
   },
+  "engines": {
+    "node": "^8.10.0",
+    "npm": "5.6.0"
+  },
   "devDependencies": {
-    "eslint": "^4.9.0",
-    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.4.0",
     "redux-devtools": "^3.4.0",
     "redux-devtools-extension": "^2.13.2"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
