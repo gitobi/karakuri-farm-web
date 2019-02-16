@@ -102,7 +102,7 @@ jobs:
 workflows:
   setup_and_deploy:
     jobs:
-      - install:
+      - install
       - test:
           context: Karakuri-Farm-development
           requires:
