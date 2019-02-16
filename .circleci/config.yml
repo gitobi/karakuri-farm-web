@@ -69,9 +69,30 @@ jobs:
           name: Test
           command: yarn test
 
-  deploy:
+  build:
     executor:
       name: builder
+    parameters:
+      release_target:
+        type: enum
+        enum: ["staging", "prduction"]
+      local_env:
+        type: enum
+        enum: ["staging-env.local", "production-env.local"]
+    steps:
+      - attach
+      - set_env:
+          local_env: << parameters.local_env >>
+      - run:
+          name: Build
+          command: yarn build
+      - run:
+          name: List
+          command: ls
+
+  deploy:
+    executor:
+      name: deployer
     parameters:
       release_target:
         type: enum
@@ -88,13 +109,13 @@ jobs:
             echo 'export PATH=~/.local/bin:$PATH' > ~/.profile && \
             source ~/.profile && \
             aws configure set preview.cloudfront true
-      - set_env:
-          local_env: << parameters.local_env >>
       - run:
           name: Deploy to << parameters.release_target >>
           command: |
+            ls
             TMP_SHELL_NAME="deploy-to-<< parameters.release_target >>.sh"
-            sh ${TMP_SHELL_NAME}
+            aws s3 cp build s3://staging.karakuri.farm --recursive --exclude .DS_Store
+            aws cloudfront create-invalidation --distribution-id EW2H0JKSXZQ6B --paths /\*
 
 workflows:
   setup_and_deploy:
@@ -104,14 +125,21 @@ workflows:
           context: Karakuri-Farm-development
           requires:
             - install
-      - deploy:
-          name: deploy_to_staging
+      - build:
+          name: build_to_staging
           release_target: staging
           local_env: staging-env.local
           context: Karakuri-Farm-staging
           requires:
             - install
             - test
+      - deploy:
+          name: deploy_to_staging
+          release_target: staging
+          local_env: staging-env.local
+          context: Karakuri-Farm-staging
+          requires:
+            - build_to_staging
           # filters:
           #   branches:
           #     only: develop
