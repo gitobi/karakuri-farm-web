@@ -89,6 +89,8 @@ jobs:
             ls -la
             TMP_SH_NAME="deploy-to-<< parameters.environment >>-build.sh"
             sh ${TMP_SH_NAME}
+            cat .env.production
+            cat .env.production.local
       - persist
 
   deploy:
