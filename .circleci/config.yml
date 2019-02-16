@@ -2,7 +2,7 @@ version: 2.1
 executors:
   builder:
     docker:
-      - image: circleci/node:8.9.0
+      - image: circleci/node:8.10.0
     working_directory: ~/repo
   deployer:
     docker:
@@ -42,12 +42,8 @@ commands:
           command: |
             TMP_ENV_FILENAME=".env.<< parameters.local_env >>"
             echo "" > .env.<< parameters.local_env >>
-            echo "REACT_APP_COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}" >> .env.<< parameters.local_env >>
-            echo "REACT_APP_COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}" >> .env.<< parameters.local_env >>
             echo "REACT_APP_COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}" >> ${TMP_ENV_FILENAME}
             echo "REACT_APP_COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}" >> ${TMP_ENV_FILENAME}
-            cat .env.<< parameters.local_env >>
-            cat ${TMP_ENV_FILENAME}
 
 jobs:
   install:
@@ -60,11 +56,6 @@ jobs:
           name: Install dependencies
           command: yarn install --frozen-lockfile
       - save_yarn
-      - set_env:
-          local_env: test.local
-      - run:
-          name: Test
-          command: yarn test
       - persist
 
   test:
@@ -112,7 +103,6 @@ workflows:
   setup_and_deploy:
     jobs:
       - install:
-          context: Karakuri-Farm-development
       - test:
           context: Karakuri-Farm-development
           requires:

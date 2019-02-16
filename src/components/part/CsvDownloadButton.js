@@ -36,7 +36,7 @@ class CsvDownloadButton extends Component {
       data,
       fileName,
       onClick,
-      ...rest,
+      ...rest
     } = this.props;
 
     return (

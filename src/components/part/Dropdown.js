@@ -31,7 +31,7 @@ class Dropdown extends Component {
       itemToOption,
       items,
       callback,
-      ...rest,
+      ...rest
     } = this.props;
 
     let options = [];
