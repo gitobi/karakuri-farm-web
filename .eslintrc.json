@@ -3,13 +3,17 @@
     "plugins": [
         "react",
         "jsx-a11y",
-        "import"
+        "import",
+        "flowtype"
     ],
     "settings": {
       "import/resolver": {
         "node": {
           "moduleDirectory": ["node_modules", "/"]
         }
+      },
+      "flowtype": {
+        "onlyFilesWithFlowAnnotation": true,
       }
     }
 }

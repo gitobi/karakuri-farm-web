@@ -7,8 +7,27 @@ import { Menu, Label } from 'semantic-ui-react';
 import GtbUtils from '../js/GtbUtils';
 import Logger from '../js/Logger';
 
-class DeviceList extends Component {
-  constructor(props) {
+type Item = {
+  id: string,
+  name: string,
+  linkTo: ?string,
+  label: ?string,
+};
+type Props = {
+  items: Array<Item>,
+  initialActiveItemId: string,
+  onClickItem: Function,
+};
+type State = {
+  activeItemId: string
+};
+
+class DeviceList extends Component<Props, State> {
+  logger: Logger;
+  onClickItem: Function;
+  createMenuItem: Function;
+
+  constructor(props: Props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
     this.onClickItem = this.onClickItem.bind(this);
@@ -24,7 +43,7 @@ class DeviceList extends Component {
   static getDerivedStateFromProps(nextProps: Props, prevState: State) {
     // new Logger({prefix: "DeviceList"}).log('getDerivedStateFromProps:', prevState, '->', nextProps);
     let nextActiveItemId = GtbUtils.findOrHead(nextProps.items, 'id', prevState.activeItemId);
-    if (prevState.nextActiveItemId !== nextActiveItemId) {
+    if (prevState.activeItemId !== nextActiveItemId) {
       return {
         activeItemId: nextActiveItemId
       };
@@ -32,7 +51,7 @@ class DeviceList extends Component {
     return null;
   }
 
-  onClickItem(event, data) {
+  onClickItem(event: any, data: {name: string}) {
     // TODO 保存がされてない場合は変更時に警告する
     // this.logger.log('onClickItem:', event, data, this.props.items);
     let item = GtbUtils.find(this.props.items, 'id', data.name);
@@ -43,7 +62,7 @@ class DeviceList extends Component {
     }
   }
 
-  createMenuItem(item) {
+  createMenuItem(item: Item) {
     // this.logger.log('createMenuItem', item)
     let label = '';
     if (item.label) {
