@@ -48,8 +48,13 @@ class Home extends Component {
                 <Header
                   as='h3'
                   textAlign='center'
-                  content='COPPERTONE' />
-                <p>IoT日射計である「COPPERTONE」は日射量の計測に特化したデバイスです。デバイスを置くだけで日射量を計測し、クラウド上に計測データを記録し続けます。</p>
+                  content='JUKO' />
+                <p>IoT日射計である「JUKO」は日射量の計測に特化したデバイスです。デバイスを置くだけで日射量を計測し、クラウド上に計測データを記録し続けます。</p>
+                <Header
+                  as='h3'
+                  textAlign='center'
+                  content='KAERU' />
+                <p>IoT土壌水分計である「KAERU」は土の体積含水率の計測に特化したデバイスです。デバイスを土に埋めるだけで体積含水率を計測し、クラウド上に計測データを記録し続けます。</p>
               </Grid.Column>
             </Grid.Row>
           </Grid>
