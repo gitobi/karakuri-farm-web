@@ -1,3 +1,5 @@
+// @flow
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Label } from 'semantic-ui-react';
@@ -42,7 +44,7 @@ class DeviceList extends Component {
   }
 
   createMenuItem(item) {
-    this.logger.log('createMenuItem', item)
+    // this.logger.log('createMenuItem', item)
     let label = '';
     if (item.label) {
       label = <Label color="teal">{item.label}</Label>;
@@ -64,7 +66,7 @@ class DeviceList extends Component {
   }
 
   render() {
-    this.logger.log('render', this.state)
+    // this.logger.log('render', this.state)
     const menuItems = this.props.items.map(this.createMenuItem);
     return (
       <Menu
