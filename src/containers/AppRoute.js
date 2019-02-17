@@ -67,7 +67,7 @@ class AppRoute extends Component {
     }
 
     const DeviceLayoutRoute = ({match}, ...rest) => {
-      this.logger.log('DeviceLayoutRoute', {match: match, rest: rest, props: this.props, state: this.state});
+      // this.logger.log('DeviceLayoutRoute', {match: match, rest: rest, props: this.props, state: this.state});
       return (
         <DeviceLayout match={match} rest={rest}>
           <Switch>
