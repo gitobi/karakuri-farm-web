@@ -30,12 +30,12 @@ class AppRoute extends Component {
   }
 
   render() {
-    const PrivateRoute = ({ component: component, ...rest }) => {
-      // this.logger.log('PrivateRoute', {component: component, rest: rest, props: this.props, state: this.state});
+    const PrivateRoute = ({ component: Component, ...rest }) => {
+      // this.logger.log('PrivateRoute', {Component: Component, rest: rest, props: this.props, state: this.state});
       return (
         <Route {...rest} render={props => (
           this.props.isAuthenticated ? (
-            <component {...props}/>
+            <Component {...props}/>
           ) : (
             <Redirect to={{
               pathname: '/login',
