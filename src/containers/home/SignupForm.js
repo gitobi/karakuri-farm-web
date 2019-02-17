@@ -64,12 +64,12 @@ class SignupForm extends Component {
       password,
     ).then(
       () => {
-        this.props.history.push('/confirm');
         this.setState({
           progress: false,
           messageLevel: null,
           message: null
         });
+        this.props.history.push('/confirm');
       },
       (error) => {
         console.log(error);

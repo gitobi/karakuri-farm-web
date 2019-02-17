@@ -56,12 +56,12 @@ class LoginForm extends Component {
       password,
     ).then(
       () => {
-        this.props.history.push('/app');
         this.setState({
           progress: false,
           messageLevel: null,
           message: null
         });
+        this.props.history.push('/app');
       },
       (error) => {
         console.log(error);

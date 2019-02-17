@@ -50,12 +50,12 @@ class ConfirmForm extends Component {
       this.state.data.get('pincode'),
     ).then(
       () => {
-        this.props.history.push('/');
         this.setState({
           progress: false,
           messageLevel: null,
           message: null
         });
+        this.props.history.push('/');
       },
       (error) => {
         console.log(error);

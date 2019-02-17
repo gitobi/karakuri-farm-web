@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 import Logger from '../js/Logger';
 
-class Menubar extends Component {
+class MenuBar extends Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
@@ -30,8 +30,8 @@ class Menubar extends Component {
         as={Link}
         to={linkTo}
         name={name}
-        active={this.props.activeMenubarItem.name === name}
-        onClick={this.props.handleMenubarItemClick}
+        active={this.props.activeMenuBarItem.name === name}
+        onClick={this.props.handleMenuBarItemClick}
       >
         {labelContent}
         {content}
@@ -63,16 +63,16 @@ class Menubar extends Component {
         <Menu.Item>
           <Menu.Header>デバイス設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('device_waterings', '/app/devices_waterings', 'JORO')}
-            {this.menuItem('device_pyranometer', '/app/devices_pyranometer', 'JUKO')}
-            {this.menuItem('device_soilmoisture', '/app/devices_soilmoisture', 'KAERU')}
+            {this.menuItem('device/waterings', '/app/device/waterings', 'JORO')}
+            {this.menuItem('device/pyranometer', '/app/device/pyranometer', 'JUKO')}
+            {this.menuItem('device/soilmoisture', '/app/device/soilmoisture', 'KAERU')}
           </Menu.Menu>
         </Menu.Item>
 
         <Menu.Item>
           <Menu.Header>カラクリ設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('machine_radiational_waterings', '/app/machine_radiational_waterings', '日射比例潅水')}
+            {this.menuItem('machine/radiational_waterings', '/app/machine/radiational_waterings', '日射比例潅水')}
           </Menu.Menu>
         </Menu.Item>
 
@@ -116,4 +116,4 @@ const mapDispatchToProps = {
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Menubar));
+)(MenuBar));
