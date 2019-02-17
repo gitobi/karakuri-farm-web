@@ -3,9 +3,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import { loginMe } from '../../actions/me';
-import {
-  Form
-} from 'semantic-ui-react';
+import { Form, Button, Message } from 'semantic-ui-react';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -13,7 +11,10 @@ class LoginForm extends Component {
     this.state = {
       'data': Map({
         'username': '',
-      })
+      }),
+      progress: false,
+      messageLevel: null,
+      message: null
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -22,6 +23,8 @@ class LoginForm extends Component {
   render() {
     return (
       <Form
+        className={this.state.messageLevel}
+        loading={this.state.progress}
         onSubmit={this.handleSubmit} >
         <Form.Input
           onChange={this.handleUsernameChange}
@@ -31,7 +34,12 @@ class LoginForm extends Component {
           id='password'
           label='パスワード'
           type='password' />
-        <Form.Button
+        <Message
+          className={this.state.messageLevel ? this.state.messageLevel : 'hidden'}
+          header='エラー'
+          content={this.state.message}
+        />
+        <Button
           type='submit'
           content='ログインする'
         />
@@ -40,6 +48,7 @@ class LoginForm extends Component {
   }
 
   handleSubmit(event) {
+    this.setState({ progress: true});
     event.preventDefault();
     let password = document.getElementById('password').value;
     this.props.loginMe(
@@ -48,9 +57,19 @@ class LoginForm extends Component {
     ).then(
       () => {
         this.props.history.push('/app');
+        this.setState({
+          progress: false,
+          messageLevel: null,
+          message: null
+        });
       },
       () => {
         console.log('fail');
+        this.setState({
+          progress: false,
+          messageLevel: 'error',
+          message: 'ログインに失敗しました。'
+        });
       }
     );
   }
