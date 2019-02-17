@@ -134,4 +134,65 @@ export default class GtbUtils {
     return (j1 === j2);
   }
 
+  /**
+   * [findOrHead description]
+   * @param  {[type]} array  [description]
+   * @param  {[type]} column [description]
+   * @param  {[type]} value  [description]
+   * @return {[type]}        [description]
+   *
+   * listの初期表示、またはlistの要素が変更された時に、先頭の要素を選択するためのメソッド。
+   *
+   * 初期表示（valueがnull）の場合は、先頭要素のcolumn値を返却する。
+   * ```js
+   * array=[{id: '1' , id: '2'}]
+   * column='id'
+   * value=null
+   * findOrHead(array, column, value) # '1'
+   * ```
+   *
+   * listの内容が変更された場合、
+   * 先程まで選択されていた要素が存在する場合は同じ値を、
+   * 存在しなくなった場合は先頭要素のcolumn値を返却する。
+   * ```js
+   * array=[{id: '1' , id: '3'}]
+   * column='id'
+   * value='2'
+   * findOrHead(array, column, value) # '1'
+   *
+   * array=[{id: '1' , id: '2', id: '3'}]
+   * column='id'
+   * value='2'
+   * findOrHead(array, column, value) # '2'
+   * ```
+   *
+   * listが空またはnullの場合は、nullを返却する。
+   * ```js
+   * array=[]
+   * column='id'
+   * value='2'
+   * findOrHead(array, column, value) # null
+   *
+   * array=null
+   * column='id'
+   * value='2'
+   * findOrHead(array, column, value) # null
+   * ```
+   */
+  static findOrHead(array, column, value) {
+    if (array === null || array.length === 0) {
+      return null;
+    }
+
+    if (value === null) {
+      return array[0][column];
+    }
+
+    let item = this.find(array, column, value);
+    if (item === null) {
+      return array[0][column];
+    }
+
+    return item[column]
+  }
 }
