@@ -77,3 +77,34 @@ export function addFilteredQuery(
     });
     return object;
 }
+
+export function parseCognitoErrorMessage(message) {
+  if (message === null) {
+    message = "unknown error";
+  }
+  // console.log(message);
+  // エラーヘッダとエラーリストに分割
+  let error = parseCognitoErrorMessageElement(message);
+  // console.log('header/errors:', error);
+
+  let errorMessageObjects = [];
+  if (error.detail !== null) {
+    // 概要と詳細に分割
+    let errorMessages = error.detail.split("; ", 10);
+    errorMessageObjects = errorMessages.map(parseCognitoErrorMessageElement);
+  }
+
+  return {header: error.summary, errors: errorMessageObjects};
+}
+
+function parseCognitoErrorMessageElement(element) {
+  let index = element.indexOf(":")
+  if (index !== -1) {
+    return {
+      summary: element.substr(0, index),
+      detail: element.substr(index + 2)
+    }
+  } else {
+    return {summary: element, detail: null};
+  }
+}
