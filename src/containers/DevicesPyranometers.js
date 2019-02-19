@@ -24,6 +24,7 @@ class DevicesPyranometers extends Component {
         items={this.props.devices}
         itemMap={this.props.devicesMap}
         component={DevicesPyranometerTab}
+        match={this.props.match}
         />
     );
   }

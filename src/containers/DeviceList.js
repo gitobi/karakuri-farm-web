@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Label } from 'semantic-ui-react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import GtbUtils from '../js/GtbUtils';
 import Logger from '../js/Logger';
 
@@ -11,26 +11,28 @@ type Item = {
   id: string,
   name: string,
   linkTo: ?string,
-  label: ?string,
+  label: ?string
 };
 type Props = {
+  match: Object,
   items: Array<Item>,
-  initialActiveItemId: string,
-  onClickItem: Function,
+  initialActiveItemId?: ?string,
+  onClickItem: (string) => void
 };
 type State = {
   activeItemId: string
 };
 
 class DeviceList extends Component<Props, State> {
+
   logger: Logger;
-  onClickItem: Function;
+  // onClickItem: Function;
   createMenuItem: Function;
 
   constructor(props: Props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
-    this.onClickItem = this.onClickItem.bind(this);
+    // this.onClickItem = this.onClickItem.bind(this);
     this.createMenuItem = this.createMenuItem.bind(this);
 
     let initialActiveItemId = props.initialActiveItemId ? props.initialActiveItemId : null;
@@ -51,7 +53,8 @@ class DeviceList extends Component<Props, State> {
     return null;
   }
 
-  onClickItem(event: any, data: {name: string}) {
+
+  onClickItem = (event: any, data: {name: string}) => {
     // TODO 保存がされてない場合は変更時に警告する
     // this.logger.log('onClickItem:', event, data, this.props.items);
     let item = GtbUtils.find(this.props.items, 'id', data.name);
@@ -71,8 +74,8 @@ class DeviceList extends Component<Props, State> {
 
     return (
       <Menu.Item
-        // as={Link}
-        // to={item.linkTo ? item.linkTo : item.id}
+        as={Link}
+        to={`${this.props.match.url}/` +  (item.linkTo ? item.linkTo : item.id)}
         key={item.id}
         name={item.id}
         active={this.state.activeItemId === item.id}
@@ -85,7 +88,7 @@ class DeviceList extends Component<Props, State> {
   }
 
   render() {
-    // this.logger.log('render', this.state)
+    // this.logger.log('render', {props: this.props, state: this.state});
     const menuItems = this.props.items.map(this.createMenuItem);
     return (
       <Menu
@@ -107,7 +110,7 @@ const propTypesShapeItem = PropTypes.shape({
 })
 DeviceList.propTypes = {
   items: PropTypes.arrayOf(propTypesShapeItem).isRequired,
-  initialActiveItemId: PropTypes.string,
+  // initialActiveItemId: PropTypes.string,
   onClickItem: PropTypes.func,
 }
 

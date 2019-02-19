@@ -48,10 +48,10 @@
 - `docker-compose run --rm web yarn add csv`
 
 ## Flow
-- `flow status` (start daemon)
-- `flow` when check local code
+- `yarn flow status` (start daemon)
+- `yarn flow` when check local code
 - `yarn run flow-typed install --skip` when added yarn libs.
-- `flow stop` (stop daemon)
+- `yarn flow stop` (stop daemon)
 
 # Operation
 

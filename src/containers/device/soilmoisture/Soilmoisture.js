@@ -24,6 +24,7 @@ class Soilmoisture extends Component {
         items={this.props.devices}
         itemMap={this.props.devicesMap}
         component={DevicesSoilmoistureTab}
+        match={this.props.match}
         />
     );
   }

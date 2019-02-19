@@ -24,6 +24,7 @@ class MachinesRadiationalWaterings extends Component {
         items={this.props.machines}
         itemMap={this.props.machinesMap}
         component={MachinesRadiationalWateringTab}
+        match={this.props.match}
         />
     );
   }

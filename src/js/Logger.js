@@ -1,8 +1,18 @@
+// @flow
 export default class Logger {
+  prefix: string;
+  log: Function;
+  error: Function;
+  dir: Function;
+  warn: Function;
+  info: Function;
+  trace: Function;
+  time: Function;
+  timeEnd: Function;
 
-  constructor(params={}) {
+  constructor(params: Object={}) {
     if (params.prefix) {
-      this.prefix = params.prefix + ' @';
+      (this: any).prefix = params.prefix + ' @';
     }
 
     if (window.console && console && console.log && console.log.bind) {
