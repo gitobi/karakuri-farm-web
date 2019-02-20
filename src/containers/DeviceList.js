@@ -10,7 +10,6 @@ import Logger from '../js/Logger';
 type Item = {
   id: string,
   name: string,
-  linkTo: ?string,
   label: ?string
 };
 type Props = {
@@ -72,10 +71,18 @@ class DeviceList extends Component<Props, State> {
       label = <Label color="teal">{item.label}</Label>;
     }
 
+    let linkTo;
+    if (this.props.match.params.id) {
+      // 現在URLのid部分を置換
+      linkTo = this.props.match.url.replace(this.props.match.params.id, item.id);
+    } else {
+      linkTo = this.props.match.path.replace(':id?', item.id);
+    }
+
     return (
       <Menu.Item
         as={Link}
-        to={`${this.props.match.url}/` +  (item.linkTo ? item.linkTo : item.id)}
+        to={linkTo}
         key={item.id}
         name={item.id}
         active={this.state.activeItemId === item.id}
@@ -106,7 +113,7 @@ class DeviceList extends Component<Props, State> {
 const propTypesShapeItem = PropTypes.shape({
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  linkTo: PropTypes.string,
+  // linkTo: PropTypes.string,
 })
 DeviceList.propTypes = {
   items: PropTypes.arrayOf(propTypesShapeItem).isRequired,

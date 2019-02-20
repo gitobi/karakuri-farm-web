@@ -71,10 +71,10 @@ class AppRoute extends Component {
       return (
         <DeviceLayout match={match} rest={rest}>
           <Switch>
-            <Route path={`${match.url}/waterings`} component={DevicesWaterings} />
-            <Route path={`${match.url}/pyranometer`} component={DevicesPyranometers} />
-            <Route path={`${match.url}/soilmoisture`} component={DevicesSoilmoisture} />
-            <Route path={`${match.url}/radiational_waterings`} component={MachinesRadiationalWaterings} />
+            <Route path={`${match.url}/waterings/:id?`} component={DevicesWaterings} />
+            <Route path={`${match.url}/pyranometer/:id?`} component={DevicesPyranometers} />
+            <Route path={`${match.url}/soilmoisture/:id?`} component={DevicesSoilmoisture} />
+            <Route path={`${match.url}/radiational_waterings/:id?`} component={MachinesRadiationalWaterings} />
             <Redirect to={APP_BASE} />
           </Switch>
         </DeviceLayout>
