@@ -16,7 +16,7 @@ class DevicesSummary extends Component {
   constructor(props) {
     super(props);
 
-    this.logger = new Logger({prefix: 'DevicesSummary'});
+    this.logger = new Logger({prefix: this.constructor.name});
     this.update = this.update.bind(this);
     this.save = this.save.bind(this);
   }
@@ -41,7 +41,8 @@ class DevicesSummary extends Component {
   }
 
   render() {
-    // this.logger.log(this.props)
+    this.logger.log('render', {props: this.props, state: this.state});
+
     return (
       <div>
         <div className='item ui header'>

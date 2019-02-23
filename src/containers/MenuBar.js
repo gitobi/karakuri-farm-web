@@ -1,3 +1,5 @@
+// @flow
+
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
@@ -8,18 +10,39 @@ import '../components/Logo.css';
 import '../components/App.css';
 import { Image, Menu, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import PartialLinkList from '../components/lib/PartialLinkList';
 
 import Logger from '../js/Logger';
 
-class MenuBar extends Component {
+type Props = {
+  match: Object,
+  history: Object,
+  location: Object,
+
+  activeMenuBarItem: Object,
+  handleMenuBarItemClick: Function,
+
+  logoutMe: Function,
+  me: Function,
+  devices: Array<Object>,
+};
+
+type State = {
+  activeItem: Object
+};
+
+class MenuBar extends Component<Props, State> {
+  logger: Logger;
+
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
-    this.menuItem = this.menuItem.bind(this);
-    this.handleLogoutClick = this.handleLogoutClick.bind(this);
   }
 
-  menuItem(name, linkTo, content, label) {
+  createMenuItem = (name, linkTo, content, label) => {
+  }
+
+  menuItem = (name, linkTo, content, label) => {
     let labelContent = '';
     if (label) {
       labelContent = <Label color="teal">{label}</Label>;
@@ -39,13 +62,31 @@ class MenuBar extends Component {
     );
   }
 
-  handleLogoutClick(event) {
+  handleLogoutClick = (event) => {
     event.preventDefault();
     this.props.logoutMe();
     this.props.history.push('/');
   }
 
   render() {
+
+    const DeviceMenuItems = [
+      {id: 'device/waterings',     path: '/app/device/waterings',     name: 'JORO', position: {section: 'waterings',     keys: ['device', 'device_id', 'tab_name'], key: 'device'}},
+      {id: 'device/pyranometers',  path: '/app/device/pyranometers',  name: 'JUKO', position: {section: 'pyranometers',  keys: ['device', 'device_id', 'tab_name'], key: 'device'}},
+      {id: 'device/soilmoistures', path: '/app/device/soilmoistures', name: 'JUKO', position: {section: 'soilmoistures', keys: ['device', 'device_id', 'tab_name'], key: 'device'}}
+    ];
+
+    const DeviceMenuList = (
+      <PartialLinkList
+        nested
+        match={this.props.match}
+        history={this.props.history}
+        location={this.props.location}
+        initialReplace={true}
+        items={DeviceMenuItems}
+      />
+    );
+
     return (
       <Menu
         className="menubar"
@@ -62,11 +103,16 @@ class MenuBar extends Component {
 
         <Menu.Item>
           <Menu.Header>デバイス設定</Menu.Header>
+          {DeviceMenuList}
+{/*
           <Menu.Menu>
-            {this.menuItem('device/waterings', '/app/device/waterings', 'JORO')}
-            {this.menuItem('device/pyranometer', '/app/device/pyranometer', 'JUKO')}
-            {this.menuItem('device/soilmoisture', '/app/device/soilmoisture', 'KAERU')}
+            <div>
+              {this.menuItem('device/waterings', '/app/device/waterings', 'JORO')}
+              {this.menuItem('device/pyranometer', '/app/device/pyranometer', 'JUKO')}
+              {this.menuItem('device/soilmoisture', '/app/device/soilmoisture', 'KAERU')}
+            </div>
           </Menu.Menu>
+*/}
         </Menu.Item>
 
         <Menu.Item>
@@ -113,6 +159,7 @@ const mapDispatchToProps = {
   logoutMe
 }
 
+// $FlowFixMe withRouterがFlowでエラーになってしまう
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps

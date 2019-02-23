@@ -30,6 +30,9 @@ class AppLayout extends Component {
       <Segment>
         <AppStore ref="app_store" />
         <MenuBar
+          match={this.props.match}
+          history={this.props.history}
+          location={this.props.location}
           visible={this.state.visible}
           handleMenuBarItemClick={this.handleMenuBarItemClick}
           activeMenuBarItem={this.state.activeMenuBarItem}

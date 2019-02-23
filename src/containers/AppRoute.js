@@ -5,8 +5,12 @@ import { getCurrentMe } from '../actions/me';
 
 import Logger from '../js/Logger';
 
+import Waterings from './device/Waterings';
+
 import AppLayout from '../layouts/AppLayout';
 import DeviceLayout from '../layouts/DeviceLayout';
+
+import DeviceTypeRouter from './router/DeviceTypeRouter';
 
 import Home from '../components/home/Home';
 import Signup from '../components/home/Signup';
@@ -47,13 +51,13 @@ class AppRoute extends Component {
     }
 
     const APP_BASE = '/app';
-    const AppLayoutRoute = ({match}, ...rest) => {
+    const AppLayoutRoute = ({match, history, location}) => {
       // this.logger.log('AppLayoutRoute', {match: match, rest: rest, props: this.props, state: this.state});
       return (
-        <AppLayout match={match} rest={rest}>
+        <AppLayout match={match} history={history} location={location}>
           <Switch>
             <Route exact path={`${match.url}/`} component={DevicesIndex} />
-            <Route path={`${match.url}/device`} component={DeviceLayoutRoute} />
+            <Route path={`${match.url}/device`} component={DeviceTypeRouter} />
             <Route path={`${match.url}/machine`} component={DeviceLayoutRoute} />
             <Route path={`${match.url}/alert`} component={BlankComponent} />
             <Route path={`${match.url}/devices`} component={DevicesIndex} />
@@ -71,9 +75,11 @@ class AppRoute extends Component {
       return (
         <DeviceLayout match={match} rest={rest}>
           <Switch>
-            <Route path={`${match.url}/waterings/:id?`} component={DevicesWaterings} />
-            <Route path={`${match.url}/pyranometer/:id?`} component={DevicesPyranometers} />
-            <Route path={`${match.url}/soilmoisture/:id?`} component={DevicesSoilmoisture} />
+            <Route path={`${match.url}/waterings`} component={Waterings}/>)}} />
+            {/*<Route path={`${match.url}/waterings`} render={(props) => { return (<DeviceWateringsRouter routerProps={props}/>)}} />*/}
+            {/*<Route path={`${match.url}/waterings/:id?`} component={DevicesWaterings} />*/}
+            <Route path={`${match.url}/pyranometers/:id?`} component={DevicesPyranometers} />
+            <Route path={`${match.url}/soilmoistures/:id?`} component={DevicesSoilmoisture} />
             <Route path={`${match.url}/radiational_waterings/:id?`} component={MachinesRadiationalWaterings} />
             <Redirect to={APP_BASE} />
           </Switch>

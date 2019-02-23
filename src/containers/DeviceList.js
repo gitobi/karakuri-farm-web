@@ -6,120 +6,147 @@ import { Menu, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import GtbUtils from '../js/GtbUtils';
 import Logger from '../js/Logger';
+import {createLinkTo} from '../js/ReactRouterUtils';
+import PartialLinkList from '../components/lib/PartialLinkList';
+import ErrorBoundary from '../components/common/ErrorBoundary';
+
+
+import * as Type from '../types/BaseTypes'
 
 type Item = {
   id: string,
   name: string,
   label: ?string
 };
+
 type Props = {
   match: Object,
+  history: Object,
+  location: Object,
+
   items: Array<Item>,
   initialActiveItemId?: ?string,
-  onClickItem: (string) => void
+  onChangeItem: (string) => void,
 };
+
 type State = {
-  activeItemId: string
 };
 
 class DeviceList extends Component<Props, State> {
 
   logger: Logger;
-  // onClickItem: Function;
-  createMenuItem: Function;
 
   constructor(props: Props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
-    // this.onClickItem = this.onClickItem.bind(this);
-    this.createMenuItem = this.createMenuItem.bind(this);
-
-    let initialActiveItemId = props.initialActiveItemId ? props.initialActiveItemId : null;
-    let activeItemId = GtbUtils.findOrHead(props.items, 'id', initialActiveItemId);
-    this.state = {
-      activeItemId: activeItemId,
-    };
-  }
-
-  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-    // new Logger({prefix: "DeviceList"}).log('getDerivedStateFromProps:', prevState, '->', nextProps);
-    let nextActiveItemId = GtbUtils.findOrHead(nextProps.items, 'id', prevState.activeItemId);
-    if (prevState.activeItemId !== nextActiveItemId) {
-      return {
-        activeItemId: nextActiveItemId
-      };
-    }
-    return null;
   }
 
 
-  onClickItem = (event: any, data: {name: string}) => {
+  onChangeItem = (id: string) => {
     // TODO 保存がされてない場合は変更時に警告する
-    // this.logger.log('onClickItem:', event, data, this.props.items);
-    let item = GtbUtils.find(this.props.items, 'id', data.name);
-    if (item.id !== this.state.activeItemId) {
-      // 変更された場合
-      this.setState({activeItemId: item.id});
-      this.props.onClickItem(item.id)
-    }
+    this.logger.log('onChangeItem:', {id: id, props: this.props, state: this.state});
+    this.props.onChangeItem(id);
   }
 
-  createMenuItem(item: Item) {
-    // this.logger.log('createMenuItem', item)
-    let label = '';
-    if (item.label) {
-      label = <Label color="teal">{item.label}</Label>;
-    }
+  // tempTo = () => {
+  //   return "aaa";
+  // }
 
-    let linkTo;
-    if (this.props.match.params.id) {
-      // 現在URLのid部分を置換
-      linkTo = this.props.match.url.replace(this.props.match.params.id, item.id);
-    } else {
-      linkTo = this.props.match.path.replace(':id?', item.id);
-    }
+  // createLinkTo = (routerProps: Type.RouterProps, id: string) => {
+  //   let after = '';
+  //   this.props.match;
+  //   if (this.props.location
+  //     && this.props.location.state
+  //     && this.props.location.state.after
+  //     ) {
+  //     after = this.props.location.state.after;
+  //   }
 
-    return (
-      <Menu.Item
-        as={Link}
-        to={linkTo}
-        key={item.id}
-        name={item.id}
-        active={this.state.activeItemId === item.id}
-        onClick={this.onClickItem}
-      >
-        {label}
-        {item.name}
-      </Menu.Item>
-    );
-  }
+  //   let linkTo = this.props.match.url + '/' + id + after;
+  //   return {pathname: linkTo, state: {after: after}};
+  // }
+
+  // createMenuItem = (item: Item) => {
+  //   // this.logger.log('createMenuItem', item)
+  //   let label = '';
+  //   if (item.label) {
+  //     label = <Label color="teal">{item.label}</Label>;
+  //   }
+
+  //   let to = this.createLinkTo(this.props.routerProps, item.id);
+  //   // let linkTo = createLinkTo(this.props.match, item.id);
+
+  //   return (
+  //     <Menu.Item
+  //       as={Link}
+  //       to={to}
+  //       //to={{pathname: linkTo, state: {testState: true}}}
+  //       //to={{pathname: this.props.match.url, query: {id: item.id}}}
+  //       key={item.id}
+  //       name={item.id}
+  //       active={this.state.activeItemId === item.id}
+  //       onClick={this.onClickItem}
+  //     >
+  //       {label}
+  //       {item.name}
+  //     </Menu.Item>
+  //   );
+  // }
 
   render() {
-    // this.logger.log('render', {props: this.props, state: this.state});
-    const menuItems = this.props.items.map(this.createMenuItem);
+    this.logger.log('render', {props: this.props, state: this.state});
+
+    // this.logger.log('replace?', this.props.match.params.id, '=>', this.state.activeItemId);
+
+    // if (this.state.activeItemId
+    //   && this.state.activeItemId !== this.props.match.params.id) {
+    //   if (this.props.history) {
+    //     this.logger.log('replace!', this.props.match.params.id, '=>', this.state.activeItemId);
+    //     this.props.history.replace(this.createLinkTo(this.props.match, this.state.activeItemId));
+    //   }
+    // }
+
+
+    // const menuItems = this.props.items.map(this.createMenuItem);
+    // return (
+    //   <Menu
+    //     fluid
+    //     vertical
+    //     secondary
+    //     pointing
+    //   >
+    //     {menuItems}
+    //   </Menu>
+    // );
+
+    const items = this.props.items.map((item) => {
+      return {
+        id: item.id,
+        path: item.id,
+        name: item.name
+      }
+    });
+
     return (
-      <Menu
-        fluid
-        vertical
-        secondary
-        pointing
-      >
-        {menuItems}
-      </Menu>
+      <ErrorBoundary>
+        <PartialLinkList
+          menuProps={{
+            fluid: true,
+            vertical: true,
+            secondary: true,
+            pointing: true
+          }}
+          position={{keys: ['device_id', 'tab_name'], key: 'device_id'}}
+          match={this.props.match}
+          history={this.props.history}
+          location={this.props.location}
+          initialActiveItemId={this.props.initialActiveItemId}
+          items={items}
+          onChangeItem={this.onChangeItem}
+        />
+      </ErrorBoundary>
     );
   }
 }
-
-const propTypesShapeItem = PropTypes.shape({
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  // linkTo: PropTypes.string,
-})
-DeviceList.propTypes = {
-  items: PropTypes.arrayOf(propTypesShapeItem).isRequired,
-  // initialActiveItemId: PropTypes.string,
-  onClickItem: PropTypes.func,
-}
-
 
 export default DeviceList;

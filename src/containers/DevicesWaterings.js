@@ -18,7 +18,7 @@ class DevicesWaterings extends Component {
   }
 
   render() {
-    // this.logger.log('render', {props: this.props, state: this.state});
+    this.logger.log('render', {props: this.props, state: this.state});
     return (
       <DeviceSetting
         type={this.state.app}
@@ -26,6 +26,8 @@ class DevicesWaterings extends Component {
         itemMap={this.props.devicesMap}
         component={DevicesWateringTab}
         match={this.props.match}
+        history={this.props.history}
+        location={this.props.location}
         />
     );
   }

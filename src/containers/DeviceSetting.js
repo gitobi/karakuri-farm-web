@@ -5,14 +5,21 @@ import { Grid } from 'semantic-ui-react';
 import Logger from '../js/Logger';
 import GtbUtils from '../js/GtbUtils';
 import DeviceList from './DeviceList';
+import DeviceIdRouter from './router/DeviceIdRouter';
+
+import * as Type from '../types/BaseTypes'
 
 type Props = {
-  baseUrl: string,
+  match: Object,
+  history: Object,
+  location: Object,
+
+  component: Object,
+  router: Object,
+
   type: string,
   items: Array<Object>,
-  itemMap: Object,
-  component: Object,
-  match: Object
+  itemMap: Object
 };
 
 type State = {
@@ -30,28 +37,45 @@ export default class DeviceSetting extends Component<Props, State> {
     this.logger = new Logger({prefix: this.constructor.name});
   }
 
-  change = (activeItemId: string) => {
-    let item = GtbUtils.find(this.props.items, 'id', activeItemId);
+  change = (id: string) => {
+    let item = GtbUtils.find(this.props.items, 'id', id);
     this.setState({activeItem: item});
   }
 
   render() {
-    // this.logger.log('render', {props: this.props, state: this.state});
+    this.logger.log('render(old)', {props: this.props, state: this.state});
+    let Rout = this.props.router;
     let Comp = this.props.component;
     return (
       <div>
         <Grid columns={2}>
           <Grid.Column width={3}>
             <DeviceList
-              items={this.props.items}
-              onClickItem={this.change}
               match={this.props.match}
+              history={this.props.history}
+              location={this.props.location}
+
+              items={this.props.items}
+              onChangeItem={this.change}
               />
           </Grid.Column>
           <Grid.Column stretched width={13}>
+            <DeviceIdRouter
+              match={this.props.match}
+              history={this.props.history}
+              location={this.props.location}
+
+              component={Comp}
+              item = {this.state.activeItem}
+            />
+
+{/*
             {<Comp
               item = {this.state.activeItem}
+              match={this.props.match}
+              history={this.props.history}
             />}
+*/}
           </Grid.Column>
         </Grid>
       </div>
