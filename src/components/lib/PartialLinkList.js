@@ -6,13 +6,13 @@ import PartialLink from './PartialLink';
 import Logger from '../../js/Logger';
 import GtbUtils from '../../js/GtbUtils';
 
-type Position ={
+export type Position = {
   section: string,
   keys: Array<string>,
   key: string
 };
 
-type Item = {
+export type Item = {
   id: string,
   path: string,
   name: string,
@@ -83,31 +83,40 @@ export default class PartialLinkList extends Component<Props, State> {
       returnObject['activeItemId'] = initialActiveItemId;
       return returnObject;
     }
+
+    // if (prevState.activeItemId !== null) {
+    //   // 現在選択中の場合は、新規item中にも現在のアイテムが存在していることを確認する
+    //   if(GtbUtils.find(nextProps.items, 'id', prevState.activeItemId)) {
+    //     // 選択を変更しない
+    //     return returnObject;
+    //   }
+    // }
+
     return null;
 
-    if (prevState.activeItemId !== null) {
-      // 現在選択中の場合は、新規item中にも現在のアイテムが存在していることを確認する
-      if(GtbUtils.find(nextProps.items, 'id', prevState.activeItemId)) {
-        // 選択を変更しない
-        return returnObject;
-      }
-    }
-
-    // 現在選択中であり、新規item中に現在のアイテムが存在しない場合　及び　現在未選択の場合は、
-    // 新規itemsから、初期値または先頭を選択する
-    let nextActiveItemId = GtbUtils.findOrHead(nextProps.items, 'id', initialActiveItemId);
-    if (nextActiveItemId !== prevState.activeItemId) {
-      new Logger({prefix: "PartialLinkList"}).log('getDerivedStateFromProps:', prevState.activeItemId, '->', nextActiveItemId);
-      // 選択を変更すべき場合
-      returnObject['activeItemId'] = nextActiveItemId;
-      returnObject['needReplace'] = true;
-      return returnObject;
-    }
-    return returnObject;
+    // // 現在選択中であり、新規item中に現在のアイテムが存在しない場合　及び　現在未選択の場合は、
+    // // 新規itemsから、初期値または先頭を選択する
+    // let nextActiveItemId = GtbUtils.findOrHead(nextProps.items, 'id', initialActiveItemId);
+    // if (nextActiveItemId !== prevState.activeItemId) {
+    //   new Logger({prefix: "PartialLinkList"}).log('getDerivedStateFromProps:', prevState.activeItemId, '->', nextActiveItemId);
+    //   // 選択を変更すべき場合
+    //   returnObject['activeItemId'] = nextActiveItemId;
+    //   returnObject['needReplace'] = true;
+    //   return returnObject;
+    // }
+    // return returnObject;
   }
 
   componentDidUpdate = (prevProps: Props, prevState: State) => {
-    // this.logger.log('componentDidUpdate:', {prevProps: prevProps, prevState: prevState, props: this.props, state: this.state});
+    if (this.props.position && this.props.position.key === 'device_id') {
+      this.logger.log('componentDidUpdate:', {prevProps: prevProps, prevState: prevState, props: this.props, state: this.state});
+    }
+
+    if ((prevProps.progress && !this.props.progress)
+      && (JSON.stringify(this.props.items) !== JSON.stringify(prevProps.items))) {
+      let nextActiveItemId = GtbUtils.findOrHead(this.props.items, 'id', this.state.activeItemId);
+      this.logger.log('componentDidUpdate: next', nextActiveItemId);
+    }
 
     // if (!prevState.initialSelected && this.state.initialSelected && this.state.activeItemId) {
     if (this.state.needReplace && (this.state.activeItemId !== prevState.activeItemId)) {
@@ -116,19 +125,29 @@ export default class PartialLinkList extends Component<Props, State> {
     }
   }
 
-  historyReplace = () => {
-    if (this.state.activeItemId) {
-      let linkToObject = this.refs[`ref-${this.state.activeItemId}`].getLinkToObject();
-      this.logger.log('historyReplace:', linkToObject);
-      if (this.props.onChangeItem) {
-        this.props.onChangeItem(this.state.activeItemId);
-      }
-      this.props.history.replace(linkToObject.pathname, linkToObject.state);
-    } else {
-      this.logger.log('historyReplace:', this.props.match.url);
-      this.props.history.replace(this.props.match.url);
-    }
-  }
+  // selectHead = () => {
+  //   if (0 < this.props.items.length) {
+  //     this.historyReplace(this.props.items[0].id);
+  //   }
+  // }
+
+  // historyReplaceActiveItem = () => {
+  //   if (this.state.activeItemId) {
+  //     this.historyReplace(this.state.activeItemId);
+  //   } else {
+  //     this.logger.log('historyReplace:', this.props.match.url);
+  //     this.props.history.replace(this.props.match.url);
+  //   }
+  // }
+
+  // historyReplace = (itemId: string) => {
+  //   let linkToObject = this.refs[`ref-${itemId}`].getLinkToObject();
+  //   this.logger.log('historyReplace:', linkToObject);
+  //   if (this.props.onChangeItem) {
+  //     this.props.onChangeItem(this.state.activeItemId);
+  //   }
+  //   this.props.history.replace(linkToObject.pathname, linkToObject.state);
+  // }
 
   onClickItem = (item: Object) => {
     // TODO 保存がされてない場合は変更時に警告する

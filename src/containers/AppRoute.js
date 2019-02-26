@@ -5,7 +5,7 @@ import { getCurrentMe } from '../actions/me';
 
 import Logger from '../js/Logger';
 
-import Waterings from './device/Waterings';
+// import Waterings from './device/Waterings';
 
 import AppLayout from '../layouts/AppLayout';
 import DeviceLayout from '../layouts/DeviceLayout';
@@ -19,9 +19,9 @@ import Login from '../components/home/Login';
 // import Dashboard from '../components/Dashboard';
 import DevicesIndex from './device/DevicesIndex';
 import BlankComponent from '@gitobi/react-blank-component';
-import DevicesWaterings from './DevicesWaterings';
+// import DevicesWaterings from './DevicesWaterings';
 import DevicesPyranometers from './DevicesPyranometers';
-import DevicesSoilmoisture from './device/soilmoisture/Soilmoisture';
+// import DevicesSoilmoisture from './device/soilmoisture/Soilmoisture';
 import MachinesRadiationalWaterings from './MachinesRadiationalWaterings';
 import AccountSettings from './account/AccountSettings';
 import Activation from './activation/Activation';
@@ -75,11 +75,11 @@ class AppRoute extends Component {
       return (
         <DeviceLayout match={match} rest={rest}>
           <Switch>
-            <Route path={`${match.url}/waterings`} component={Waterings}/>)}} />
+            {/*<Route path={`${match.url}/waterings`} component={Waterings}/>)}} />*/}
             {/*<Route path={`${match.url}/waterings`} render={(props) => { return (<DeviceWateringsRouter routerProps={props}/>)}} />*/}
             {/*<Route path={`${match.url}/waterings/:id?`} component={DevicesWaterings} />*/}
-            <Route path={`${match.url}/pyranometers/:id?`} component={DevicesPyranometers} />
-            <Route path={`${match.url}/soilmoistures/:id?`} component={DevicesSoilmoisture} />
+            {/*<Route path={`${match.url}/pyranometers/:id?`} component={DevicesPyranometers} />*/}
+            {/*<Route path={`${match.url}/soilmoistures/:id?`} component={DevicesSoilmoisture} />*/}
             <Route path={`${match.url}/radiational_waterings/:id?`} component={MachinesRadiationalWaterings} />
             <Redirect to={APP_BASE} />
           </Switch>

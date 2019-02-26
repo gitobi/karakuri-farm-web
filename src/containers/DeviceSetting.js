@@ -7,8 +7,6 @@ import GtbUtils from '../js/GtbUtils';
 import DeviceList from './DeviceList';
 import DeviceIdRouter from './router/DeviceIdRouter';
 
-import * as Type from '../types/BaseTypes'
-
 type Props = {
   match: Object,
   history: Object,
@@ -44,7 +42,7 @@ export default class DeviceSetting extends Component<Props, State> {
 
   render() {
     this.logger.log('render(old)', {props: this.props, state: this.state});
-    let Rout = this.props.router;
+    // let Rout = this.props.router;
     let Comp = this.props.component;
     return (
       <div>

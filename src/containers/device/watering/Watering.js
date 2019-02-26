@@ -1,8 +1,11 @@
+// @flow
+
 import React, { Component } from 'react';
 import Logger from '../../../js/Logger';
 import Content from '../Content';
 import DevicesSummary from '../../../containers/DevicesSummary'
-import SensingRecords from './SensingRecords'
+import Schedules from './Schedules'
+import OperationalRecords from './OperationalRecords'
 import Stats from './Stats'
 import DevicesSystemLogs from '../../../containers/DevicesSystemLogs'
 
@@ -14,7 +17,7 @@ type P = {
 type Props = P & RouterProps;
 type State = {};
 
-class Soilmoisture extends Component<Props, State> {
+class Watering extends Component<Props, State> {
   logger: Logger;
 
   constructor(props: Props) {
@@ -31,9 +34,13 @@ class Soilmoisture extends Component<Props, State> {
       id: "summary",
       name: "基本設定",
     }, {
-      path: "sensingRecords",
-      id: "sensingRecords",
-      name: "計測実績",
+      path: "schedules",
+      id: "schedules",
+      name: "スケジュール",
+    }, {
+      path: "operationalRecords",
+      id: "operationalRecords",
+      name: "潅水実績",
     }, {
       path: "stat",
       id: "stat",
@@ -46,13 +53,14 @@ class Soilmoisture extends Component<Props, State> {
 
     const componentsMap: Object = {
       summary: DevicesSummary,
-      sensingRecords: SensingRecords,
+      schedules: Schedules,
+      operationalRecords: OperationalRecords,
       stat: Stats,
       log: DevicesSystemLogs
     };
 
     const linkPosition = {
-      section: 'soilmoistures',
+      section: 'waterings',
       keys: ['device', 'device_id', 'tab_name'],
       key: 'tab_name'
     };
@@ -68,4 +76,4 @@ class Soilmoisture extends Component<Props, State> {
   }
 }
 
-export default Soilmoisture;
+export default Watering;

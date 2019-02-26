@@ -50,29 +50,44 @@ export default class PartialLink extends Component<Props, State> {
     };
   }
 
-  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-    // new Logger({prefix: "PartialLink"}).log('getDerivedStateFromProps:', prevState, '->', nextProps);
-    let linkToObject = PartialLink.createLinkToObject(
-      nextProps.match,
-      nextProps.location,
-      nextProps.position,
-      nextProps.item.id);
-    if (JSON.stringify(linkToObject) !== JSON.stringify(prevState.linkToObject)) {
-      return {linkToObject: linkToObject};
-    }
-    return null;
-  }
-
-  // componentDidUpdate = (prevProp: Props, prevState: State) => {
-  //   this.logger.log('componentDidUpdate:', {props: this.props, state: this.state});
-  //   let linkToObject = this.createLinkToObject(this.props.match, this.props.location, this.props.item.id);
-  //   if (JSON.stringify(linkToObject) !== JSON.stringify(this.state.linkToObject)) {
-  //     this.
+  // static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+  //   // new Logger({prefix: "PartialLink"}).log('getDerivedStateFromProps:', prevState, '->', nextProps);
+  //   let linkToObject = PartialLink.createLinkToObject(
+  //     nextProps.match,
+  //     nextProps.location,
+  //     nextProps.position,
+  //     nextProps.item.id);
+  //   if (JSON.stringify(linkToObject) !== JSON.stringify(prevState.linkToObject)) {
+  //     return {linkToObject: linkToObject};
   //   }
+  //   return null;
   // }
 
-  static createLinkToObject(match: Object, location: Object, position: Position, path: string) {
-    // let logger = new Logger({prefix: "PartialLink"});
+  componentDidUpdate = (prevProps: Props, prevState: State) => {
+    // this.logger.log('componentDidUpdate:', {props: this.props, state: this.state});
+    if (this.props.position.key === 'device') {
+      this.logger.log('componentDidUpdate:', '-device-', this.props.position.section, {prevProps: prevProps, prevState: prevState, props: this.props, state: this.state});
+    }
+
+    if (prevProps.location !== this.props.location) {
+      let linkToObject = this.createLinkToObject(
+        this.props.match,
+        this.props.location,
+        this.props.position,
+        this.props.item.id);
+      if (JSON.stringify(this.state.linkToObject) !== JSON.stringify(linkToObject)) {
+
+        if (this.props.position.key === 'device') {
+          this.logger.log('componentDidUpdate:', '-device-', {p: this.state.linkToObject.pathname, n: linkToObject.pathname});
+        }
+        this.logger.log('componentDidUpdate:', this.state.linkToObject.pathname, linkToObject.pathname);
+        this.setState({linkToObject: linkToObject});
+      }
+    }
+  }
+
+  createLinkToObject = (match: Object, location: Object, position: Position, path: string) => {
+    let logger = new Logger({prefix: "PartialLink"});
     // logger.log('createLinkToObject:', path, {match: match, location: location, position: position});
 
     let relativePath = (match.url.endsWith('/') ? '' : '/') + path;
@@ -87,11 +102,17 @@ export default class PartialLink extends Component<Props, State> {
     }
 
     let locationStatePosition = locationState.get('position', Map({})).toJS();
-    // logger.log('locationStatePosition:', locationStatePosition);
+    if (this.props.position.key === 'device') {
+      this.logger.log('locationStatePosition:', '-device-', locationStatePosition);
+    }
     let section = locationStatePosition[position.section] ? locationStatePosition[position.section] : {};
-    // logger.log('section:', section);
+    if (this.props.position.key === 'device') {
+      this.logger.log('locationStatePosition:', '-device-', 'section:', section);
+    }
     section[position.key] = relativePath;
-    // logger.log('section:', section);
+    if (this.props.position.key === 'device') {
+      this.logger.log('locationStatePosition:', '-device-', 'section:', section);
+    }
 
     let tail = '';
     let isTail = false;
@@ -112,6 +133,10 @@ export default class PartialLink extends Component<Props, State> {
     // linkTo:       /device/xxx-xxx/stat/desc
 
     locationState = locationState.setIn(['position', position.section], section);
+    if (this.props.position.key === 'device') {
+      this.logger.log('locationStatePosition:', '-device-', 'locationState:', locationState.toJS());
+    }
+
     let obj = {
       pathname: linkTo,
       state: locationState.toJS()

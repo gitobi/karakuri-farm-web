@@ -1,41 +1,34 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Route, Redirect, Switch } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Grid, Segment } from 'semantic-ui-react';
+import { Route, Switch } from 'react-router-dom';
+import { Segment } from 'semantic-ui-react';
 
 import Logger from '../../js/Logger';
 
 import PartialLinkList from '../../components/lib/PartialLinkList';
 import RouteCallback from '../../components/lib/RouteCallback';
+import HeadSelector from '../../components/lib/HeadSelector';
 
 import GtbUtils from '../../js/GtbUtils';
 
-import DeviceLayout from '../../layouts/DeviceLayout';
 import Layout from '../device/Layout';
 
-import Waterings from '../device/waterings/Waterings';
-import DevicesWaterings from '../DevicesWaterings';
+import Watering from '../device/watering/Watering';
 import DevicesPyranometers from '../DevicesPyranometers';
-import DevicesSoilmoisture from '../device/soilmoisture/Soilmoisture';
+import Soilmoisture from '../device/soilmoisture/Soilmoisture';
 import MachinesRadiationalWaterings from '../MachinesRadiationalWaterings';
 
-import * as Type from '../../types/BaseTypes'
+import type {RouterProps} from '../../types/BaseTypes';
 
-type Props = {
-  match: Object,
-  history: Object,
-  location: Object,
-
+type P = {
   type: string,
-  component: Class<Component<Object, Object>>,
+  section: string,
   devices: Object,
   devicesMap: Object,
-  progress: boolean,
-
+  progress: boolean
 };
-
+type Props = P & RouterProps
 type State = {
   activeItem: Object,
   typeComponentsMap: Object
@@ -44,32 +37,30 @@ type State = {
 class DeviceIdRouter extends Component<Props, State> {
   logger: Logger;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
 
     this.state = {
       activeItem: {id: null},
       typeComponentsMap: {
-        watering: Waterings,
+        watering: Watering,
         pyranometer: DevicesPyranometers,
-        soilmoisture: DevicesSoilmoisture,
+        soilmoisture: Soilmoisture,
         radiational_watering: MachinesRadiationalWaterings,
       }
-
     };
-
   }
 
   onChange = (id: ?string) => {
+    this.logger.log('onChange', {id: id});
     let item = GtbUtils.find(this.props.devices, 'id', id);
     if (!item) item = {id: null}
     this.setState({activeItem: item});
   }
 
   render() {
-    this.logger.log('render', {props: this.props, state: this.state});
-    // let Comp = this.props.component;
+    // this.logger.log('render', {props: this.props, state: this.state});
 
     const listItems = this.props.devices.map((item) => {
       return {
@@ -87,7 +78,7 @@ class DeviceIdRouter extends Component<Props, State> {
           secondary: true,
           pointing: true
         }}
-        position={{section: 'waterings', keys: ['device', 'device_id', 'tab_name'], key: 'device_id'}}
+        position={{section: this.props.section, keys: ['device', 'device_id', 'tab_name'], key: 'device_id'}}
         match={this.props.match}
         history={this.props.history}
         location={this.props.location}
@@ -101,28 +92,27 @@ class DeviceIdRouter extends Component<Props, State> {
 
     const Router = (
         <Switch>
-          <Route path={`${this.props.match.url}/:id?`} render={
-            ({match, history, location}) => {
-              this.logger.log('render - set', {match: match, props: this.props, state: this.state});
-              const id = match.params.id;
-              let Comp = this.state.typeComponentsMap[this.props.type];
-              let item = this.props.devicesMap[id];
-              if (!item) item = {id: null};
-              this.logger.log('render - up', {id: id, Comp: Comp, item: item});
+          <Route path={`${this.props.match.url}/:id`} render={({match, history, location}) => {
+            // this.logger.log('render - set', {match: match, props: this.props, state: this.state});
+            const id = match.params.id;
+            let Comp = this.state.typeComponentsMap[this.props.type];
+            let item = this.props.devicesMap[id];
+            if (!item) item = {id: null};
+            this.logger.log('render - up', {id: id, Comp: Comp, item: item});
 
-              if (!Comp) {
-                return (<Segment> notfound view: {this.props.type} </Segment>);
-              } else if (!item.id) {
-                return (<Segment> notfound device: {id} </Segment>);
-              } else if (!id) {
-                return (<Segment> not selected device </Segment>);
-              }
+            if (!Comp) {
+              return (<Segment> notfound view: {this.props.type} </Segment>);
+            } else if (!item.id) {
+              return (<Segment> notfound device: {id} </Segment>);
+            }
 
-              return (
+            return (
               <RouteCallback
                 onChange={this.onChange}
                 params={match.params}
                 paramKey={'id'}
+                items={this.props.devices}
+                itemKey={'id'}
               >
                 <Comp
                   type={this.props.type}
@@ -135,9 +125,22 @@ class DeviceIdRouter extends Component<Props, State> {
                   location={location}
                 />
               </RouteCallback>
-              );
-            }
-        } />
+            );
+          }} />
+          <Route path={`${this.props.match.url}/`} render={({match, history, location}) => {
+            this.logger.log('render - unselected');
+            return (
+                    <Segment> not selected device </Segment>
+
+              // <HeadSelector
+              //   match={match}
+              //   history={history}
+              //   items={this.props.devices}
+              //   pathParamsKey={'id'}
+              // />
+            );
+          }} />
+
         </Switch>
     );
 
@@ -151,54 +154,9 @@ class DeviceIdRouter extends Component<Props, State> {
 
         left={DeviceList}
         right={Router}
-      >
-{/*
-        {Router}
-      */}
-{/*        <Switch>
-          <Route path={`${this.props.match.url}/:id?`} render={
-            ({match, history, location}) => {
-              this.logger.log('render - set', {match: match, props: this.props, state: this.state});
-              const id = match.params.id;
-              let Comp = this.state.typeComponentsMap[this.props.type];
-              let item = this.props.devicesMap[id];
-              if (!item) item = {id: null};
-              this.logger.log('render - up', {id: id, Comp: Comp, item: item});
-
-              if (!Comp) {
-
-              }
-
-              return (
-                <Comp
-                  type={this.props.type}
-                  id={id}
-                  item={item}
-                  items={this.props.devices}
-                  itemMap={this.props.devicesMap}
-                  match={match}
-                  history={history}
-                  location={location}
-                  />)}
-            } />
-        </Switch>
-*/}
-      </Layout>
+      />
     );
   }
 }
 
-function mapStateToProps(state) {
-  return (
-    {
-    }
-  );
-}
-
-const mapDispatchToProps = {
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeviceIdRouter);
+export default DeviceIdRouter;
