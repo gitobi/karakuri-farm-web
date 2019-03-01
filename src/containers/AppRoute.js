@@ -21,6 +21,7 @@ import DevicesSoilmoisture from './device/soilmoisture/Soilmoisture';
 import MachinesRadiationalWaterings from './MachinesRadiationalWaterings';
 import AccountSettings from './account/AccountSettings';
 import Activation from './activation/Activation';
+import Stats from './stats/Index';
 // import ApiTest from './ApiTest';
 
 class AppRoute extends Component {
@@ -57,7 +58,7 @@ class AppRoute extends Component {
             <Route path={`${match.url}/machines`} component={DeviceLayoutRoute} />
             <Route path={`${match.url}/alert`} component={BlankComponent} />
             <Route path={`${match.url}/devices_list`} component={DevicesIndex} />
-            <Route path={`${match.url}/stats`} component={BlankComponent} />
+            <Route path={`${match.url}/stats`} component={Stats} />
             <Route path={`${match.url}/account`} component={AccountSettings} />
             <Route path={`${match.url}/activation`} component={Activation} />
             <Redirect to={`${match.url}`} />
