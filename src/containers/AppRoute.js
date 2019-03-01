@@ -53,10 +53,10 @@ class AppRoute extends Component {
         <AppLayout match={match} rest={rest}>
           <Switch>
             <Route exact path={`${match.url}/`} component={DevicesIndex} />
-            <Route path={`${match.url}/device`} component={DeviceLayoutRoute} />
-            <Route path={`${match.url}/machine`} component={DeviceLayoutRoute} />
+            <Route path={`${match.url}/devices`} component={DeviceLayoutRoute} />
+            <Route path={`${match.url}/machines`} component={DeviceLayoutRoute} />
             <Route path={`${match.url}/alert`} component={BlankComponent} />
-            <Route path={`${match.url}/devices`} component={DevicesIndex} />
+            <Route path={`${match.url}/devices_list`} component={DevicesIndex} />
             <Route path={`${match.url}/stats`} component={BlankComponent} />
             <Route path={`${match.url}/account`} component={AccountSettings} />
             <Route path={`${match.url}/activation`} component={Activation} />
@@ -72,8 +72,8 @@ class AppRoute extends Component {
         <DeviceLayout match={match} rest={rest}>
           <Switch>
             <Route path={`${match.url}/waterings`} component={DevicesWaterings} />
-            <Route path={`${match.url}/pyranometer`} component={DevicesPyranometers} />
-            <Route path={`${match.url}/soilmoisture`} component={DevicesSoilmoisture} />
+            <Route path={`${match.url}/pyranometers`} component={DevicesPyranometers} />
+            <Route path={`${match.url}/soilmoistures`} component={DevicesSoilmoisture} />
             <Route path={`${match.url}/radiational_waterings`} component={MachinesRadiationalWaterings} />
             <Redirect to={APP_BASE} />
           </Switch>

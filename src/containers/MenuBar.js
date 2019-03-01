@@ -63,21 +63,21 @@ class MenuBar extends Component {
         <Menu.Item>
           <Menu.Header>デバイス設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('device/waterings', '/app/device/waterings', 'JORO')}
-            {this.menuItem('device/pyranometer', '/app/device/pyranometer', 'JUKO')}
-            {this.menuItem('device/soilmoisture', '/app/device/soilmoisture', 'KAERU')}
+            {this.menuItem('devices/waterings', '/app/devices/waterings', 'JORO')}
+            {this.menuItem('devices/pyranometers', '/app/devices/pyranometers', 'JUKO')}
+            {this.menuItem('devices/soilmoistures', '/app/devices/soilmoistures', 'KAERU')}
           </Menu.Menu>
         </Menu.Item>
 
         <Menu.Item>
           <Menu.Header>カラクリ設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('machine/radiational_waterings', '/app/machine/radiational_waterings', '日射比例潅水')}
+            {this.menuItem('machines/radiational_waterings', '/app/machines/radiational_waterings', '日射比例潅水')}
           </Menu.Menu>
         </Menu.Item>
 
         {this.menuItem('alert', '/app/alert', 'アラート')}
-        {this.menuItem('devices', '/app/devices', 'デバイス一覧', (this.props.devices ? this.props.devices.length : 0) )}
+        {this.menuItem('devices', '/app/devices_list', 'デバイス一覧', (this.props.devices ? this.props.devices.length : 0) )}
         {this.menuItem('stats', '/app/stats', '統計')}
 
         <Menu.Item>
