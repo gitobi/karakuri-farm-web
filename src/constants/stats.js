@@ -1,5 +1,5 @@
 const app = "@KF"
-const module = "DEVICES_PYRANOMETER"
+const module = "STATS"
 const prefix = `${app}/${module}/`
 export const DevicesPyranometer = {
   LOAD_WORKING_DAYS_REQUEST: prefix + 'LOAD_WORKING_DAYS_REQUEST',

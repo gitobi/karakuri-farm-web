@@ -1,26 +1,26 @@
 import { List, Map, fromJS } from 'immutable';
-import { DevicesPyranometer } from '../constants/devicesPyranometer';
+import { Stats } from '../constants/stats';
 import GtbUtils from '../js/GtbUtils'
 
 // import Logger from '../js/Logger'
-// const _logger = new Logger({prefix: 'devicesPyranometer'});
+// const _logger = new Logger({prefix: 'stats'});
 
-const initialDevicesPyranometer = Map({
+const initialStats = Map({
   'workingDays': List([]),
   'sensingRecords': List([]),
   'statsMap': Map({}),
   'progress': false,
 });
 
-const devicePyranometer = (state = initialDevicesPyranometer, action) => {
+const stats = (state = initialStats, action) => {
   // _logger.info('state :', state.toJS());
   // _logger.info('action :', action);
 
   switch (action.type) {
-    case DevicesPyranometer.LOAD_WORKING_DAYS_REQUEST:
+    case Stats.LOAD_WORKING_DAYS_REQUEST:
       return state.set('progress', true);
 
-    case DevicesPyranometer.LOAD_WORKING_DAYS_SUCCESS:
+    case Stats.LOAD_WORKING_DAYS_SUCCESS:
       let workingDays = action.data.map((value) => {
         let workingDay = GtbUtils.ymdString(new Date(value["sensed_at"]));
         return workingDay;
@@ -31,14 +31,14 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
         ;
       });
 
-    case DevicesPyranometer.LOAD_WORKING_DAYS_FAILURE:
+    case Stats.LOAD_WORKING_DAYS_FAILURE:
       return state.set('progress', false);
 
-    case DevicesPyranometer.LOAD_SENSING_RECORDS_REQUEST:
+    case Stats.LOAD_SENSING_RECORDS_REQUEST:
       // 実績の取得開始
       return state.set('progress', true);
 
-    case DevicesPyranometer.LOAD_SENSING_RECORDS_SUCCESS:
+    case Stats.LOAD_SENSING_RECORDS_SUCCESS:
       // 実績の取得完了
       let sensingRecords = action.sensingRecords.map((value) => {
           let sensed_at = GtbUtils.dateString(new Date(value["sensed_at"]));
@@ -62,14 +62,14 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
         ;
       });
 
-    case DevicesPyranometer.LOAD_SENSING_RECORDS_FAILURE:
+    case Stats.LOAD_SENSING_RECORDS_FAILURE:
       // 実績の取得失敗
       return state.set('progress', false);
 
-    case DevicesPyranometer.LOAD_STATS_REQUEST:
+    case Stats.LOAD_STATS_REQUEST:
       return state.set('progress', true);
 
-    case DevicesPyranometer.LOAD_STATS_SUCCESS:
+    case Stats.LOAD_STATS_SUCCESS:
 
       // mapのキーになる部分 yyyy/mm と、plot表示部分 dd を作成
       // TODO ここもうちょっとなんとかできる
@@ -132,7 +132,7 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
         ;
       });
 
-    case DevicesPyranometer.LOAD_STATS_FAILURE:
+    case Stats.LOAD_STATS_FAILURE:
       // 実績の取得失敗
       return state.set('progress', false);
 
@@ -141,4 +141,4 @@ const devicePyranometer = (state = initialDevicesPyranometer, action) => {
   }
 }
 
-export default devicePyranometer;
+export default stats;
