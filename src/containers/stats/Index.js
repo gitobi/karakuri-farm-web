@@ -1,19 +1,35 @@
+// @flow
+
 import React, { Component } from 'react';
 import {Container} from 'semantic-ui-react';
 import EditableTable from '../../components/common/EditableTable'
 import Logger from '../../js/Logger'
 
+import List from './List'
 import { connect } from 'react-redux';
 
-class DevicesIndex extends Component {
+type Props = {
+  devices: Array<Object>,
+  progress: boolean,
+  initialActiveItemId: string,
+  onClickItem: Function,
+};
+type State = {
+  activeItemId: string
+};
+
+class Index extends Component<Props, State> {
+  logger: Logger;
+
   constructor(props) {
     super(props);
-
     this.logger = new Logger({prefix: this.constructor.name});
   }
 
   render() {
     // this.logger.log(this.props)
+
+
 
     // テーブルのカラムレイアウト
     const columns = [{
@@ -35,6 +51,9 @@ class DevicesIndex extends Component {
 
     return (
       <Container>
+        <List
+          items={this.props.devices}
+        />
         <EditableTable
           label={'Devices'}
           data={this.props.devices}
@@ -61,4 +80,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   null,
-)(DevicesIndex);
+)(Index);

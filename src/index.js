@@ -9,6 +9,7 @@ import './index.css';
 import karakuriFarmApp from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import AppRoute from './containers/AppRoute'
+import { persistStateLocalStorage } from './persistStateLocalStorage';
 
 const composeEnhancers = composeWithDevTools({
   // Specify name here, actionsBlacklist, actionsCreators and other options if needed
@@ -19,7 +20,8 @@ const store = createStore(
   composeEnhancers(
     applyMiddleware(
       thunkMiddleware
-    )
+    ),
+    persistStateLocalStorage()
   )
 );
 
