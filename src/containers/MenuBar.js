@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 import Logger from '../js/Logger';
 
-class Menubar extends Component {
+class MenuBar extends Component {
   constructor(props) {
     super(props);
     this.logger = new Logger({prefix: this.constructor.name});
@@ -30,8 +30,8 @@ class Menubar extends Component {
         as={Link}
         to={linkTo}
         name={name}
-        active={this.props.activeMenubarItem.name === name}
-        onClick={this.props.handleMenubarItemClick}
+        active={this.props.activeMenuBarItem.name === name}
+        onClick={this.props.handleMenuBarItemClick}
       >
         {labelContent}
         {content}
@@ -63,21 +63,21 @@ class Menubar extends Component {
         <Menu.Item>
           <Menu.Header>デバイス設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('device_waterings', '/app/devices_waterings', 'JORO')}
-            {this.menuItem('device_pyranometer', '/app/devices_pyranometer', 'JUKO')}
-            {this.menuItem('device_soilmoisture', '/app/devices_soilmoisture', 'KAERU')}
+            {this.menuItem('devices/waterings', '/app/devices/waterings', 'JORO')}
+            {this.menuItem('devices/pyranometers', '/app/devices/pyranometers', 'JUKO')}
+            {this.menuItem('devices/soilmoistures', '/app/devices/soilmoistures', 'KAERU')}
           </Menu.Menu>
         </Menu.Item>
 
         <Menu.Item>
           <Menu.Header>カラクリ設定</Menu.Header>
           <Menu.Menu>
-            {this.menuItem('machine_radiational_waterings', '/app/machine_radiational_waterings', '日射比例潅水')}
+            {this.menuItem('machines/radiational_waterings', '/app/machines/radiational_waterings', '日射比例潅水')}
           </Menu.Menu>
         </Menu.Item>
 
         {this.menuItem('alert', '/app/alert', 'アラート')}
-        {this.menuItem('devices', '/app/devices', 'デバイス一覧', (this.props.devices ? this.props.devices.length : 0) )}
+        {this.menuItem('devices', '/app/devices_list', 'デバイス一覧', (this.props.devices ? this.props.devices.length : 0) )}
         {this.menuItem('stats', '/app/stats', '統計')}
 
         <Menu.Item>
@@ -116,4 +116,4 @@ const mapDispatchToProps = {
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Menubar));
+)(MenuBar));
