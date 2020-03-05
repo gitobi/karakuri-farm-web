@@ -20,6 +20,7 @@
 
 - development account
     - user: dev
+    - pass: Pass1234
 
 ## Components
 
@@ -73,6 +74,29 @@
 ### Deploy to Production
 
 `docker-compose run --rm deployment-production`
+
+
+### デプロイ用環境でawsコマンドを打ちたい場合
+```sh
+# deploy dockerをバックグラウンドで立ち上げてsh接続
+docker-compose up -d deployment-sh
+docker-compose exec deployment-sh sh
+# 必要な環境変数を読み込み
+cd ~
+source .profile
+# awsコマンドが打てる
+aws --version
+# docker build でのconfigureが何かしらんが効いてないので打つ。
+# regionは ap-northeast-1 とか
+# key/secret は aws_secrets.env のやつ
+aws configure
+## 以下コマンド例。--user-pool-idは対象の環境に合わせて変更すること
+# devのユーザー一覧
+aws cognito-idp list-users --user-pool-id ap-northeast-1_0vGFtJfH4
+# パスワード変更
+aws cognito-idp admin-set-user-password --user-pool-id ap-northeast-1_0vGFtJfH4 --username dev --password Pass1234 --permanent
+
+```
 
 # Backend
 
