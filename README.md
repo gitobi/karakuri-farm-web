@@ -9,12 +9,10 @@
 1. `git clone https://github.com/gitobi/karakuri-farm-web`
 1. `cd karakuri-farm-web`
 1. `cp aws_secrets.env.sample aws_secrets.env`
-1. Edit the `aws_secrets.env` file.
 1. `docker-compose build`
 1. `docker-compose run --rm web yarn install`
-1. `cp .env.development.local.sample .env.development.local`
-1. `cp .env.test.local.sample .env.test.local`
-1. Edit the `.env.development.local` `.env.test.local` file.
+1. `cp .env.development.sample .env.development`
+1. `cp .env.test.sample .env.test`
 1. `docker-compose up web`
 1. Visit http://localhost:3000/
 
@@ -61,10 +59,10 @@
 
 1. `cp aws_secrets.env.sample aws_secrets.env`
 1. Add your credentials to the `aws_secrets.env` file.
-1. `cp .env.staging-env.local.sample .env.staging-env.local`
-1. Edit the `.env.staging-env.local` file.
-1. `cp .env.production-env.local.sample .env.production-env.local`
-1. Edit the `.env.production-env.local` file.
+1. `cp .env.staging-env.sample .env.staging-env`
+1. Edit the `.env.staging-env` file.
+1. `cp .env.production-env.sample .env.production-env`
+1. Edit the `.env.production-env` file.
 
 ### Deploy to Staging
 
