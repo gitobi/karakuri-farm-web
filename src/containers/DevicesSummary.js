@@ -5,6 +5,7 @@ import Logger from '../js/Logger'
 import Header from '../components/part/Header'
 import Field from '../components/part/Field';
 import Input from '../components/part/Input';
+import DropdownTimezone from '../components/part/form/DropdownTimezone';
 
 import DevicesMonitor from './DevicesMonitor';
 
@@ -53,6 +54,14 @@ class DevicesSummary extends Component {
           <Field label='device_type' text={this.props.item.device_type} />
           <Field label='name'>
             <Input.Hash size='large' fluid hash={this.props.item} column='name' callback={this.update} />
+          </Field>
+          <Field label='timezone'>
+            <DropdownTimezone
+              fluid
+              selection
+              value={this.props.item.timezone}
+              callback={(value) => { this.update('timezone', value, null)}}
+            />
           </Field>
           <Field label='software_version' text={this.props.item.software_version} />
           <Field label='model_number' text={this.props.item.model_number} />

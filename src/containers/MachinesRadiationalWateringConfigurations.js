@@ -134,6 +134,16 @@ class MachinesRadiationalWateringConfigurations extends React.Component {
         width: 100,
         customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
       }, {
+        Header: 'Base',
+        accessor: 'duration_of_base',
+        width: 100,
+        customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
+      }, {
+        Header: 'Morning',
+        accessor: 'duration_of_morning',
+        width: 100,
+        customCell: { type: 'input', formatter: new DecimalFormatter(), callback: this.update }
+      }, {
         Header: '-',
         accessor: 'remove',
         width: 48,

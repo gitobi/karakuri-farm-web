@@ -67,7 +67,7 @@ class MachinesSummary extends Component {
               value={this.props.item.watering_id}
               callback={(value) => { this.update('watering_id', value, null)}}
             />
-         </Field>
+          </Field>
           <Field label='pyranometer'>
             <Dropdown
               fluid

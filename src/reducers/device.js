@@ -64,6 +64,7 @@ const device = (state = initialDevice, action) => {
             software_version: value["software_version"],
             model_number: value["model_number"],
             organization_id: value["organization_id"],
+            timezone: value["timezone"],
             heartbeated_at: GtbUtils.dateString(new Date(value["heartbeated_at"])),
             inserted_at: GtbUtils.dateString(new Date(value["inserted_at"])),
             updated_at: GtbUtils.dateString(new Date(value["updated_at"])),
